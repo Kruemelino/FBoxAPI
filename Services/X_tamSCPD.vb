@@ -36,12 +36,12 @@
                 TAMInfo.RingSeconds = CUShort(.Item("NewRingSeconds"))
                 TAMInfo.PhoneNumbers = .Item("NewPhoneNumbers").ToString.Split(",")
 
-                PushStatus.Invoke(LogLevel.Debug, $"GetTAMInfoEx ({i}): {TAMInfo.Name}; {TAMInfo.Enable}")
+                PushStatus.Invoke(LogLevel.Debug, $"GetTAMInfo ({i}): {TAMInfo.Name}; {TAMInfo.Enable}")
 
                 Return True
 
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetTAMInfoEx konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
+                PushStatus.Invoke(LogLevel.Warn, $"GetTAMInfo konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
 
                 Return False
             End If
@@ -68,6 +68,8 @@
 
                 GetMessageListURL = .Item("NewURL").ToString
 
+                PushStatus.Invoke(LogLevel.Debug, $"GetMessageListURL: {GetMessageListURL} ")
+
                 Return True
 
             Else
@@ -81,26 +83,28 @@
     ''' <summary>
     ''' Returns the global information and the specific answering machine information as xml list.
     ''' </summary>
-    ''' <param name="TAMListe">Represents the list of all tam.</param>
+    ''' <param name="List">Represents the list of all tam.</param>
     ''' <returns>True when success</returns>
-    Public Function GetList(ByRef TAMListe As TAMList) As Boolean
+    Public Function GetList(ByRef List As TAMList) As Boolean
 
         With TR064Start(Tr064Files.x_tamSCPD, "GetList", Nothing)
 
             If .ContainsKey("NewTAMList") Then
 
-                If Not DeserializeXML(.Item("NewTAMList").ToString(), False, TAMListe) Then
+                If Not DeserializeXML(.Item("NewTAMList").ToString(), False, List) Then
                     PushStatus.Invoke(LogLevel.Warn, $"GetTAMList konnte für nicht deserialisiert werden.")
                 End If
 
                 ' Wenn keine TAM angeschlossen wurden, gib eine leere Klasse zurück
-                If TAMListe Is Nothing Then TAMListe = New TAMList
+                If List Is Nothing Then List = New TAMList
+
+                PushStatus.Invoke(LogLevel.Debug, $"GetList: {List.Items.Count} Anrufbeantworter ermittelt.")
 
                 Return True
 
             Else
                 PushStatus.Invoke(LogLevel.Warn, $"GetTAMList konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
-                TAMListe = Nothing
+                List = Nothing
 
                 Return False
             End If

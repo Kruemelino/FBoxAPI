@@ -7,9 +7,9 @@
     <XmlElement("Stick")> Public Property Stick As UShort
     <XmlElement("Status")> Public Property Status As UShort
     <XmlElement("Capacity")> Public Property Capacity As Integer
-    <XmlElement("Item")> Public Property TAMListe As List(Of TAMItem)
+    <XmlElement("Item")> Public Property Items As List(Of TAMItem)
 
     Public Sub New()
-        TAMListe = New List(Of TAMItem)
+        Items = New List(Of TAMItem)
     End Sub
 End Class

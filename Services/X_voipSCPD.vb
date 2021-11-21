@@ -109,7 +109,7 @@
                 Client.PhoneName = .Item("NewX_AVM-DE_PhoneName").ToString
                 Client.ClientId = .Item("NewX_AVM-DE_ClientId").ToString
                 Client.OutGoingNumber = .Item("NewX_AVM-DE_OutGoingNumber").ToString
-                Client.InternalNumber = CInt("NewX_AVM-DE_InternalNumber")
+                Client.InternalNumber = CInt(.Item("NewX_AVM-DE_InternalNumber"))
 
                 Return True
 
@@ -257,6 +257,8 @@
 
             If .ContainsKey("NewX_AVM-DE_PhoneName") Then
                 PhoneName = .Item("NewX_AVM-DE_PhoneName").ToString
+
+                PushStatus.Invoke(LogLevel.Debug, $"Eingestellter: Phoneport '{PhoneName}'")
 
                 Return True
 
