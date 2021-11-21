@@ -83,7 +83,7 @@
     ''' </summary>
     ''' <param name="TAMListe">Represents the list of all tam.</param>
     ''' <returns>True when success</returns>
-    Public Function GetTAMList(ByRef TAMListe As TAMList) As Boolean
+    Public Function GetList(ByRef TAMListe As TAMList) As Boolean
 
         With TR064Start(Tr064Files.x_tamSCPD, "GetList", Nothing)
 
