@@ -9,10 +9,10 @@ Imports System.Runtime.InteropServices
 ' Werte der Assemblyattribute überprüfen
 
 <Assembly: AssemblyTitle("FBoxAPI")>
-<Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("")>
+<Assembly: AssemblyDescription(".NET Framework Bibliothek für die TR-064 Schnittstelle der AVM Fritz!Box")>
+<Assembly: AssemblyCompany("Kruemelino")>
 <Assembly: AssemblyProduct("FBoxAPI")>
-<Assembly: AssemblyCopyright("Copyright ©  2021")>
+<Assembly: AssemblyCopyright("Kruemelino ©  2021")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>

@@ -1,5 +1,6 @@
-﻿Imports System.Xml.Schema
-Friend Module FritzBoxInformations
+﻿Imports System.ComponentModel
+Imports System.Xml.Schema
+Public Module FritzBoxInformations
 
 #Region "Properties"
 #Region "Fritz!Box SOAP/TR64"
@@ -32,199 +33,90 @@ Friend Module FritzBoxInformations
 #Region "Fritz!Box UPnP/TR-064 Files"
 
     ''' <summary>
-    ''' Gibt die SCPDURL der bekannten Services zurück.
+    ''' ServiceControlProtocolDefinitions 
     ''' </summary>
-    Friend Structure Tr064Files
-        ''' <summary>
-        ''' deviceconfigSCPD
-        ''' </summary>
-        Shared deviceconfigSCPD As String = "/deviceconfigSCPD.xml"
+    Public Enum SCPDFiles
+
+        <Description("/any.xml")> any
+
+        <Description("/deviceconfigSCPD.xml")> deviceconfigSCPD
+
+        <Description("/deviceinfoSCPD.xml")> deviceinfoSCPD
+
+        <Description("/hostsSCPD.xml")> hostsSCPD
+
+        <Description("/igdconnSCPD.xml")> igdconnSCPD
+
+        <Description("/igddesc.xml")> igddesc
+
+        <Description("/igddslSCPD.xml")> igddslSCPD
+
+        <Description("/igdicfgSCPD.xml")> igdicfgSCPD
+
+        <Description("/lanconfigsecuritySCPD.xml")> lanconfigsecuritySCPD
+
+        <Description("/lanhostconfigmgmSCPD.xml")> lanhostconfigmgmSCPD
+
+        <Description("/lanifconfigSCPD.xml")> lanifconfigSCPD
+
+        <Description("/layer3forwardingSCPD.xml")> layer3forwardingSCPD
+
+        <Description("/mgmsrvSCPD.xml")> mgmsrvSCPD
+
+        <Description("/timeSCPD.xml")> timeSCPD
+
+        <Description("/tr64desc.xml")> tr64desc
+
+        <Description("/userifSCPD.xml")> userifSCPD
+
+        <Description("/wancommonifconfigSCPD.xml")> wancommonifconfigSCPD
+
+        <Description("/wanethlinkconfigSCPD.xml")> wanethlinkconfigSCPD
+
+        <Description("/wandslifconfigSCPD.xml")> wandslifconfigSCPD
+
+        <Description("/wandsllinkconfigSCPD.xml")> wandsllinkconfigSCPD
+
+        <Description("/wanipconnSCPD.xml")> wanipconnSCPD
+
+        <Description("/wanpppconnSCPD.xml")> wanpppconnSCPD
+
+        <Description("/wlanconfigSCPD.xml")> wlanconfigSCPD
+
+        <Description("/x_appsetupSCPD.xml")> x_appsetupSCPD
+
+        <Description("/x_authSCPD.xml")> x_authSCPD
 
         ''' <summary>
-        ''' deviceinfoSCPD
+        ''' X_AVM-DE_OnTel
         ''' </summary>
-        Shared deviceinfoSCPD As String = "/deviceinfoSCPD.xml"
+        <Description("/x_contactSCPD.xml")> x_contactSCPD
 
-        ''' <summary>
-        ''' lanconfigsecuritySCPD
-        ''' </summary>
-        Shared lanconfigsecuritySCPD As String = "/lanconfigsecuritySCPD.xml"
+        <Description("/x_dectSCPD.xml")> x_dectSCPD
 
-        ''' <summary>
-        ''' lanhostconfigmgmSCPD
-        ''' </summary>
-        Shared lanhostconfigmgmSCPD As String = "/lanhostconfigmgmSCPD.xml"
+        <Description("/x_filelinksSCPD.xml")> x_filelinksSCPD
 
-        ''' <summary>
-        ''' layer3forwardingSCPD
-        ''' </summary>
-        Shared layer3forwardingSCPD As String = "/layer3forwardingSCPD.xml"
+        <Description("/x_homeautoSCPD.xml")> x_homeautoSCPD
 
-        ''' <summary>
-        ''' mgmsrvSCPD
-        ''' </summary>
-        Shared mgmsrvSCPD As String = "/mgmsrvSCPD.xml"
+        <Description("/x_homeplugSCPD.xml")> x_homeplugSCPD
 
-        ''' <summary>
-        ''' timeSCPD
-        ''' </summary>
-        Shared timeSCPD As String = "/timeSCPD.xml"
+        <Description("/x_myfritzSCPD.xml")> x_myfritzSCPD
 
-        ''' <summary>
-        ''' timeSCPDuserifSCPD
-        ''' </summary>
-        Shared userifSCPD As String = "/userifSCPD.xml"
+        <Description("/x_remoteSCPD.xml")> x_remoteSCPD
 
-        ''' <summary>
-        ''' wancommonifconfigSCPD
-        ''' </summary>
-        Shared wancommonifconfigSCPD As String = "/wancommonifconfigSCPD.xml"
+        <Description("/x_storageSCPD.xml")> x_storageSCPD
 
-        ''' <summary>
-        ''' wandslifconfigSCPD
-        ''' </summary>
-        Shared wandslifconfigSCPD As String = "/wandslifconfigSCPD.xml"
+        <Description("/x_speedtestSCPD.xml")> x_speedtestSCPD
 
-        ''' <summary>
-        ''' wandsllinkconfigSCPD
-        ''' </summary>
-        Shared wandsllinkconfigSCPD As String = "/wandsllinkconfigSCPD.xml"
+        <Description("/x_tamSCPD.xml")> x_tamSCPD
 
-        ''' <summary>
-        ''' wanpppconnSCPD
-        ''' </summary>
-        Shared wanpppconnSCPD As String = "/wanpppconnSCPD.xml"
+        <Description("/x_upnpSCPD.xml")> x_upnpSCPD
 
-        ''' <summary>
-        ''' wanipconnSCPD
-        ''' </summary>
-        Shared wanipconnSCPD As String = "/wanipconnSCPD.xml"
+        <Description("/x_voipSCPD.xml")> x_voipSCPD
 
-        ''' <summary>
-        ''' wlanconfigSCPD
-        ''' </summary>
-        Shared wlanconfigSCPD As String = "/wlanconfigSCPD.xml"
+        <Description("/x_webdavSCPD.xml")> x_webdavSCPD
 
-        ''' <summary>
-        ''' hostsSCPD
-        ''' </summary>
-        Shared hostsSCPD As String = "/hostsSCPD.xml"
-
-        ''' <summary>
-        ''' lanifconfigSCPD
-        ''' </summary>
-        Shared lanifconfigSCPD As String = "/lanifconfigSCPD.xml"
-
-        ''' <summary>
-        ''' wanethlinkconfigSCPD
-        ''' </summary>
-        Shared wanethlinkconfigSCPD As String = "/wanethlinkconfigSCPD.xml"
-
-        ''' <summary>
-        ''' x_upnpSCPD
-        ''' </summary>
-        Shared x_upnpSCPD As String = "/x_upnpSCPD.xml"
-
-        ''' <summary>
-        ''' x_webdavSCPD
-        ''' </summary>
-        Shared x_contactSCPD As String = "/x_contactSCPD.xml"
-
-        ''' <summary>
-        ''' x_myfritzSCPD
-        ''' </summary>
-        Shared x_myfritzSCPD As String = "/x_myfritzSCPD.xml"
-
-        ''' <summary>
-        ''' x_storageSCPD
-        ''' </summary>
-        Shared x_storageSCPD As String = "/x_storageSCPD.xml"
-
-        ''' <summary>
-        ''' x_remoteSCPD
-        ''' </summary>
-        Shared x_remoteSCPD As String = "/x_remoteSCPD.xml"
-
-        ''' <summary>
-        ''' x_tamSCPD
-        ''' </summary>
-        Shared x_tamSCPD As String = "/x_tamSCPD.xml"
-
-        ''' <summary>
-        ''' x_voipSCPD
-        ''' </summary>
-        Shared x_voipSCPD As String = "/x_voipSCPD.xml"
-
-        ''' <summary>
-        ''' x_webdavSCPD
-        ''' </summary>
-        Shared x_webdavSCPD As String = "/x_webdavSCPD.xml"
-
-        ''' <summary>
-        ''' X_appsetup
-        ''' </summary>
-        Shared X_appsetup As String = "/x_appsetupSCPD.xml"
-
-        ''' <summary>
-        ''' X_homeautoSCPD
-        ''' </summary>
-        Shared X_homeautoSCPD As String = "/x_homeautoSCPD.xml"
-
-        ''' <summary>
-        ''' X_homeplugSCPD
-        ''' </summary>
-        Shared X_homeplugSCPD As String = "/x_homeplugSCPD.xml"
-
-        ''' <summary>
-        ''' igddesc
-        ''' </summary>
-        Shared igddesc As String = "/igddesc.xml"
-
-        ''' <summary>
-        ''' any
-        ''' </summary>
-        Shared any As String = "/any.xml"
-
-        ''' <summary>
-        ''' x_webdavSCPD
-        ''' </summary>
-        Shared igdicfgSCPD As String = "/igdicfgSCPD.xml"
-
-        ''' <summary>
-        ''' x_webdavSCPD
-        ''' </summary>
-        Shared igddslSCPD As String = "/igddslSCPD.xml"
-
-        ''' <summary>
-        ''' igdconnSCPD
-        ''' </summary>
-        Shared igdconnSCPD As String = "/igdconnSCPD.xml"
-
-        ''' <summary>
-        ''' tr64desc
-        ''' </summary>
-        Shared tr64desc As String = "/tr64desc.xml"
-
-        ''' <summary>
-        ''' tr64desc
-        ''' </summary>
-        Shared x_speedtestSCPD As String = "/x_speedtestSCPD.xml"
-
-        ''' <summary>
-        ''' tr64desc
-        ''' </summary>
-        Shared x_dectSCPD As String = "/x_dectSCPD.xml"
-
-        ''' <summary>
-        ''' tr64desc
-        ''' </summary>
-        Shared x_filelinksSCPD As String = "/x_filelinksSCPD.xml"
-
-        ''' <summary>
-        ''' tr64desc
-        ''' </summary>
-        Shared x_authSCPD As String = "/x_authSCPD.xml"
-    End Structure
+    End Enum
 
 #End Region
 End Module

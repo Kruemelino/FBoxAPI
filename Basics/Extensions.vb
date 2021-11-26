@@ -1,4 +1,5 @@
-﻿Imports System.Runtime.CompilerServices
+﻿Imports System.ComponentModel
+Imports System.Runtime.CompilerServices
 
 <DebuggerStepThrough()>
 Public Module Extensions
@@ -208,4 +209,19 @@ Public Module Extensions
     End Function
 #End Region
 
+    ''' <summary>
+    ''' Provides the Description Name for an enumeration based on the System.ComponentModel.Description Attribute on the enumeration value. if not found it returnes the defaultvalue passed.
+    ''' Allows the description property of an enumeration to be exposed easily.
+    ''' </summary>
+    ''' <param name="EnumConstant">The Enumeration Item extended by the function.</param>
+    <Extension()>
+    Public Function Description(EnumConstant As [Enum]) As String
+        Dim fi As Reflection.FieldInfo = EnumConstant.GetType().GetField(EnumConstant.ToString())
+        Dim aattr() As DescriptionAttribute = DirectCast(fi.GetCustomAttributes(GetType(DescriptionAttribute), False), DescriptionAttribute())
+        If aattr.Length = 0 OrElse aattr(0).Description = "" Then
+            Return ""
+        Else
+            Return aattr(0).Description
+        End If
+    End Function
 End Module

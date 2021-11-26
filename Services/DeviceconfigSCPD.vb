@@ -1,9 +1,11 @@
 ﻿Public Class DeviceconfigSCPD
     Implements IService
-    Private Property TR064Start As Func(Of String, String, Hashtable, Hashtable) Implements IService.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
+    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
 
-    Public Sub New(Start As Func(Of String, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+        ServiceFile = SCPDFiles.deviceconfigSCPD
 
         TR064Start = Start
 
@@ -19,7 +21,7 @@
     ''' <returns>True when success</returns>
     Public Function GetSessionID(ByRef SessionID As String) As Boolean
 
-        With TR064Start(Tr064Files.deviceconfigSCPD, "X_AVM-DE_CreateUrlSID", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_CreateUrlSID", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_UrlSID") Then
 

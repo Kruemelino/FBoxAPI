@@ -6,7 +6,6 @@
 
     Public Property Level As LogLevel
     Public Property Message As String
-
 End Class
 
 ''' <summary>

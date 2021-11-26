@@ -1,9 +1,12 @@
 ﻿Public Class DeviceinfoSCPD
     Implements IService
-    Private Property TR064Start As Func(Of String, String, Hashtable, Hashtable) Implements IService.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
 
-    Public Sub New(Start As Func(Of String, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+
+        ServiceFile = SCPDFiles.deviceinfoSCPD
 
         TR064Start = Start
 
@@ -11,7 +14,7 @@
     End Sub
 
 #Region "deviceinfoSCPD"
-    Friend Function GetInfo(Optional ByRef ManufacturerName As String = "",
+    Public Function GetInfo(Optional ByRef ManufacturerName As String = "",
                             Optional ByRef ManufacturerOUI As String = "",
                             Optional ByRef ModelName As String = "",
                             Optional ByRef Description As String = "",
@@ -24,7 +27,7 @@
                             Optional ByRef UpTime As Integer = 0,
                             Optional ByRef DeviceLog As String = "") As Boolean
 
-        With TR064Start(Tr064Files.deviceinfoSCPD, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", Nothing)
 
             If .ContainsKey("NewSoftwareVersion") Then
 
@@ -54,14 +57,14 @@
     End Function
 
     ''' <param name="ProvisioningCode">ddd.ddd.ddd.ddd, d == [0-9] </param>
-    Friend Function SetProvisioningCode(ProvisioningCode As String) As Boolean
-        With TR064Start(Tr064Files.deviceinfoSCPD, "SetProvisioningCode", New Hashtable From {{"NewProvisioningCode", ProvisioningCode}})
+    Public Function SetProvisioningCode(ProvisioningCode As String) As Boolean
+        With TR064Start(ServiceFile, "SetProvisioningCode", New Hashtable From {{"NewProvisioningCode", ProvisioningCode}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    Friend Function GetDeviceLog(ByRef DeviceLog As String) As Boolean
-        With TR064Start(Tr064Files.deviceinfoSCPD, "GetDeviceLog", Nothing)
+    Public Function GetDeviceLog(ByRef DeviceLog As String) As Boolean
+        With TR064Start(ServiceFile, "GetDeviceLog", Nothing)
             If .ContainsKey("NewDeviceLog") Then
 
                 DeviceLog = .Item("NewDeviceLog").ToString
@@ -77,8 +80,8 @@
         End With
     End Function
 
-    Friend Function GetSecurityPort(ByRef SecurityPort As Integer) As Boolean
-        With TR064Start(Tr064Files.deviceinfoSCPD, "GetSecurityPort", Nothing)
+    Public Function GetSecurityPort(ByRef SecurityPort As Integer) As Boolean
+        With TR064Start(ServiceFile, "GetSecurityPort", Nothing)
             If .ContainsKey("NewSecurityPort") Then
 
                 SecurityPort = CInt(.Item("NewSecurityPort"))

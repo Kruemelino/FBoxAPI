@@ -1,10 +1,13 @@
 ﻿
 Public Class LANConfigSecuritySCPD
     Implements IService
-    Private Property TR064Start As Func(Of String, String, Hashtable, Hashtable) Implements IService.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
 
-    Public Sub New(Start As Func(Of String, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+
+        ServiceFile = SCPDFiles.lanconfigsecuritySCPD
 
         TR064Start = Start
 
@@ -19,7 +22,7 @@ Public Class LANConfigSecuritySCPD
     ''' <returns>True when success</returns>
     Public Function GetUserList(ByRef UserList As String) As Boolean
 
-        With TR064Start(Tr064Files.lanconfigsecuritySCPD, "X_AVM-DE_GetUserList", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_GetUserList", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_UserList") Then
 

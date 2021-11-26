@@ -1,10 +1,13 @@
 ﻿
 Public Class X_contactSCPD
     Implements IService
-    Private Property TR064Start As Func(Of String, String, Hashtable, Hashtable) Implements IService.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
 
-    Public Sub New(Start As Func(Of String, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+
+        ServiceFile = SCPDFiles.x_contactSCPD
 
         TR064Start = Start
 
@@ -12,6 +15,151 @@ Public Class X_contactSCPD
     End Sub
 
 #Region "x_contactSCPD"
+    ''' <summary>
+    ''' This action is obsolete and shall not be used any more. New action: <see cref="GetInfoByIndex"/>
+    ''' </summary>
+    ''' <returns>True when success</returns>
+    <Obsolete("This action is obsolete and shall not be used any more. New action: GetInfoByIndex")>
+    Public Function GetInfo(Optional ByRef Enable As Boolean = False,
+                            Optional ByRef Status As String = "",
+                            Optional ByRef LastConnect As String = "",
+                            Optional ByRef Url As String = "",
+                            Optional ByRef ServiceId As String = "",
+                            Optional ByRef Username As String = "",
+                            Optional ByRef Name As String = "") As Boolean
+
+        With TR064Start(ServiceFile, "GetInfo", Nothing)
+
+            If .ContainsKey("NewName") Then
+
+                Enable = CBool(.Item("NewEnable"))
+                Status = .Item("NewStatus").ToString
+                LastConnect = .Item("NewLastConnect").ToString
+                Url = .Item("NewUrl").ToString
+                ServiceId = .Item("NewServiceId").ToString
+                Username = .Item("NewUsername").ToString
+                Name = .Item("NewName").ToString
+
+
+                PushStatus.Invoke(LogLevel.Debug, $"Obsolete! GetInfo (Telefonbuch) der Fritz!Box abgerufen: {Name}")
+
+                Return True
+            Else
+                PushStatus.Invoke(LogLevel.Warn, $"Obsolete! GetInfo (Telefonbuch) der Fritz!Box nicht erhalten. '{ .Item("Error")}'")
+
+                Return False
+            End If
+        End With
+
+    End Function
+
+    ''' <summary>
+    ''' The action is used to trigger the telephone book synchronization manually. The
+    ''' synchronization starts if switching from false to true. After enabling, the synchronization is
+    ''' automatically started periodically once within 24 hours.
+    ''' This action is obsolete and shall not be used any more. New action: <see cref="SetEnableByIndex"/>
+    ''' </summary>
+    ''' <param name="Enable"></param>
+    ''' <returns>True when success</returns>
+    <Obsolete("This action is obsolete and shall not be used any more. New action: SetEnableByIndex")>
+    Public Function SetEnable(Enable As Boolean) As Boolean
+
+        With TR064Start(ServiceFile, "SetEnable", New Hashtable From {{"NewEnable", Enable.ToInt}})
+            Return Not .ContainsKey("Error")
+        End With
+
+    End Function
+
+    ''' <summary>
+    ''' This action is obsolete and shall not be used any more. New action: <see cref="SetConfigByIndex"/>
+    ''' </summary>
+    ''' <param name="Name">Telephone book name</param>
+    ''' <returns></returns>
+    <Obsolete("This action is obsolete and shall not be used any more. New action: SetConfigByIndex")>
+    Public Function SetConfig(Enable As Boolean, Url As String, ServiceId As String, Username As String, Password As String, Name As String) As Boolean
+
+        With TR064Start(ServiceFile, "SetConfig", New Hashtable From {{"NewEnable", Enable.ToInt},
+                                                                                   {"NewUrl", Url},
+                                                                                   {"NewServiceId", ServiceId},
+                                                                                   {"NewUsername", Username},
+                                                                                   {"NewPassword", Password},
+                                                                                   {"NewName", Name}})
+            Return Not .ContainsKey("Error")
+        End With
+
+    End Function
+
+    Public Function GetInfoByIndex(Index As Integer,
+                                   Optional ByRef Enable As Boolean = False,
+                                   Optional ByRef Status As String = "",
+                                   Optional ByRef LastConnect As String = "",
+                                   Optional ByRef Url As String = "",
+                                   Optional ByRef ServiceId As String = "",
+                                   Optional ByRef Username As String = "",
+                                   Optional ByRef Name As String = "") As Boolean
+
+        With TR064Start(ServiceFile, "GetInfoByIndex", New Hashtable From {{"NewIndex", Index}})
+
+            If .ContainsKey("NewName") Then
+
+                Enable = CBool(.Item("NewEnable"))
+                Status = .Item("NewStatus").ToString
+                LastConnect = .Item("NewLastConnect").ToString
+                Url = .Item("NewUrl").ToString
+                ServiceId = .Item("NewServiceId").ToString
+                Username = .Item("NewUsername").ToString
+                Name = .Item("NewName").ToString
+
+
+                PushStatus.Invoke(LogLevel.Debug, $"GetInfo des Telefonbuches {Index} von der Fritz!Box abgerufen: {Name}")
+
+                Return True
+            Else
+                PushStatus.Invoke(LogLevel.Warn, $"GetInfo des Telefonbuches {Index} von Fritz!Box nicht erhalten. '{ .Item("Error")}'")
+
+                Return False
+            End If
+        End With
+
+    End Function
+
+    ''' <summary>
+    ''' The action is used to trigger the telephone book synchronization manually. The
+    ''' synchronization starts if switching from false to true. After enabling, the synchronization is
+    ''' automatically started periodically once within 24 hours.
+    ''' All accounts are triggered to check for updates on COMS by invoking this action. If the
+    ''' revision has not increased, no synchronization will be made.  
+    ''' </summary>
+    ''' <returns>True when success</returns>
+    Public Function SetEnableByIndex(Index As Integer, Enable As Boolean) As Boolean
+
+        With TR064Start(ServiceFile, "SetEnableByIndex", New Hashtable From {{"NewIndex", Index},
+                                                                                          {"NewEnable", Enable.ToInt}})
+            Return Not .ContainsKey("Error")
+        End With
+
+    End Function
+
+    ''' <summary>
+    ''' If the given index addresses an existing account the configuration is changed. If the index
+    ''' addresses a new account and the index is OntelNumberOfEntries + 1 then a new account
+    ''' is generated. 
+    ''' </summary>
+    ''' <param name="Name">Telephone book name </param>
+    ''' <returns></returns>
+    Public Function SetConfigByIndex(Index As Integer, Enable As Boolean, Url As String, ServiceId As String, Username As String, Password As String, Name As String) As Boolean
+
+        With TR064Start(ServiceFile, "SetConfigByIndex", New Hashtable From {{"NewIndex", Index},
+                                                                                          {"NewEnable", Enable.ToInt},
+                                                                                          {"NewUrl", Url},
+                                                                                          {"NewServiceId", ServiceId},
+                                                                                          {"NewUsername", Username},
+                                                                                          {"NewPassword", Password},
+                                                                                          {"NewName", Name}})
+            Return Not .ContainsKey("Error")
+        End With
+
+    End Function
 
     ''' <summary>
     ''' Ermittelt die URL zum Herunterladen des Anrufliste.
@@ -42,7 +190,7 @@ Public Class X_contactSCPD
     ''' </remarks>
     Public Function GetCallList(ByRef CallListURL As String) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "GetCallList", Nothing)
+        With TR064Start(ServiceFile, "GetCallList", Nothing)
 
             If .ContainsKey("NewCallListURL") Then
 
@@ -69,7 +217,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function GetPhonebookList(ByRef PhonebookList As Integer()) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "GetPhonebookList", Nothing)
+        With TR064Start(ServiceFile, "GetPhonebookList", Nothing)
 
             If .ContainsKey("NewPhonebookList") Then
                 ' Comma separated list of PhonebookID 
@@ -107,11 +255,12 @@ Public Class X_contactSCPD
     ''' <param name="PhonebookName">Name of the phonebook.</param>
     ''' <param name="PhonebookExtraID">The value of <paramref name="PhonebookExtraID"/> may be an empty string. </param>
     ''' <returns>True when success</returns>
-    Public Function GetPhonebook(PhonebookID As Integer, ByRef PhonebookURL As String,
-                                         Optional ByRef PhonebookName As String = "",
-                                         Optional ByRef PhonebookExtraID As String = "") As Boolean
+    Public Function GetPhonebook(PhonebookID As Integer,
+                                 ByRef PhonebookURL As String,
+                                 Optional ByRef PhonebookName As String = "",
+                                 Optional ByRef PhonebookExtraID As String = "") As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "GetPhonebook", New Hashtable From {{"NewPhonebookID", PhonebookID}})
+        With TR064Start(ServiceFile, "GetPhonebook", New Hashtable From {{"NewPhonebookID", PhonebookID}})
 
             If .ContainsKey("NewPhonebookURL") Then
                 ' Phonebook URL auslesen
@@ -143,7 +292,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function AddPhonebook(PhonebookName As String, Optional PhonebookExtraID As String = "") As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "AddPhonebook", New Hashtable From {{"NewPhonebookName", PhonebookName},
+        With TR064Start(ServiceFile, "AddPhonebook", New Hashtable From {{"NewPhonebookName", PhonebookName},
                                                                                               {"NewPhonebookExtraID", PhonebookExtraID}})
 
             Return Not .ContainsKey("Error")
@@ -161,7 +310,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function DeletePhonebook(NewPhonebookID As Integer, Optional PhonebookExtraID As String = "") As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "DeletePhonebook", New Hashtable From {{"NewPhonebookID", NewPhonebookID},
+        With TR064Start(ServiceFile, "DeletePhonebook", New Hashtable From {{"NewPhonebookID", NewPhonebookID},
                                                                                                  {"NewPhonebookExtraID", PhonebookExtraID}})
 
             Return Not .ContainsKey("Error")
@@ -179,7 +328,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function GetPhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "GetPhonebookEntry", New Hashtable From {{"NewPhonebookID", PhonebookID},
+        With TR064Start(ServiceFile, "GetPhonebookEntry", New Hashtable From {{"NewPhonebookID", PhonebookID},
                                                                                                    {"NewPhonebookEntryID", PhonebookEntryID}})
 
             If .ContainsKey("NewPhonebookEntryData") Then
@@ -210,7 +359,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function GetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryUniqueID As Integer, ByRef PhonebookEntryData As String) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "GetPhonebookEntryUID", New Hashtable From {{"NewPhonebookID", PhonebookID},
+        With TR064Start(ServiceFile, "GetPhonebookEntryUID", New Hashtable From {{"NewPhonebookID", PhonebookID},
                                                                                                       {"NewPhonebookEntryUniqueID", PhonebookEntryUniqueID}})
 
             If .ContainsKey("NewPhonebookEntryData") Then
@@ -254,7 +403,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function SetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryData As String, ByRef PhonebookEntryUniqueID As Integer) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "SetPhonebookEntryUID", New Hashtable From {{"NewPhonebookID", PhonebookID},
+        With TR064Start(ServiceFile, "SetPhonebookEntryUID", New Hashtable From {{"NewPhonebookID", PhonebookID},
                                                                                                       {"NewPhonebookEntryData", PhonebookEntryData}})
 
             If .ContainsKey("NewPhonebookEntryUniqueID") Then
@@ -282,7 +431,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function DeletePhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "DeletePhonebookEntry", New Hashtable From {{"NewPhonebookID", PhonebookID},
+        With TR064Start(ServiceFile, "DeletePhonebookEntry", New Hashtable From {{"NewPhonebookID", PhonebookID},
                                                                                                       {"NewPhonebookEntryID", PhonebookEntryID}})
             Return Not .ContainsKey("Error")
 
@@ -298,7 +447,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function DeletePhonebookEntryUID(PhonebookID As Integer, NewPhonebookEntryUniqueID As Integer) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "DeletePhonebookEntryUID", New Hashtable From {{"NewPhonebookID", PhonebookID},
+        With TR064Start(ServiceFile, "DeletePhonebookEntryUID", New Hashtable From {{"NewPhonebookID", PhonebookID},
                                                                                                          {"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID}})
             Return Not .ContainsKey("Error")
 
@@ -314,7 +463,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function GetCallBarringEntry(PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "GetCallBarringEntry", New Hashtable From {{"NewPhonebookEntryID", PhonebookEntryID}})
+        With TR064Start(ServiceFile, "GetCallBarringEntry", New Hashtable From {{"NewPhonebookEntryID", PhonebookEntryID}})
 
             If .ContainsKey("NewPhonebookEntryData") Then
                 ' Phonebook URL auslesen
@@ -344,7 +493,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function GetCallBarringEntryByNum(Number As String, ByRef PhonebookEntryData As String) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "GetCallBarringEntryByNum", New Hashtable From {{"NewNumber", Number}})
+        With TR064Start(ServiceFile, "GetCallBarringEntryByNum", New Hashtable From {{"NewNumber", Number}})
 
             If .ContainsKey("NewPhonebookEntryData") Then
                 ' Phonebook URL auslesen
@@ -372,7 +521,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function GetCallBarringList(ByRef PhonebookURL As String) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "GetCallBarringList", Nothing)
+        With TR064Start(ServiceFile, "GetCallBarringList", Nothing)
 
             If .ContainsKey("NewPhonebookURL") Then
                 ' Phonebook URL auslesen
@@ -403,7 +552,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function SetCallBarringEntry(PhonebookEntryData As String, Optional ByRef PhonebookEntryUniqueID As Integer = 0) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "SetCallBarringEntry", New Hashtable From {{"NewPhonebookEntryData", PhonebookEntryData}})
+        With TR064Start(ServiceFile, "SetCallBarringEntry", New Hashtable From {{"NewPhonebookEntryData", PhonebookEntryData}})
 
             If .ContainsKey("NewPhonebookEntryUniqueID") Then
                 ' Phonebook URL auslesen
@@ -431,7 +580,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function DeleteCallBarringEntryUID(NewPhonebookEntryUniqueID As Integer) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "DeleteCallBarringEntryUID", New Hashtable From {{"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID}})
+        With TR064Start(ServiceFile, "DeleteCallBarringEntryUID", New Hashtable From {{"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID}})
             Return Not .ContainsKey("Error")
 
         End With
@@ -445,7 +594,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function GetNumberOfDeflections(ByRef NumberOfDeflections As String) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "GetNumberOfDeflections", Nothing)
+        With TR064Start(ServiceFile, "GetNumberOfDeflections", Nothing)
 
             If .ContainsKey("NewNumberOfDeflections") Then
                 ' Phonebook URL auslesen
@@ -477,7 +626,7 @@ Public Class X_contactSCPD
 
         If DeflectionInfo Is Nothing Then DeflectionInfo = New Deflection
 
-        With TR064Start(Tr064Files.x_tamSCPD, "GetInfo", New Hashtable From {{"NewDeflectionId", DeflectionId}})
+        With TR064Start(ServiceFile, "GetInfo", New Hashtable From {{"NewDeflectionId", DeflectionId}})
 
             If .ContainsKey("NewEnable") Then
 
@@ -509,7 +658,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function GetDeflections(ByRef DeflectionList As DeflectionList) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "GetDeflections", Nothing)
+        With TR064Start(ServiceFile, "GetDeflections", Nothing)
 
             If .ContainsKey("NewDeflectionList") Then
 
@@ -542,7 +691,7 @@ Public Class X_contactSCPD
     ''' <returns>True when success</returns>
     Public Function SetDeflectionEnable(DeflectionId As Integer, Enable As Boolean) As Boolean
 
-        With TR064Start(Tr064Files.x_contactSCPD, "SetDeflectionEnable", New Hashtable From {{"NewDeflectionId", DeflectionId}, {"NewEnable", Enable.ToString}})
+        With TR064Start(ServiceFile, "SetDeflectionEnable", New Hashtable From {{"NewDeflectionId", DeflectionId}, {"NewEnable", Enable.ToString}})
 
             Return Not .ContainsKey("Error")
 

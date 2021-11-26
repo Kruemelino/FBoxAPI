@@ -15,7 +15,6 @@ Public Class FritzBoxTR64
     Public Property X_tam As X_tamSCPD
     Public Property X_voip As X_voipSCPD
 
-
     ''' <summary>
     ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Die <see cref="NetworkCredential"/> werden hier übergeben.<br/>
     ''' Falls die auzuführende Funktion keine Anmeldung erfordert, kann <paramref name="Anmeldeinformationen"/> Nothing sein.
@@ -40,7 +39,7 @@ Public Class FritzBoxTR64
         ' Workaround: XML-Datei als String herunterladen und separat deserialisieren
         If Ping(FBoxIPAdresse) Then
             ' Herunterladen
-            If DownloadString(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, Tr064Files.tr64desc).Uri, Response) Then
+            If DownloadString(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, SCPDFiles.tr64desc.Description).Uri, Response) Then
                 ' Deserialisieren
                 If DeserializeXML(Response, False, FBTR64Desc) Then
                     ' Füge das Flag hinzu, dass die TR064-Schnittstelle bereit ist.
@@ -70,25 +69,7 @@ Public Class FritzBoxTR64
         RaiseEvent Status(Me, New NotifyEventArgs(Of LogMessage)(New LogMessage(Level, Message)))
     End Sub
 
-    Private Function GetService(SCPDURL As String) As Service
-
-        If FBTR64Desc IsNot Nothing AndAlso FBTR64Desc.Device.ServiceList.Any Then
-            ' Suche den angeforderten Service
-            Dim FBoxService As Service = FBTR64Desc.Device.ServiceList.Find(Function(Service) Service.SCPDURL.AreEqual(SCPDURL))
-
-            ' Weise die Fritz!Box IP-Adresse zu
-            If FBoxService IsNot Nothing Then FBoxService.FBoxIPAdresse = FBoxIPAdresse
-
-            Return FBoxService
-        Else
-
-            PushStatus(LogLevel.Error, $"SOAP zur Fritz!Box ist nicht bereit: {FBoxIPAdresse}")
-            Return Nothing
-        End If
-
-    End Function
-
-    Private Function TR064Start(SCPDURL As String, ActionName As String, Optional InputHashTable As Hashtable = Nothing) As Hashtable
+    Private Function TR064Start(SCPDURL As SCPDFiles, ActionName As String, Optional InputHashTable As Hashtable = Nothing) As Hashtable
 
         If Bereit Then
             With GetService(SCPDURL)
@@ -108,6 +89,23 @@ Public Class FritzBoxTR64
         Return New Hashtable From {{"Error", String.Empty}}
     End Function
 
+    Private Function GetService(SCPDURL As SCPDFiles) As Service
+
+        If FBTR64Desc IsNot Nothing AndAlso FBTR64Desc.Device.ServiceList.Any Then
+            ' Suche den angeforderten Service
+            Dim FBoxService As Service = FBTR64Desc.Device.ServiceList.Find(Function(Service) Service.SCPDURL.AreEqual(SCPDURL.Description))
+
+            ' Weise die Fritz!Box IP-Adresse zu
+            If FBoxService IsNot Nothing Then FBoxService.FBoxIPAdresse = FBoxIPAdresse
+
+            Return FBoxService
+        Else
+
+            PushStatus(LogLevel.Error, $"SOAP zur Fritz!Box ist nicht bereit: {FBoxIPAdresse}")
+            Return Nothing
+        End If
+
+    End Function
 #Region "Abfragen"
 
 #Region "TR64Desc"

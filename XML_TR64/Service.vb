@@ -1,6 +1,7 @@
 ﻿Imports System.Net
 Imports System.Xml
 Imports System.Xml.Serialization
+
 <DebuggerStepThrough>
 <Serializable()> Public Class Service
 
@@ -79,14 +80,14 @@ Imports System.Xml.Serialization
             Else
                 ' Header festlegen
                 Dim TR064Header As New WebHeaderCollection From {{HttpRequestHeader.ContentType, TR064ContentType},
-                                                                         {HttpRequestHeader.UserAgent, TR064UserAgent},
-                                                                         {"SOAPACTION", $"""{ServiceType}#{Action.Name}"""}}
+                                                                 {HttpRequestHeader.UserAgent, TR064UserAgent},
+                                                                 {"SOAPACTION", $"""{ServiceType}#{Action.Name}"""}}
 
                 If UploadData(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, ControlURL).Uri,
-                                      GetRequest(Action, InputArguments).InnerXml,
-                                      NetworkCredential,
-                                      Response,
-                                      TR064Header) Then
+                              GetRequest(Action, InputArguments).InnerXml,
+                              NetworkCredential,
+                              Response,
+                              TR064Header) Then
 
                     'NLogger.Trace($"Action {Action.Name}: {Response}")
 

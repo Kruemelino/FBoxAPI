@@ -1,10 +1,13 @@
 ﻿Public Class X_tamSCPD
     Implements IService
 
-    Private Property TR064Start As Func(Of String, String, Hashtable, Hashtable) Implements IService.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
 
-    Public Sub New(Start As Func(Of String, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+
+        ServiceFile = SCPDFiles.x_tamSCPD
 
         TR064Start = Start
 
@@ -22,7 +25,7 @@
 
         If TAMInfo Is Nothing Then TAMInfo = New TAMInfo
 
-        With TR064Start(Tr064Files.x_tamSCPD, "GetInfo", New Hashtable From {{"NewIndex", i}})
+        With TR064Start(ServiceFile, "GetInfo", New Hashtable From {{"NewIndex", i}})
 
             If .ContainsKey("NewEnable") And .ContainsKey("NewPhoneNumbers") Then
 
@@ -63,7 +66,7 @@
     ''' <param name="i">ID of the specified TAM</param>
     ''' <returns>True when success</returns>
     Public Function GetMessageList(ByRef GetMessageListURL As String, i As Integer) As Boolean
-        With TR064Start(Tr064Files.x_tamSCPD, "GetMessageList", New Hashtable From {{"NewIndex", i}})
+        With TR064Start(ServiceFile, "GetMessageList", New Hashtable From {{"NewIndex", i}})
             If .ContainsKey("NewURL") Then
 
                 GetMessageListURL = .Item("NewURL").ToString
@@ -87,7 +90,7 @@
     ''' <returns>True when success</returns>
     Public Function GetList(ByRef List As TAMList) As Boolean
 
-        With TR064Start(Tr064Files.x_tamSCPD, "GetList", Nothing)
+        With TR064Start(ServiceFile, "GetList", Nothing)
 
             If .ContainsKey("NewTAMList") Then
 
@@ -120,7 +123,7 @@
     ''' <returns>True when success</returns>
     Public Function SetEnable(Index As Integer, Enable As Boolean) As Boolean
 
-        With TR064Start(Tr064Files.x_tamSCPD, "SetEnable", New Hashtable From {{"NewIndex", Index}, {"NewEnable", Enable.ToInt}})
+        With TR064Start(ServiceFile, "SetEnable", New Hashtable From {{"NewIndex", Index}, {"NewEnable", Enable.ToInt}})
             Return Not .ContainsKey("Error")
         End With
 
@@ -139,7 +142,7 @@
     ''' <returns>True when success</returns>
     Public Function MarkMessage(Index As Integer, MessageIndex As Integer, MarkedAsRead As Boolean) As Boolean
 
-        With TR064Start(Tr064Files.x_tamSCPD, "MarkMessage", New Hashtable From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}, {"NewMarkedAsRead", MarkedAsRead.ToInt}})
+        With TR064Start(ServiceFile, "MarkMessage", New Hashtable From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}, {"NewMarkedAsRead", MarkedAsRead.ToInt}})
             Return Not .ContainsKey("Error")
         End With
 
@@ -155,7 +158,7 @@
     ''' <returns>True when success</returns>
     Public Function DeleteMessage(Index As Integer, MessageIndex As Integer) As Boolean
 
-        With TR064Start(Tr064Files.x_tamSCPD, "DeleteMessage", New Hashtable From {{"NewIndex", Index},
+        With TR064Start(ServiceFile, "DeleteMessage", New Hashtable From {{"NewIndex", Index},
                                                                                            {"NewMessageIndex", MessageIndex}})
 
 

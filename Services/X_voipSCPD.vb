@@ -1,10 +1,11 @@
 ﻿Public Class X_voipSCPD
     Implements IService
-    Private Property TR064Start As Func(Of String, String, Hashtable, Hashtable) Implements IService.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
 
-    Public Sub New(Start As Func(Of String, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
-
+    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+        ServiceFile = SCPDFiles.x_voipSCPD
         TR064Start = Start
 
         PushStatus = Status
@@ -12,7 +13,7 @@
 
 #Region "x_voipSCPD"
     Public Function GetExistingVoIPNumbers(ByRef ExistingVoIPNumbers As Integer) As Boolean
-        With TR064Start(Tr064Files.x_voipSCPD, "GetExistingVoIPNumbers", Nothing)
+        With TR064Start(ServiceFile, "GetExistingVoIPNumbers", Nothing)
 
             If .ContainsKey("NewExistingVoIPNumbers") Then
                 ExistingVoIPNumbers = CInt(.Item("NewExistingVoIPNumbers"))
@@ -29,7 +30,7 @@
     End Function
 
     Public Function GetMaxVoIPNumbers(ByRef MaxVoIPNumbers As Integer) As Boolean
-        With TR064Start(Tr064Files.x_voipSCPD, "GetMaxVoIPNumbers", Nothing)
+        With TR064Start(ServiceFile, "GetMaxVoIPNumbers", Nothing)
 
             If .ContainsKey("NewMaxVoIPNumbers") Then
                 MaxVoIPNumbers = CInt(.Item("NewMaxVoIPNumbers"))
@@ -46,7 +47,7 @@
     End Function
 
     Public Function GetVoIPEnableAreaCode(ByRef VoIPEnableAreaCode As Boolean, VoIPAccountIndex As Integer) As Boolean
-        With TR064Start(Tr064Files.x_voipSCPD, "GetVoIPEnableAreaCode", New Hashtable From {{"NewVoIPAccountIndex", VoIPAccountIndex}})
+        With TR064Start(ServiceFile, "GetVoIPEnableAreaCode", New Hashtable From {{"NewVoIPAccountIndex", VoIPAccountIndex}})
 
             If .ContainsKey("NewVoIPEnableAreaCode") Then
                 VoIPEnableAreaCode = CBool(.Item("NewVoIPEnableAreaCode"))
@@ -63,7 +64,7 @@
     End Function
 
     Public Function GetVoIPEnableCountryCode(ByRef VoIPEnableCountryCode As Boolean, VoIPAccountIndex As Integer) As Boolean
-        With TR064Start(Tr064Files.x_voipSCPD, "GetVoIPEnableCountryCode", New Hashtable From {{"NewVoIPAccountIndex", VoIPAccountIndex}})
+        With TR064Start(ServiceFile, "GetVoIPEnableCountryCode", New Hashtable From {{"NewVoIPAccountIndex", VoIPAccountIndex}})
 
             If .ContainsKey("NewVoIPEnableCountryCode") Then
                 VoIPEnableCountryCode = CBool(.Item("NewVoIPEnableCountryCode"))
@@ -80,7 +81,7 @@
     End Function
 
     Public Function GetNumberOfClients(ByRef NumberOfClients As Integer) As Boolean
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_GetNumberOfClients", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_GetNumberOfClients", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_NumberOfClients") Then
                 NumberOfClients = CInt(.Item("NewX_AVM-DE_NumberOfClients"))
@@ -99,7 +100,7 @@
     Public Function GetClient2(ByRef Client As SIPClient, ClientIndex As Integer) As Boolean
         If Client Is Nothing Then Client = New SIPClient
 
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_GetClient2", New Hashtable From {{"NewX_AVM-DE_ClientIndex", ClientIndex}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetClient2", New Hashtable From {{"NewX_AVM-DE_ClientIndex", ClientIndex}})
 
             If .ContainsKey("NewX_AVM-DE_ClientUsername") Then
                 Client.ClientIndex = ClientIndex
@@ -129,7 +130,7 @@
     Public Function GetClient3(ByRef Client As SIPClient, ClientIndex As Integer) As Boolean
         If Client Is Nothing Then Client = New SIPClient
 
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_GetClient3", New Hashtable From {{"NewX_AVM-DE_ClientIndex", ClientIndex}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetClient3", New Hashtable From {{"NewX_AVM-DE_ClientIndex", ClientIndex}})
 
             If .ContainsKey("NewX_AVM-DE_ClientUsername") Then
                 Client.ClientIndex = ClientIndex
@@ -166,7 +167,7 @@
     Public Function GetClientByClientId(ByRef Client As SIPClient, ClientId As String) As Boolean
         If Client Is Nothing Then Client = New SIPClient
 
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_GetClientByClientId", New Hashtable From {{"NewX_AVM-DE_ClientId", ClientId}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetClientByClientId", New Hashtable From {{"NewX_AVM-DE_ClientId", ClientId}})
 
             If .ContainsKey("NewX_AVM-DE_ClientIndex") Then
                 Client.ClientIndex = CInt(.Item("NewX_AVM-DE_ClientIndex"))
@@ -201,7 +202,7 @@
     ''' <returns>True when success</returns>
     Public Function GetVoIPCommonCountryCode(ByRef LKZ As String, Optional ByRef LKZPrefix As String = "") As Boolean
 
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_GetVoIPCommonCountryCode", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_GetVoIPCommonCountryCode", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_LKZ") And .ContainsKey("NewX_AVM-DE_LKZPrefix") Then
                 LKZ = .Item("NewX_AVM-DE_LKZ").ToString
@@ -228,7 +229,7 @@
     ''' <returns>True when success</returns>
     Public Function GetVoIPCommonAreaCode(ByRef OKZ As String, Optional ByRef OKZPrefix As String = "") As Boolean
 
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_GetVoIPCommonAreaCode", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_GetVoIPCommonAreaCode", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_OKZ") And .ContainsKey("NewX_AVM-DE_OKZPrefix") Then
                 OKZ = .Item("NewX_AVM-DE_OKZ").ToString
@@ -253,7 +254,7 @@
     ''' <param name="PhoneName">Phoneport des ausgewählten Telefones.</param>
     ''' <returns>True when success</returns>
     Public Function DialGetConfig(ByRef PhoneName As String) As Boolean
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_DialGetConfig", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_DialGetConfig", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_PhoneName") Then
                 PhoneName = .Item("NewX_AVM-DE_PhoneName").ToString
@@ -276,7 +277,7 @@
     ''' </summary>
     ''' <returns>True</returns>
     Public Function DialHangup() As Boolean
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_DialHangup", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_DialHangup", Nothing)
             Return Not .ContainsKey("Error")
         End With
     End Function
@@ -286,7 +287,7 @@
     ''' </summary>
     ''' <param name="PhoneNumber">Die zu wählende Telefonnummer.</param>
     Public Function DialNumber(PhoneNumber As String) As Boolean
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_DialNumber", New Hashtable From {{"NewX_AVM-DE_PhoneNumber", PhoneNumber}})
+        With TR064Start(ServiceFile, "X_AVM-DE_DialNumber", New Hashtable From {{"NewX_AVM-DE_PhoneNumber", PhoneNumber}})
             Return Not .ContainsKey("Error")
         End With
     End Function
@@ -296,13 +297,13 @@
     ''' </summary>
     ''' <param name="PhoneName">Phoneport des Telefones.</param>
     Public Function DialSetConfig(PhoneName As String) As Boolean
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_DialSetConfig", New Hashtable From {{"NewX_AVM-DE_PhoneName", PhoneName}})
+        With TR064Start(ServiceFile, "X_AVM-DE_DialSetConfig", New Hashtable From {{"NewX_AVM-DE_PhoneName", PhoneName}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
     Public Function GetNumberOfNumbers(ByRef NumberOfNumbers As Integer) As Boolean
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_GetNumberOfNumbers", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_GetNumberOfNumbers", Nothing)
 
             If .ContainsKey("NewNumberOfNumbers") Then
                 NumberOfNumbers = CInt(.Item("NewNumberOfNumbers"))
@@ -326,7 +327,7 @@
     ''' <remarks>The list contains all configured numbers for all number types. The index can be used to see how many numbers are configured For one type. </remarks>
     Public Function GetNumbers(ByRef NumberList As SIPTelNrList) As Boolean
 
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_GetNumbers", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_GetNumbers", Nothing)
 
             If .ContainsKey("NewNumberList") Then
 
@@ -364,7 +365,7 @@
     ''' <returns>True when success</returns>
     Public Function GetPhonePort(ByRef PhoneName As String, i As Integer) As Boolean
 
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_GetPhonePort", New Hashtable From {{"NewIndex", i}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetPhonePort", New Hashtable From {{"NewIndex", i}})
 
             If .ContainsKey("NewX_AVM-DE_PhoneName") Then
                 PhoneName = .Item("NewX_AVM-DE_PhoneName").ToString
@@ -389,7 +390,7 @@
     ''' <remarks>The list contains all configured SIP client accounts a XML list.</remarks>
     Public Function GetClients(ByRef ClientList As SIPClientList) As Boolean
 
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_GetClients", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_GetClients", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_ClientList") Then
 
@@ -415,7 +416,7 @@
     Public Function GetVoIPAccount(ByRef Account As VoIPAccount, AccountIndex As Integer) As Boolean
         If Account Is Nothing Then Account = New VoIPAccount
 
-        With TR064Start(Tr064Files.x_voipSCPD, "X_AVM-DE_GetVoIPAccount", New Hashtable From {{"NewVoIPAccountIndex", AccountIndex}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetVoIPAccount", New Hashtable From {{"NewVoIPAccountIndex", AccountIndex}})
 
             If .ContainsKey("NewVoIPRegistrar") Then
                 Account.VoIPAccountIndex = AccountIndex
