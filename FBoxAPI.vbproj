@@ -15,7 +15,7 @@
     <Authors>Kruemelino</Authors>
     <Company></Company>
     <PackageProjectUrl>https://github.com/Kruemelino/FBoxAPI</PackageProjectUrl>
-    <PackageReleaseNotes />
+    <PackageReleaseNotes></PackageReleaseNotes>
     <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <FileVersion>0.0.1.0</FileVersion>
   </PropertyGroup>

@@ -14,6 +14,7 @@ Public Class FritzBoxTR64
     Public Property X_contact As X_contactSCPD
     Public Property X_tam As X_tamSCPD
     Public Property X_voip As X_voipSCPD
+    Public Property UserMode As UserModeSCPD
 
     ''' <summary>
     ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Die <see cref="NetworkCredential"/> werden hier übergeben.<br/>
@@ -46,7 +47,7 @@ Public Class FritzBoxTR64
                     Bereit = True
                     PushStatus(LogLevel.Debug, "Fritz!Box TR064 API erfolgreich initialisiert.")
 
-                    ' Lade die Servicees
+                    ' Lade die AVM Services
                     Deviceconfig = New DeviceconfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start, AddressOf PushStatus)
@@ -54,6 +55,8 @@ Public Class FritzBoxTR64
                     X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     X_voip = New X_voipSCPD(AddressOf TR064Start, AddressOf PushStatus)
 
+                    ' Lade den UserModus
+                    UserMode = New UserModeSCPD(AddressOf TR064Start, AddressOf PushStatus)
                 Else
                     PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc.")
                 End If
