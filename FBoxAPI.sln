@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "FBoxAPI", "FBoxAPI.vbproj", "{9E2DF865-E261-426A-9E05-1A2F60BD7323}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "FBoxAPI", "FBoxAPI.vbproj", "{C32EBA01-4680-4C6E-A38E-E2685DE0322D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9E2DF865-E261-426A-9E05-1A2F60BD7323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9E2DF865-E261-426A-9E05-1A2F60BD7323}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9E2DF865-E261-426A-9E05-1A2F60BD7323}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9E2DF865-E261-426A-9E05-1A2F60BD7323}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C32EBA01-4680-4C6E-A38E-E2685DE0322D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C32EBA01-4680-4C6E-A38E-E2685DE0322D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C32EBA01-4680-4C6E-A38E-E2685DE0322D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C32EBA01-4680-4C6E-A38E-E2685DE0322D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {1F6E813F-E0C0-4D9D-AE74-2B9218877AD6}
+		SolutionGuid = {AAA531BA-44FF-4D00-81AB-D1ED312D8175}
 	EndGlobalSection
 EndGlobal

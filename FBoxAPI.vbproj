@@ -1,154 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9E2DF865-E261-426A-9E05-1A2F60BD7323}</ProjectGuid>
-    <OutputType>Library</OutputType>
     <RootNamespace>FBoxAPI</RootNamespace>
-    <AssemblyName>FBoxAPI</AssemblyName>
-    <FileAlignment>512</FileAlignment>
-    <MyType>Windows</MyType>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <Deterministic>true</Deterministic>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net452;net461;net472;net48</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.0.1</Version>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/Kruemelino/FBoxAPI</RepositoryUrl>
+    <PackageTags>Fritz!Box fritzbox api tr-064 soap</PackageTags>
+    <Description>Dieses Projekt ist ein .NET Bibliothek für die TR-064 Schnittstelle der AVM Fritz!Box.</Description>
+    <Copyright>Kruemelino ©2021</Copyright>
+    <NeutralLanguage>de-DE</NeutralLanguage>
+    <UserSecretsId>a1ddc68d-05e8-499c-aab2-79241460d4c1</UserSecretsId>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.1|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>FBoxAPI.xml</DocumentationFile>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <DefineDebug>false</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>FBoxAPI.xml</DocumentationFile>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionExplicit>On</OptionExplicit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionCompare>Binary</OptionCompare>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionStrict>Off</OptionStrict>
-  </PropertyGroup>
-  <PropertyGroup>
-    <OptionInfer>On</OptionInfer>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
-  <ItemGroup>
-    <Import Include="Microsoft.VisualBasic" />
-    <Import Include="System" />
-    <Import Include="System.Collections" />
-    <Import Include="System.Collections.Generic" />
-    <Import Include="System.Data" />
-    <Import Include="System.Diagnostics" />
-    <Import Include="System.Linq" />
-    <Import Include="System.Xml.Linq" />
-    <Import Include="System.Threading.Tasks" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Basics\Enums.vb" />
-    <Compile Include="Basics\Extensions.vb" />
-    <Compile Include="Basics\LogMessage.vb" />
-    <Compile Include="Basics\NotifyEventArgs.vb" />
-    <Compile Include="Basics\Serializer.vb" />
-    <Compile Include="Basics\WebFunctions.vb" />
-    <Compile Include="Deflection_TR64\Deflection.vb" />
-    <Compile Include="Deflection_TR64\DeflectionList.vb" />
-    <Compile Include="FritzBoxInformations.vb" />
-    <Compile Include="FritzBoxTR64.vb" />
-    <Compile Include="My Project\AssemblyInfo.vb" />
-    <Compile Include="My Project\Application.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Application.myapp</DependentUpon>
-    </Compile>
-    <Compile Include="My Project\Resources.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="My Project\Settings.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="Services\DeviceconfigSCPD.vb" />
-    <Compile Include="Services\DeviceinfoSCPD.vb" />
-    <Compile Include="Services\IService.vb" />
-    <Compile Include="Services\LANConfigSecuritySCPD.vb" />
-    <Compile Include="Services\X_contactSCPD.vb" />
-    <Compile Include="Services\X_tamSCPD.vb" />
-    <Compile Include="Services\X_voipSCPD.vb" />
-    <Compile Include="SIP_TR64\SIPClient.vb" />
-    <Compile Include="SIP_TR64\SIPClientList.vb" />
-    <Compile Include="SIP_TR64\SIPTelNr.vb" />
-    <Compile Include="SIP_TR64\SIPTelNrList.vb" />
-    <Compile Include="SIP_TR64\VoIPAccount.vb" />
-    <Compile Include="TAM_TR64\Message.vb" />
-    <Compile Include="TAM_TR64\MessageList.vb" />
-    <Compile Include="TAM_TR64\TAMInfo.vb" />
-    <Compile Include="TAM_TR64\TAMItem.vb" />
-    <Compile Include="TAM_TR64\TAMList.vb" />
-    <Compile Include="Telefonie_TR64\Call.vb" />
-    <Compile Include="Telefonie_TR64\CallList.vb" />
-    <Compile Include="Telefonie_TR64\Contact.vb" />
-    <Compile Include="Telefonie_TR64\Email.vb" />
-    <Compile Include="Telefonie_TR64\Number.vb" />
-    <Compile Include="Telefonie_TR64\Person.vb" />
-    <Compile Include="Telefonie_TR64\Phonebook.vb" />
-    <Compile Include="Telefonie_TR64\Phonebooks.vb" />
-    <Compile Include="Telefonie_TR64\Telephony.vb" />
-    <Compile Include="User_TR64\User.vb" />
-    <Compile Include="User_TR64\UserList.vb" />
-    <Compile Include="XML_TR64\Action.vb" />
-    <Compile Include="XML_TR64\AllowedValueRange.vb" />
-    <Compile Include="XML_TR64\Argument.vb" />
-    <Compile Include="XML_TR64\Device.vb" />
-    <Compile Include="XML_TR64\Icon.vb" />
-    <Compile Include="XML_TR64\SCPD.vb" />
-    <Compile Include="XML_TR64\Service.vb" />
-    <Compile Include="XML_TR64\SpecVersion.vb" />
-    <Compile Include="XML_TR64\StateVariable.vb" />
-    <Compile Include="XML_TR64\SystemVersion.vb" />
-    <Compile Include="XML_TR64\TR64Desc.vb" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="My Project\Resources.resx">
-      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
-      <CustomToolNamespace>My.Resources</CustomToolNamespace>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="LICENSE" />
-    <None Include="My Project\Application.myapp">
-      <Generator>MyApplicationCodeGenerator</Generator>
-      <LastGenOutput>Application.Designer.vb</LastGenOutput>
-    </None>
-    <None Include="My Project\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <CustomToolNamespace>My</CustomToolNamespace>
-      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
-    </None>
-    <None Include="README.md" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+
 </Project>

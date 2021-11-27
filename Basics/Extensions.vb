@@ -192,11 +192,6 @@ Public Module Extensions
         Return Not Str1.IsStringNothingOrEmpty
     End Function
 
-    <Extension> Public Function Split(Text As String, Delimiter As String) As String()
-        Return Strings.Split(Text, Delimiter,, CompareMethod.Text)
-    End Function
-
-
 #End Region
 
 #Region "Extensions für Verarbeitung von Boolean"

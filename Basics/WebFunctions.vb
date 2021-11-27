@@ -136,7 +136,7 @@ Friend Module WebFunctions
         Response = String.Empty
 
         Using webClient As New WebClient With {.Credentials = NC,
-                                               .Encoding = If(ZeichenCodierung, Encoding.GetEncoding(FritzBoxInformations.DfltCodePageFritzBox))}
+                                               .Encoding = If(ZeichenCodierung, Encoding.GetEncoding(DfltCodePageFritzBox))}
             With webClient
 
                 With .Headers
