@@ -1,4 +1,8 @@
-﻿
+﻿''' <summary>
+''' TR-064 Support – X_AVM-DE_OnTel
+''' Date: 2021-02-09
+''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf"/>
+''' </summary>
 Public Class X_contactSCPD
     Implements IService
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
@@ -111,11 +115,11 @@ Public Class X_contactSCPD
                 Name = .Item("NewName").ToString
 
 
-                PushStatus.Invoke(LogLevel.Debug, $"GetInfo des Telefonbuches {Index} von der Fritz!Box abgerufen: {Name}")
+                PushStatus.Invoke(LogLevel.Debug, $"GetInfoByIndex des Telefonbuches {Index} von der Fritz!Box abgerufen: {Name}")
 
                 Return True
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetInfo des Telefonbuches {Index} von Fritz!Box nicht erhalten. '{ .Item("Error")}'")
+                PushStatus.Invoke(LogLevel.Warn, $"GetInfoByIndex des Telefonbuches {Index} von Fritz!Box nicht erhalten. '{ .Item("Error")}'")
 
                 Return False
             End If
@@ -134,7 +138,7 @@ Public Class X_contactSCPD
     Public Function SetEnableByIndex(Index As Integer, Enable As Boolean) As Boolean
 
         With TR064Start(ServiceFile, "SetEnableByIndex", New Hashtable From {{"NewIndex", Index},
-                                                                                          {"NewEnable", Enable.ToInt}})
+                                                                             {"NewEnable", Enable.ToInt}})
             Return Not .ContainsKey("Error")
         End With
 
@@ -150,12 +154,39 @@ Public Class X_contactSCPD
     Public Function SetConfigByIndex(Index As Integer, Enable As Boolean, Url As String, ServiceId As String, Username As String, Password As String, Name As String) As Boolean
 
         With TR064Start(ServiceFile, "SetConfigByIndex", New Hashtable From {{"NewIndex", Index},
-                                                                                          {"NewEnable", Enable.ToInt},
-                                                                                          {"NewUrl", Url},
-                                                                                          {"NewServiceId", ServiceId},
-                                                                                          {"NewUsername", Username},
-                                                                                          {"NewPassword", Password},
-                                                                                          {"NewName", Name}})
+                                                                             {"NewEnable", Enable.ToInt},
+                                                                             {"NewUrl", Url},
+                                                                             {"NewServiceId", ServiceId},
+                                                                             {"NewUsername", Username},
+                                                                             {"NewPassword", Password},
+                                                                             {"NewName", Name}})
+            Return Not .ContainsKey("Error")
+        End With
+
+    End Function
+
+    Public Function GetNumberOfEntries(ByRef OntelNumberOfEntries As Integer) As Boolean
+
+        With TR064Start(ServiceFile, "GetNumberOfEntries", Nothing)
+            If .ContainsKey("NewOntelNumberOfEntries") Then
+
+                OntelNumberOfEntries = CInt(.Item("NewOntelNumberOfEntries"))
+
+                PushStatus.Invoke(LogLevel.Debug, $"GetNumberOfEntries: {OntelNumberOfEntries}")
+
+                Return True
+            Else
+                PushStatus.Invoke(LogLevel.Warn, $"GetNumberOfEntries von Fritz!Box nicht erhalten. '{ .Item("Error")}'")
+
+                Return False
+            End If
+        End With
+
+    End Function
+
+    Public Function DeleteByIndex(Index As Integer) As Boolean
+
+        With TR064Start(ServiceFile, "DeleteByIndex", New Hashtable From {{"NewIndex", Index}})
             Return Not .ContainsKey("Error")
         End With
 
@@ -211,7 +242,7 @@ Public Class X_contactSCPD
     End Function
 
     ''' <summary>
-    ''' Ermittelt die Liste der Telefonbocher. 
+    ''' Ermittelt die Liste der Telefonbücher. 
     ''' </summary>
     ''' <param name="PhonebookList">Liste der Telefonbuch IDs</param>
     ''' <returns>True when success</returns>
@@ -455,6 +486,7 @@ Public Class X_contactSCPD
 
     End Function
 
+#Region "CallBarring"
     ''' <summary>
     ''' Returns a call barring entry by its PhonebookEntryID of the specific call barring phonebook. 
     ''' </summary>
@@ -587,6 +619,75 @@ Public Class X_contactSCPD
 
     End Function
 
+#End Region
+
+#Region "DECTHandset"
+
+    ''' <summary>
+    ''' Ermittelt die Liste der DECTHandset. 
+    ''' </summary>
+    ''' <param name="DectIDList">Liste der DECT IDs</param>
+    ''' <returns>True when success</returns>
+    Public Function GetDECTHandsetList(ByRef DectIDList As Integer()) As Boolean
+
+        With TR064Start(ServiceFile, "GetDECTHandsetList", Nothing)
+
+            If .ContainsKey("NewDectIDList") Then
+                ' Comma separated list of DectID 
+                DectIDList = Array.ConvertAll(.Item("NewDectIDList").ToString.Split(","), New Converter(Of String, Integer)(AddressOf Integer.Parse))
+
+                PushStatus.Invoke(LogLevel.Debug, $"Liste der DECT IDs der Fritz!Box: '{String.Join(", ", DectIDList)}'")
+
+                Return True
+            Else
+                DectIDList = {}
+
+                PushStatus.Invoke(LogLevel.Warn, $"Liste der DECT IDs der Fritz!Box konnte nicht ermittelt. '{ .Item("Error")}'")
+
+                Return False
+            End If
+        End With
+
+    End Function
+
+    Public Function GetDECTHandsetInfo(DectID As Integer,
+                                       ByRef HandsetName As String,
+                                       ByRef PhonebookID As String) As Boolean
+
+        With TR064Start(ServiceFile, "GetDECTHandsetInfo", New Hashtable From {{"NewDectID", DectID}})
+
+            If .ContainsKey("NewHandsetName") And .ContainsKey("NewPhonebookID") Then
+
+                HandsetName = .Item("NewHandsetName").ToString
+                PhonebookID = .Item("NewPhonebookID").ToString
+
+                PushStatus.Invoke(LogLevel.Debug, $"DECTHandsetInfo {DectID}: Name: {HandsetName} PhonebookID: {PhonebookID}")
+
+
+                Return True
+
+            Else
+                PushStatus.Invoke(LogLevel.Warn, $"DECTHandsetInfo konnte für das DECTHandset {DectID} nicht aufgelößt werden. '{ .Item("Error")}'")
+
+                Return False
+            End If
+        End With
+
+    End Function
+
+
+    Public Function SetDECTHandsetPhonebook(DectID As Integer, PhonebookID As Integer) As Boolean
+
+        With TR064Start(ServiceFile, "SetDECTHandsetPhonebook", New Hashtable From {{"NewDectID", DectID}, {"NewPhonebookID", PhonebookID}})
+            Return Not .ContainsKey("Error")
+        End With
+
+    End Function
+
+
+#End Region
+
+#Region "Deflections"
     ''' <summary>
     ''' Get the number of deflection entrys.
     ''' </summary>
@@ -698,6 +799,9 @@ Public Class X_contactSCPD
         End With
 
     End Function
+
+#End Region
+
 #End Region
 
 End Class

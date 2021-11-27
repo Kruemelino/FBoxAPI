@@ -22,7 +22,7 @@ Die Schnettstelle basiert auf der [AVM-Dokumentation](https://avm.de/service/sch
 | X_AVM-DE_MyFritz 						| 21.11.2021 	| 0/0		|
 | X_AVM-DE_HostFilter 					| 21.11.2021 	| 0/0		|
 | Layer3Forwarding 						| 21.11.2021 	| 0/0		|
-| X_AVM-DE_OnTel 						| 21.11.2021 	| 19/31		|
+| X_AVM-DE_OnTel 						| 21.11.2021 	| 31/31		|
 | X_AVM-DE_TAM 							| 21.11.2021 	| 6/6		|
 | X_VoIP 								| 21.11.2021 	| 19/42		|
 | LanDeviceHosts 						| 21.11.2021 	| 0/0		|
