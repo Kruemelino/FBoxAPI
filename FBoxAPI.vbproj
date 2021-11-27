@@ -9,9 +9,13 @@
     <RepositoryUrl>https://github.com/Kruemelino/FBoxAPI</RepositoryUrl>
     <PackageTags>Fritz!Box fritzbox api tr-064 soap</PackageTags>
     <Description>Dieses Projekt ist ein .NET Bibliothek für die TR-064 Schnittstelle der AVM Fritz!Box.</Description>
-    <Copyright>Kruemelino ©2021</Copyright>
+    <Copyright>Gert Michael (Kruemelino) © 2021</Copyright>
     <NeutralLanguage>de-DE</NeutralLanguage>
     <UserSecretsId>a1ddc68d-05e8-499c-aab2-79241460d4c1</UserSecretsId>
+    <Authors>Kruemelino</Authors>
+    <Company></Company>
+    <PackageProjectUrl>https://github.com/Kruemelino/FBoxAPI</PackageProjectUrl>
+    <PackageReleaseNotes />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.1|AnyCPU'">

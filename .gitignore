@@ -103,3 +103,4 @@ Thumbs.db
 
 # Folder config file
 Desktop.ini
+/nuget.config
