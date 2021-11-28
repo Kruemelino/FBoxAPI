@@ -1,4 +1,9 @@
-﻿Public Class X_tamSCPD
+﻿''' <summary>
+''' TR-064 Support – X_ AVM-DE_TAM 
+''' Date: 2019-06-28
+''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf"/>
+''' </summary>
+Public Class X_tamSCPD
     Implements IService
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
@@ -53,6 +58,20 @@
     End Function
 
     ''' <summary>
+    ''' If Enable is set to true, the TAM will be visible in WebGUI. 
+    ''' </summary>
+    ''' <param name="Index">Index of TAM</param>
+    ''' <param name="Enable">Enable state</param>
+    ''' <returns>True when success</returns>
+    Public Function SetEnable(Index As Integer, Enable As Boolean) As Boolean
+
+        With TR064Start(ServiceFile, "SetEnable", New Hashtable From {{"NewIndex", Index}, {"NewEnable", Enable.ToInt}})
+            Return Not .ContainsKey("Error")
+        End With
+
+    End Function
+
+    ''' <summary>
     ''' Create an URL to download the list of message for a specified TAM. 
     ''' </summary>
     ''' <remarks>If the HTTP request for the resulting URL fails, it is recommended to make a New SOAP request For GetMessageList or call the SOAP action DeviceConfig:X_AVM-DE_CreateUrlSID for a New session ID.<br/>
@@ -80,51 +99,6 @@
 
                 Return False
             End If
-        End With
-
-    End Function
-    ''' <summary>
-    ''' Returns the global information and the specific answering machine information as xml list.
-    ''' </summary>
-    ''' <param name="List">Represents the list of all tam.</param>
-    ''' <returns>True when success</returns>
-    Public Function GetList(ByRef List As TAMList) As Boolean
-
-        With TR064Start(ServiceFile, "GetList", Nothing)
-
-            If .ContainsKey("NewTAMList") Then
-
-                If Not DeserializeXML(.Item("NewTAMList").ToString(), False, List) Then
-                    PushStatus.Invoke(LogLevel.Warn, $"GetTAMList konnte für nicht deserialisiert werden.")
-                End If
-
-                ' Wenn keine TAM angeschlossen wurden, gib eine leere Klasse zurück
-                If List Is Nothing Then List = New TAMList
-
-                PushStatus.Invoke(LogLevel.Debug, $"GetList: {List.Items.Count} Anrufbeantworter ermittelt.")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetTAMList konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
-                List = Nothing
-
-                Return False
-            End If
-        End With
-
-    End Function
-
-    ''' <summary>
-    ''' If Enable is set to true, the TAM will be visible in WebGUI. 
-    ''' </summary>
-    ''' <param name="Index">Index of TAM</param>
-    ''' <param name="Enable">Enable state</param>
-    ''' <returns>True when success</returns>
-    Public Function SetEnable(Index As Integer, Enable As Boolean) As Boolean
-
-        With TR064Start(ServiceFile, "SetEnable", New Hashtable From {{"NewIndex", Index}, {"NewEnable", Enable.ToInt}})
-            Return Not .ContainsKey("Error")
         End With
 
     End Function
@@ -174,6 +148,39 @@
         End With
 
     End Function
+
+    ''' <summary>
+    ''' Returns the global information and the specific answering machine information as xml list.
+    ''' </summary>
+    ''' <param name="List">Represents the list of all tam.</param>
+    ''' <returns>True when success</returns>
+    Public Function GetList(ByRef List As TAMList) As Boolean
+
+        With TR064Start(ServiceFile, "GetList", Nothing)
+
+            If .ContainsKey("NewTAMList") Then
+
+                If Not DeserializeXML(.Item("NewTAMList").ToString(), False, List) Then
+                    PushStatus.Invoke(LogLevel.Warn, $"GetTAMList konnte für nicht deserialisiert werden.")
+                End If
+
+                ' Wenn keine TAM angeschlossen wurden, gib eine leere Klasse zurück
+                If List Is Nothing Then List = New TAMList
+
+                PushStatus.Invoke(LogLevel.Debug, $"GetList: {List.Items.Count} Anrufbeantworter ermittelt.")
+
+                Return True
+
+            Else
+                PushStatus.Invoke(LogLevel.Warn, $"GetTAMList konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
+                List = Nothing
+
+                Return False
+            End If
+        End With
+
+    End Function
+
 #End Region
 
 End Class

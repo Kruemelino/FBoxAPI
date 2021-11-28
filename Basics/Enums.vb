@@ -188,10 +188,43 @@ Public Enum DeflectionType
 End Enum
 
 Public Enum SIPType
-    eAllCalls = 0
-    eGSM = 2
-    eISDN = 4
-    eNone = 8
-    ePOTS = 16
-    eVoIP = 32
+    eAllCalls
+    eGSM
+    eISDN
+    eNone
+    ePOTS
+    eVoIP
+End Enum
+
+Public Enum SupportDataMode
+    normal
+    mesh
+    unknown
+End Enum
+
+Public Enum SupportDataStatus
+    unknown
+    ok
+    preparing
+    [error]
+    creating
+End Enum
+
+Public Enum VoiceCoding
+    ''' <summary>
+    ''' always use POTS quality (default value) 
+    ''' </summary>
+    fixed
+    ''' <summary>
+    ''' automatic audio codec selection
+    ''' </summary>
+    auto
+    ''' <summary>
+    ''' always use audio codec with compression
+    ''' </summary>
+    compressed
+    ''' <summary>
+    ''' automatic use of compressed audio codec
+    ''' </summary>
+    autocompressed
 End Enum

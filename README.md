@@ -8,44 +8,64 @@ Dieses Addin ist in meiner Freizeit entstanden. Ich erwarte keine Gegenleistung.
 [![Donate](https://img.shields.io/badge/Spenden-PayPal-green.svg)](https://www.paypal.com/paypalme/gertmichael)
 
 ### Grundlagen
-Die Schnettstelle basiert auf der [AVM-Dokumentation](https://avm.de/service/schnittstellen). 
+Die Schnittstelle basiert auf der [AVM-Dokumentation](https://avm.de/service/schnittstellen). 
 
-| Service          						|      Datum 	| Actions 	|
-|------------------						|-----------:	|------:	|
-| WANIPConnection  						| 21.11.2021 	| 0/0		|
-| WANPPPConnection 						| 21.11.2021 	| 0/0		|
-| WANCommonInterfaceConfig 				| 21.11.2021 	| 0/0		|
-| WANEthernetLinkConfig 				| 21.11.2021 	| 0/0		|
-| WANDSLInterfaceConfig 				| 21.11.2021 	| 0/0		|
-| X_AVM-DE_Speedtest 					| 21.11.2021 	| 0/0		|
-| X_AVM-DE_RemoteAccess 				| 21.11.2021 	| 0/0		|
-| X_AVM-DE_MyFritz 						| 21.11.2021 	| 0/0		|
-| X_AVM-DE_HostFilter 					| 21.11.2021 	| 0/0		|
-| Layer3Forwarding 						| 21.11.2021 	| 0/0		|
-| X_AVM-DE_OnTel 						| 21.11.2021 	| 31/31		|
-| X_AVM-DE_TAM 							| 21.11.2021 	| 6/6		|
-| X_VoIP 								| 21.11.2021 	| 19/42		|
-| LanDeviceHosts 						| 21.11.2021 	| 0/0		|
-| WLANConfiguration 					| 21.11.2021 	| 0/0		|
-| LANHostConfigManagement 				| 21.11.2021 	| 0/0		|
-| LANEthernetInterfaceConfig 			| 21.11.2021 	| 0/0		|
-| X_AVM-DE_Dec 							| 21.11.2021 	| 0/0		|
-| X_HomeAuto 							| 21.11.2021 	| 0/0		|
-| X_HomePlug 							| 21.11.2021 	| 0/0		|
-| X_AVM-DE_Storage 						| 21.11.2021 	| 0/0		|
-| X_AVM-DE_UPnP 						| 21.11.2021 	| 0/0		|
-| X_AVM-DE_WebDAVClient 				| 21.11.2021 	| 0/0		|
-| X_AVM-DE_Filelinks 					| 21.11.2021 	| 0/0		|
-| DeviceInfo 							| 21.11.2021 	| 4/4	 	|
-| DeviceConfig 							| 21.11.2021 	| 1/12 		|
-| LANConfigSecurity 					| 21.11.2021 	| 1/5		|
-| X_AVM-DE_AppSetup 					| 21.11.2021 	| 0/0		|
-| ManagementService 					| 21.11.2021 	| 0/0		|
-| X_AVM-DE_Auth 						| 21.11.2021 	| 0/0		|
-| Time 									| 21.11.2021 	| 0/0		|
-| UserInterface 						| 21.11.2021 	| 0/0		|
-| Internet Gateway Device Spec v1.0 	| 21.11.2021 	| 0/0		|
-| Internet Gateway Device Spec v2.0 	| 21.11.2021 	| 0/0		|
+### Nutzung
+Die Verwendung ist recht einfach angedacht. Es muss eine neue `FBoxAPI.FritzBoxTR64`-Klasse instanziiert werden. Hierfür sind zwei Parameter erforderlich: IP-Adresse der Fritz!Box und die 
+Anmeldeinformationen. Nutzername und Passwort werden in einer neuen Instanz der `System.Net.NetworkCredential`-Klasse hinterlegt und übergeben.
+Im folgenen ist ein kleines Beispiel aufgeführt, wie die SessionID der Fritz!Box abgefragt werden kann. 
+
+```vbnet
+Private Function GetSessionID() As String
+    ' Bereitstellung der Variable(n), in die das Ergebnis gesetzt werden sollen.
+    Dim SessionID As String = "0000000000000000"
+
+    ' Erstelle Anmeldeinformationen für die Fritz!Box bereit
+    Dim Nutzername As String = "Fritz"
+    Dim Passwort As String = "Box"
+
+    ' ANmeldeinformationen können Nothing sein, falls nur Actions ausgeführt werden, die keine Anmeldung erfordern.
+    Dim Anmeldeinformationen As New Net.NetworkCredential(Nutzername, Passwort)
+
+    ' Starte die TR-064 Schnittstelle zur Fritz!Box
+    Using FBoxTR064 As New FBoxAPI.FritzBoxTR64("192.168.178.1", Anmeldeinformationen)
+
+        ' Auwahl des Service
+        With FBoxTR064.Deviceconfig
+
+            ' Action ausführen
+            If .GetSessionID(SessionID) Then
+                ' Alles OK
+            Else
+                ' Ein Fehler ist aufgetreten
+            End If
+        End With
+
+    End Using
+
+    Return SessionID
+
+End Function
+```
+
+Sobald eine neue `FBoxAPI.FritzBoxTR64`-Klasse erstellt wurde, kann auch auf das Event `Status` abgefragt werden. 
+Die FBoxAPI.LogMessage beinhaltet eine Eigenschaft für ein `LogLevel` (Enum) und eine Eigenschaft für eine `Message` (String).
+```vbnet
+    Friend Sub FBoxAPIMessage(sender As Object, e As FBoxAPI.NotifyEventArgs(Of FBoxAPI.LogMessage))
+        ' Nlog:
+        NLogger.Log(LogLevel.FromOrdinal(e.Value.Level), e.Value.Message)
+    End Sub
+```
+### Umsetzung
+
+folgende Services werden derzeit unterstützt. Es ist geplant weitere Services und deren Actions zu ergänzen.
+
+* [X_AVM-DE_OnTel](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf)	
+* [X_AVM-DE_TAM](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf)
+* [X_VoIP](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voip-avm.pdf)			
+* [DeviceInfo](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf)
+* [DeviceConfig](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf)
+* [LANConfigSecurity](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/lanconfigsecuritySCPD.pdf)
 
 ### Markenrecht
 Dieses Outlook-Addin wird vom Autor privat in der Freizeit als Hobby gepflegt. Mit der Bereitstellung des Outlook-Addins werden keine gewerblichen Interessen verfolgt. Es wird aus rein ideellen Gründen zum Gemeinwohl aller Nutzer einer Fritz!Box betrieben. 

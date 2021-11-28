@@ -105,6 +105,37 @@ Friend Module Serializer
 
 #End Region
 
+#Region "XML Serialisieren"
+
+    Friend Function XmlSerializeToString(Of T)(objectData As T, ByRef result As String) As Boolean
+
+        If objectData IsNot Nothing Then
+            Dim XmlSerializerNamespace As New XmlSerializerNamespaces()
+            XmlSerializerNamespace.Add("", "")
+
+            Using XmlSchreiber As New Utf8StringWriter
+
+                With New XmlSerializer(GetType(T))
+                    Try
+                        .Serialize(XmlSchreiber, objectData, XmlSerializerNamespace)
+                        result = XmlSchreiber.ToString
+
+                        Return True
+                    Catch ex As InvalidOperationException
+                        'NLogger.Fatal(ex, $"Fehler beim Serialisieren von {GetType(T).FullName}: {objectData}")
+
+                        Return False
+                    End Try
+
+                End With
+            End Using
+        End If
+
+        Return False
+    End Function
+
+#End Region
+
 #Region "XmlDeserializationEvents"
     Private Sub On_UnknownAttribute(sender As Object, e As XmlAttributeEventArgs)
         'NLogger.Warn($"Unknown Attribute: {e.Attr.Name} in {e.ObjectBeingDeserialized}")

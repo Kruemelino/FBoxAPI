@@ -1,4 +1,9 @@
-﻿Public Class DeviceinfoSCPD
+﻿''' <summary>
+''' TR-064 Support – DeviceInfo
+''' Date: 2009-7-15
+''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf"/>
+''' </summary>
+Public Class DeviceinfoSCPD
     Implements IService
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
