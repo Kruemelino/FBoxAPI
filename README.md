@@ -1,7 +1,7 @@
 # FBoxAPI
 
 Dieses Projekt ist ein .NET Bibliothek für die TR-064 Schnittstelle der AVM Fritz!Box. 
-Das Projekt ist eine Ausgliederung aus meinem Addin für Microsoft Outlook Fritz!Box Telefon-dingsbums V5
+Das Projekt ist eine Ausgliederung aus meinem Addin für Microsoft Outlook: [Fritz!Box Telefon-dingsbums V5](https://github.com/Kruemelino/FritzBoxTelefon-dingsbums) 
 
 Dieses Addin ist in meiner Freizeit entstanden. Ich erwarte keine Gegenleistung. Ein Danke ist ausreichend. Wer mir dennoch etwas Gutes zukommen lassen möchte kann dies gerne tun:
 
