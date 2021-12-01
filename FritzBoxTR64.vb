@@ -8,6 +8,8 @@ Public Class FritzBoxTR64
     Private Property FBTR64Desc As TR64Desc
     Private Property Credential As NetworkCredential
     Private Property FBoxIPAdresse As String
+
+#Region "Services"
     Public Property Deviceconfig As DeviceconfigSCPD
     Public Property Deviceinfo As DeviceinfoSCPD
     Public Property LANConfigSecurity As LANConfigSecuritySCPD
@@ -15,6 +17,9 @@ Public Class FritzBoxTR64
     Public Property X_tam As X_tamSCPD
     Public Property X_voip As X_voipSCPD
     Public Property UserMode As UserModeSCPD
+    Public Property WANCommonInterfaceConfig As WANCommonInterfaceConfigSCPD
+#End Region
+
 
     ''' <summary>
     ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Die <see cref="NetworkCredential"/> werden hier übergeben.<br/>
@@ -51,6 +56,7 @@ Public Class FritzBoxTR64
                     Deviceconfig = New DeviceconfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start, AddressOf PushStatus)
+                    WANCommonInterfaceConfig = New WANCommonInterfaceConfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     X_contact = New X_contactSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     X_voip = New X_voipSCPD(AddressOf TR064Start, AddressOf PushStatus)

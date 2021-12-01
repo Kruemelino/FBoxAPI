@@ -228,3 +228,15 @@ Public Enum VoiceCoding
     ''' </summary>
     autocompressed
 End Enum
+
+Public Enum PhysicalLinkStatus
+    Unavailable
+    Down
+    Initializing
+    Up
+End Enum
+
+Public Enum AccessType
+    DSL
+    Ethernet
+End Enum
