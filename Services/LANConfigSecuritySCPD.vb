@@ -4,10 +4,10 @@
 ''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/lanconfigsecuritySCPD.pdf"/>
 ''' </summary>
 Public Class LANConfigSecuritySCPD
-    Implements IService
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
+    Implements ILANConfigSecuritySCPD
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements ILANConfigSecuritySCPD.TR064Start
+    Private Property PushStatus As Action(Of LogLevel, String) Implements ILANConfigSecuritySCPD.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements ILANConfigSecuritySCPD.Servicefile
 
     Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
 
@@ -18,10 +18,7 @@ Public Class LANConfigSecuritySCPD
         PushStatus = Status
     End Sub
 
-    ''' <param name="MaxCharsPassword">32</param>
-    ''' <param name="MinCharsPassword">0</param>
-    ''' <param name="AllowedCharsPassword">01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!”#$%&'()*+,-./:;<=>?@[\]^_`{|}~(*)</param>
-    Public Function GetInfo(ByRef MaxCharsPassword As Integer, ByRef MinCharsPassword As Integer, AllowedCharsPassword As String) As Boolean
+    Public Function GetInfo(ByRef MaxCharsPassword As Integer, ByRef MinCharsPassword As Integer, AllowedCharsPassword As String) As Boolean Implements ILANConfigSecuritySCPD.GetInfo
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
             If .ContainsKey("NewMaxCharsPassword") And .ContainsKey("NewMinCharsPassword") And .ContainsKey("NewAllowedCharsPassword") Then
@@ -39,10 +36,7 @@ Public Class LANConfigSecuritySCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' This action can be invoked without authentication.
-    ''' </summary>
-    Public Function GetAnonymousLogin(ByRef AnonymousLoginEnabled As Boolean) As Boolean
+    Public Function GetAnonymousLogin(ByRef AnonymousLoginEnabled As Boolean) As Boolean Implements ILANConfigSecuritySCPD.GetAnonymousLogin
         With TR064Start(ServiceFile, "X_AVM-DE_GetAnonymousLogin", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_AnonymousLoginEnabled") Then
@@ -58,11 +52,7 @@ Public Class LANConfigSecuritySCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' The current username might be empty. If anonymous login is enabled, the client may use any username for authentication instead of a configured one. 
-    ''' Return list of configured rights of the current user, too. 
-    ''' </summary>
-    Public Function GetCurrentUser(ByRef CurrentUsername As String, ByRef CurrentUserRights As String) As Boolean
+    Public Function GetCurrentUser(ByRef CurrentUsername As String, ByRef CurrentUserRights As String) As Boolean Implements ILANConfigSecuritySCPD.GetCurrentUser
         With TR064Start(ServiceFile, "X_AVM-DE_GetCurrentUser", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_CurrentUsername") And .ContainsKey("NewX_AVM-DE_CurrentUserRights") Then
@@ -79,21 +69,13 @@ Public Class LANConfigSecuritySCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' Changing the password needs up to 20 seconds. 
-    ''' </summary>
-    Public Function SetConfigPassword(ConfigPassword As String) As Boolean
+    Public Function SetConfigPassword(ConfigPassword As String) As Boolean Implements ILANConfigSecuritySCPD.SetConfigPassword
         With TR064Start(ServiceFile, "SetConfigPassword", New Hashtable From {{"NewPassword", ConfigPassword}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    ''' <summary>
-    ''' Get the usernames of all users in a xml-list. Each item has an attribute “last_user”, which is set to '1' for only that username, which was used since last login.
-    ''' </summary>
-    ''' <param name="UserList">Get the usernames of all users in a xml-list.</param>
-    ''' <returns>True when success</returns>
-    Public Function GetUserList(ByRef UserList As String) As Boolean
+    Public Function GetUserList(ByRef UserList As String) As Boolean Implements ILANConfigSecuritySCPD.GetUserList
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetUserList", Nothing)
 

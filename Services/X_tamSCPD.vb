@@ -4,11 +4,11 @@
 ''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf"/>
 ''' </summary>
 Public Class X_tamSCPD
-    Implements IService
+    Implements IX_tamSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_tamSCPD.TR064Start
+    Private Property PushStatus As Action(Of LogLevel, String) Implements IX_tamSCPD.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_tamSCPD.Servicefile
 
     Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
 
@@ -19,14 +19,7 @@ Public Class X_tamSCPD
         PushStatus = Status
     End Sub
 
-#Region "x_tamSCPD"
-    ''' <summary>
-    ''' Return a informations of tam index <paramref name="i"/>. 
-    ''' </summary>
-    ''' <param name="TAMInfo">Structure, which holds all data of the TAM</param>
-    ''' <param name="i">Represents the index of all tam.</param>
-    ''' <returns>True when success</returns>
-    Public Function GetTAMInfo(ByRef TAMInfo As TAMInfo, i As Integer) As Boolean
+    Public Function GetTAMInfo(ByRef TAMInfo As TAMInfo, i As Integer) As Boolean Implements IX_tamSCPD.GetTAMInfo
 
         If TAMInfo Is Nothing Then TAMInfo = New TAMInfo
 
@@ -57,13 +50,7 @@ Public Class X_tamSCPD
 
     End Function
 
-    ''' <summary>
-    ''' If Enable is set to true, the TAM will be visible in WebGUI. 
-    ''' </summary>
-    ''' <param name="Index">Index of TAM</param>
-    ''' <param name="Enable">Enable state</param>
-    ''' <returns>True when success</returns>
-    Public Function SetEnable(Index As Integer, Enable As Boolean) As Boolean
+    Public Function SetEnable(Index As Integer, Enable As Boolean) As Boolean Implements IX_tamSCPD.SetEnable
 
         With TR064Start(ServiceFile, "SetEnable", New Hashtable From {{"NewIndex", Index}, {"NewEnable", Enable.ToInt}})
             Return Not .ContainsKey("Error")
@@ -71,20 +58,7 @@ Public Class X_tamSCPD
 
     End Function
 
-    ''' <summary>
-    ''' Create an URL to download the list of message for a specified TAM. 
-    ''' </summary>
-    ''' <remarks>If the HTTP request for the resulting URL fails, it is recommended to make a New SOAP request For GetMessageList or call the SOAP action DeviceConfig:X_AVM-DE_CreateUrlSID for a New session ID.<br/>
-    ''' The following URL parameters are supported.
-    ''' <list type="bullet">
-    ''' <item>max: maximum number of entries in message list, default 999</item>
-    ''' <item>sid: Session ID for authentication</item>
-    ''' </list>
-    ''' </remarks>
-    ''' <param name="GetMessageListURL">URL to download the list of message for a specified TAM</param>
-    ''' <param name="i">ID of the specified TAM</param>
-    ''' <returns>True when success</returns>
-    Public Function GetMessageList(ByRef GetMessageListURL As String, i As Integer) As Boolean
+    Public Function GetMessageList(ByRef GetMessageListURL As String, i As Integer) As Boolean Implements IX_tamSCPD.GetMessageList
         With TR064Start(ServiceFile, "GetMessageList", New Hashtable From {{"NewIndex", i}})
             If .ContainsKey("NewURL") Then
 
@@ -103,18 +77,7 @@ Public Class X_tamSCPD
 
     End Function
 
-    ''' <summary>
-    ''' Mark a specified message as read. A specific TAM is selected by Index.
-    ''' The Index field from a message in the MessageList should be taken for the MessageIndex
-    ''' to select a specific message. If the MarkedAsRead state variable is set to 1, the message
-    ''' is marked as read, when it is 0, the message is marked as unread. The default value is 1
-    ''' to guarantee downward compatibility to older clients.
-    ''' </summary>
-    ''' <param name="Index">Index of the MessageList</param>
-    ''' <param name="MessageIndex">Index of the Message</param>
-    ''' <param name="MarkedAsRead">Optional, to stay compatible with older clients, default value is 1</param>
-    ''' <returns>True when success</returns>
-    Public Function MarkMessage(Index As Integer, MessageIndex As Integer, MarkedAsRead As Boolean) As Boolean
+    Public Function MarkMessage(Index As Integer, MessageIndex As Integer, MarkedAsRead As Boolean) As Boolean Implements IX_tamSCPD.MarkMessage
 
         With TR064Start(ServiceFile, "MarkMessage", New Hashtable From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}, {"NewMarkedAsRead", MarkedAsRead.ToInt}})
             Return Not .ContainsKey("Error")
@@ -122,15 +85,7 @@ Public Class X_tamSCPD
 
     End Function
 
-    ''' <summary>
-    ''' Delete a specified message. A specific TAM is selected by Index.
-    ''' The Index field from a message in the MessageList should be taken for the MessageIndex
-    ''' to select a specific message. 
-    ''' </summary>
-    ''' <param name="Index">Index of the MessageList</param>
-    ''' <param name="MessageIndex">Index of the Message</param>
-    ''' <returns>True when success</returns>
-    Public Function DeleteMessage(Index As Integer, MessageIndex As Integer) As Boolean
+    Public Function DeleteMessage(Index As Integer, MessageIndex As Integer) As Boolean Implements IX_tamSCPD.DeleteMessage
 
         With TR064Start(ServiceFile, "DeleteMessage", New Hashtable From {{"NewIndex", Index},
                                                                                            {"NewMessageIndex", MessageIndex}})
@@ -149,12 +104,7 @@ Public Class X_tamSCPD
 
     End Function
 
-    ''' <summary>
-    ''' Returns the global information and the specific answering machine information as xml list.
-    ''' </summary>
-    ''' <param name="List">Represents the list of all tam.</param>
-    ''' <returns>True when success</returns>
-    Public Function GetList(ByRef List As TAMList) As Boolean
+    Public Function GetList(ByRef List As TAMList) As Boolean Implements IX_tamSCPD.GetList
 
         With TR064Start(ServiceFile, "GetList", Nothing)
 
@@ -180,7 +130,5 @@ Public Class X_tamSCPD
         End With
 
     End Function
-
-#End Region
 
 End Class

@@ -4,10 +4,11 @@
 ''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voip-avm.pdf"/>
 ''' </summary>
 Public Class X_voipSCPD
-    Implements IService
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
+    Implements IX_voipSCPD
+
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_voipSCPD.TR064Start
+    Private Property PushStatus As Action(Of LogLevel, String) Implements IX_voipSCPD.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_voipSCPD.Servicefile
 
     Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
         ServiceFile = SCPDFiles.x_voipSCPD
@@ -17,7 +18,7 @@ Public Class X_voipSCPD
     End Sub
 
 #Region "GetInfo"
-    Public Function GetInfo(ByRef FaxT38Enable As Boolean, ByRef VoiceCoding As VoiceCoding) As Boolean
+    Public Function GetInfo(ByRef FaxT38Enable As Boolean, ByRef VoiceCoding As VoiceCoding) As Boolean Implements IX_voipSCPD.GetInfo
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
             If .ContainsKey("NewFaxT38Enable") And .ContainsKey("NewVoiceCoding") Then
@@ -34,13 +35,13 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    Public Function SetConfig(T38FaxEnable As Boolean, VoiceCoding As VoiceCoding) As Boolean
+    Public Function SetConfig(T38FaxEnable As Boolean, VoiceCoding As VoiceCoding) As Boolean Implements IX_voipSCPD.SetConfig
         With TR064Start(ServiceFile, "SetConfig", New Hashtable From {{"NewT38FaxEnable", T38FaxEnable}, {"NewVoiceCoding", VoiceCoding}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    Public Function GetInfoEx(ByRef InfoEx As VoIPInfoEx) As Boolean
+    Public Function GetInfoEx(ByRef InfoEx As VoIPInfoEx) As Boolean Implements IX_voipSCPD.GetInfoEx
 
         If InfoEx Is Nothing Then InfoEx = New VoIPInfoEx
 
@@ -88,7 +89,7 @@ Public Class X_voipSCPD
 #End Region
 
 #Region "VoIPNumbers"
-    Public Function GetExistingVoIPNumbers(ByRef ExistingVoIPNumbers As Integer) As Boolean
+    Public Function GetExistingVoIPNumbers(ByRef ExistingVoIPNumbers As Integer) As Boolean Implements IX_voipSCPD.GetExistingVoIPNumbers
         With TR064Start(ServiceFile, "GetExistingVoIPNumbers", Nothing)
 
             If .ContainsKey("NewExistingVoIPNumbers") Then
@@ -105,7 +106,7 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    Public Function GetMaxVoIPNumbers(ByRef MaxVoIPNumbers As Integer) As Boolean
+    Public Function GetMaxVoIPNumbers(ByRef MaxVoIPNumbers As Integer) As Boolean Implements IX_voipSCPD.GetMaxVoIPNumbers
         With TR064Start(ServiceFile, "GetMaxVoIPNumbers", Nothing)
 
             If .ContainsKey("NewMaxVoIPNumbers") Then
@@ -124,7 +125,7 @@ Public Class X_voipSCPD
 #End Region
 
 #Region "AreaCode / CountryCode"
-    Public Function GetVoIPEnableAreaCode(ByRef VoIPEnableAreaCode As Boolean, VoIPAccountIndex As Integer) As Boolean
+    Public Function GetVoIPEnableAreaCode(ByRef VoIPEnableAreaCode As Boolean, VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.GetVoIPEnableAreaCode
         With TR064Start(ServiceFile, "GetVoIPEnableAreaCode", New Hashtable From {{"NewVoIPAccountIndex", VoIPAccountIndex}})
 
             If .ContainsKey("NewVoIPEnableAreaCode") Then
@@ -141,14 +142,14 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    Public Function SetVoIPEnableAreaCode(VoIPEnableAreaCode As Boolean, VoIPAccountIndex As Integer) As Boolean
+    Public Function SetVoIPEnableAreaCode(VoIPEnableAreaCode As Boolean, VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.SetVoIPEnableAreaCode
         With TR064Start(ServiceFile, "SetVoIPEnableAreaCode", New Hashtable From {{"NewVoIPAccountIndex", VoIPAccountIndex},
                                                                                   {"NewVoIPEnableAreaCode", VoIPEnableAreaCode}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    Public Function GetVoIPEnableCountryCode(ByRef VoIPEnableCountryCode As Boolean, VoIPAccountIndex As Integer) As Boolean
+    Public Function GetVoIPEnableCountryCode(ByRef VoIPEnableCountryCode As Boolean, VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.GetVoIPEnableCountryCode
         With TR064Start(ServiceFile, "GetVoIPEnableCountryCode", New Hashtable From {{"NewVoIPAccountIndex", VoIPAccountIndex}})
 
             If .ContainsKey("NewVoIPEnableCountryCode") Then
@@ -165,27 +166,14 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' Set the common country code where the <paramref name="LKZ"/> represents the actual country code and the <paramref name="LKZPrefix"/> is the international call prefix.<br/>
-    ''' e.g. +49 = 0049 where 00 is the <paramref name="LKZPrefix"/> and 49 the <paramref name="LKZ"/>.
-    ''' </summary>
-    ''' <param name="LKZ">Represents the actual country code.</param>
-    ''' <param name="LKZPrefix">Represents the international call prefix.</param>
-    ''' <returns>True when success</returns>
-    Public Function SetVoIPCommonCountryCode(LKZ As String, LKZPrefix As String) As Boolean
+    Public Function SetVoIPCommonCountryCode(LKZ As String, LKZPrefix As String) As Boolean Implements IX_voipSCPD.SetVoIPCommonCountryCode
         With TR064Start(ServiceFile, "X_AVM-DE_SetVoIPCommonCountryCode", New Hashtable From {{"NewX_AVM-DE_LKZ", LKZ},
                                                                                            {"NewX_AVM-DE_LKZPrefix", LKZPrefix}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    ''' <summary>
-    ''' Get the configured common country code where the <paramref name="LKZ"/> represents the actual country code and the <paramref name="LKZPrefix"/> is the international call prefix.
-    ''' </summary>
-    ''' <param name="LKZ">Represents the actual country code.</param>
-    ''' <param name="LKZPrefix">Represents the international call prefix.</param>
-    ''' <returns>True when success</returns>
-    Public Function GetVoIPCommonCountryCode(ByRef LKZ As String, Optional ByRef LKZPrefix As String = "") As Boolean
+    Public Function GetVoIPCommonCountryCode(ByRef LKZ As String, Optional ByRef LKZPrefix As String = "") As Boolean Implements IX_voipSCPD.GetVoIPCommonCountryCode
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetVoIPCommonCountryCode", Nothing)
 
@@ -206,27 +194,14 @@ Public Class X_voipSCPD
 
     End Function
 
-    ''' <summary>
-    ''' Set the common area code where the <paramref name="OKZ"/> represents the actual area code and the <paramref name="OKZPrefix"/> is the national call prefix.<br/> 
-    ''' e.g. 030 where 0 is the <paramref name="OKZPrefix"/> and 30 the <paramref name="OKZ"/>.
-    ''' </summary>
-    ''' <param name="OKZ">Represents the actual area code.</param>
-    ''' <param name="OKZPrefix">Represents the national Call prefix.</param>
-    ''' <returns>True when success</returns>
-    Public Function SetVoIPCommonAreaCode(OKZ As String, OKZPrefix As String) As Boolean
+    Public Function SetVoIPCommonAreaCode(OKZ As String, OKZPrefix As String) As Boolean Implements IX_voipSCPD.SetVoIPCommonAreaCode
         With TR064Start(ServiceFile, "X_AVM-DE_SetVoIPCommonAreaCode", New Hashtable From {{"NewX_AVM-DE_OKZ", OKZ},
                                                                                            {"NewX_AVM-DE_OKZPrefix", OKZPrefix}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    ''' <summary>
-    ''' Get the configured common area code where the <paramref name="OKZ"/> represents the actual area code and the <paramref name="OKZPrefix"/> is the national Call prefix.
-    ''' </summary>
-    ''' <param name="OKZ">Represents the actual area code.</param>
-    ''' <param name="OKZPrefix">Represents the national Call prefix.</param>
-    ''' <returns>True when success</returns>
-    Public Function GetVoIPCommonAreaCode(ByRef OKZ As String, Optional ByRef OKZPrefix As String = "") As Boolean
+    Public Function GetVoIPCommonAreaCode(ByRef OKZ As String, Optional ByRef OKZPrefix As String = "") As Boolean Implements IX_voipSCPD.GetVoIPCommonAreaCode
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetVoIPCommonAreaCode", Nothing)
 
@@ -255,7 +230,7 @@ Public Class X_voipSCPD
                                    VoIPUsername As String,
                                    VoIPPassword As String,
                                    VoIPOutboundProxy As String,
-                                   VoIPSTUNServer As String) As Boolean
+                                   VoIPSTUNServer As String) As Boolean Implements IX_voipSCPD.AddVoIPAccount
 
         With TR064Start(ServiceFile, "X_AVM-DE_AddVoIPAccount", New Hashtable From {{"NewVoIPAccountIndex", VoIPAccountIndex},
                                                                                     {"NewVoIPRegistrar", VoIPRegistrar},
@@ -268,16 +243,14 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' The action can be used to delete an existing VoIP entry.
-    ''' </summary>
-    Public Function DelVoIPAccount(VoIPAccountIndex As Integer) As Boolean
+    Public Function DelVoIPAccount(VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.DelVoIPAccount
+
         With TR064Start(ServiceFile, "X_AVM-DE_DelVoIPAccount", New Hashtable From {{"NewVoIPAccountIndex ", VoIPAccountIndex}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    Public Function GetVoIPAccount(ByRef Account As VoIPAccount, AccountIndex As Integer) As Boolean
+    Public Function GetVoIPAccount(ByRef Account As VoIPAccount, AccountIndex As Integer) As Boolean Implements IX_voipSCPD.GetVoIPAccount
         If Account Is Nothing Then Account = New VoIPAccount
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetVoIPAccount", New Hashtable From {{"NewVoIPAccountIndex", AccountIndex}})
@@ -302,13 +275,13 @@ Public Class X_voipSCPD
 #End Region
 
 #Region "Client"
-    Public Function DeleteClient(ClientIndex As Integer) As Boolean
+    Public Function DeleteClient(ClientIndex As Integer) As Boolean Implements IX_voipSCPD.DeleteClient
         With TR064Start(ServiceFile, "X_AVM-DE_DeleteClient", New Hashtable From {{"NewX_AVM-DE_ClientIndex", ClientIndex}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    Public Function GetNumberOfClients(ByRef NumberOfClients As Integer) As Boolean
+    Public Function GetNumberOfClients(ByRef NumberOfClients As Integer) As Boolean Implements IX_voipSCPD.GetNumberOfClients
         With TR064Start(ServiceFile, "X_AVM-DE_GetNumberOfClients", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_NumberOfClients") Then
@@ -325,7 +298,7 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    Public Function GetClient2(ByRef Client As SIPClient, ClientIndex As Integer) As Boolean
+    Public Function GetClient2(ByRef Client As SIPClient, ClientIndex As Integer) As Boolean Implements IX_voipSCPD.GetClient2
         If Client Is Nothing Then Client = New SIPClient
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetClient2", New Hashtable From {{"NewX_AVM-DE_ClientIndex", ClientIndex}})
@@ -350,12 +323,7 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' Return SIP Client account with incoming numbers and allow registration from outside flag.
-    ''' </summary>
-    ''' <remarks>The format of the state variable X_AVM-DE_IncomingNumbers is similar to the state variable X_AVMDE_Numbers described in the paragraph X_AVM-DE_GetNumbers (below).
-    ''' If the SIP client shall react on all possible numbers the Type is set to eAllCalls.</remarks>
-    Public Function GetClient3(ByRef Client As SIPClient, ClientIndex As Integer) As Boolean
+    Public Function GetClient3(ByRef Client As SIPClient, ClientIndex As Integer) As Boolean Implements IX_voipSCPD.GetClient3
         If Client Is Nothing Then Client = New SIPClient
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetClient3", New Hashtable From {{"NewX_AVM-DE_ClientIndex", ClientIndex}})
@@ -385,14 +353,7 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' The input parameter ClientId has to be at least 1 character long and a substring of the actual ClientId (case
-    ''' sensitive). The response contains the information about the client, whose ClientId string contains the input 
-    ''' parameter. Even when it is a substring. E.g. the string “le” returns “apple” from the following ClientId List: 
-    ''' [0] : "melon" ; [1] "apple" ; [2] "lemon".
-    ''' </summary>
-    ''' <returns>Return SIP Client account with incoming numbers and allow registration from outside flag.</returns>
-    Public Function GetClientByClientId(ByRef Client As SIPClient, ClientId As String) As Boolean
+    Public Function GetClientByClientId(ByRef Client As SIPClient, ClientId As String) As Boolean Implements IX_voipSCPD.GetClientByClientId
         If Client Is Nothing Then Client = New SIPClient
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetClientByClientId", New Hashtable From {{"NewX_AVM-DE_ClientId", ClientId}})
@@ -422,13 +383,7 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' Return a list of all SIP client accounts. 
-    ''' </summary>
-    ''' <param name="ClientList">Represents the list of all SIP client accounts.</param>
-    ''' <returns>True when success</returns>
-    ''' <remarks>The list contains all configured SIP client accounts a XML list.</remarks>
-    Public Function GetClients(ByRef ClientList As SIPClientList) As Boolean
+    Public Function GetClients(ByRef ClientList As SIPClientList) As Boolean Implements IX_voipSCPD.GetClients
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetClients", Nothing)
 
@@ -453,20 +408,11 @@ Public Class X_voipSCPD
 
     End Function
 
-
-    ''' <summary>
-    ''' Create a SIP client account or overwrite it when the X_AVM-DE_ClientIndex is already in use.
-    ''' </summary>
-    ''' <remarks>When the action is called with app instance credentials and the parameter NewX_AVM-DE_ClientId is set,
-    ''' an internal link between the created SIP client and app instance is created. Therefore when the app instance
-    ''' is deleted, the SIP client is deleted too.
-    ''' </remarks>
-    ''' <returns>True when success</returns>
     Public Function SetClient2(ClientIndex As Integer,
                                ClientPassword As String,
                                PhoneName As String,
                                ClientId As String,
-                               OutGoingNumber As String) As Boolean
+                               OutGoingNumber As String) As Boolean Implements IX_voipSCPD.SetClient2
 
         With TR064Start(ServiceFile, "X_AVM-DE_SetClient2", New Hashtable From {{"NewX_AVM-DE_ClientIndex", ClientIndex},
                                                                                 {"NewX_AVM-DE_ClientPassword", ClientPassword},
@@ -477,25 +423,13 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' Create a SIP client account with incoming numbers and allow registration from outside flag or overwrites it
-    ''' when the X_AVM-DE_ClientIndex is already in use. When the action is called with app instance credentials
-    ''' and the parameter NewX_AVM-DE_ClientId is set, an internal link between the created SIP client and app
-    ''' instance is created. Therefore when the app instance is deleted, the SIP client is deleted too.
-    ''' </summary>
-    ''' <remarks>
-    ''' The format of the state variable X_AVM-DE_IncomingNumbers is similar to the state variable X_AVMDE_Numbers described in the paragraph X_AVM-DE_GetNumbers (above).
-    ''' If the value for X_AVM-DE_IncomingNumbers is empty, the SIP client has to ring for all incoming numbers. 
-    ''' </remarks>
-    ''' <param name="ExternalRegistration">Value ignored 2015-10-22</param>
-    ''' <returns>True when success</returns>
     Public Function SetClient3(ClientIndex As Integer,
                                ClientPassword As String,
                                PhoneName As String,
                                ClientId As String,
                                OutGoingNumber As String,
                                InComingNumbers As String,
-                               ExternalRegistration As String) As Boolean
+                               ExternalRegistration As String) As Boolean Implements IX_voipSCPD.SetClient3
 
         With TR064Start(ServiceFile, "X_AVM-DE_SetClient3", New Hashtable From {{"NewX_AVM-DE_ClientIndex", ClientIndex},
                                                                                 {"NewX_AVM-DE_ClientPassword", ClientPassword},
@@ -508,42 +442,24 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' Create a SIP client account with incoming numbers and allow registration from outside flag or overwrites it
-    ''' when the X_AVM-DE_ClientIndex is already in use. When the action is called with app instance credentials
-    ''' and the parameter NewX_AVM-DE_ClientId is set, an internal link between the created SIP client and app
-    ''' instance is created. Therefore when the app instance is deleted, the SIP client is deleted too.
-    ''' </summary>
-    ''' <remarks>
-    ''' The format of the state variable X_AVM-DE_IncomingNumbers is similar to the state variable X_AVMDE_Numbers described in the paragraph X_AVM-DE_GetNumbers (above).
-    ''' If the value for X_AVM-DE_IncomingNumbers is empty, the SIP client has to ring for all incoming numbers. 
-    ''' </remarks>
-    ''' <param name="ExternalRegistration">Value ignored 2015-10-22</param>
-    ''' <returns>True when success</returns>
     Public Function SetClient3(ClientIndex As Integer,
                                ClientPassword As String,
                                PhoneName As String,
                                ClientId As String,
                                OutGoingNumber As String,
                                InComingNumbers As SIPTelNrList,
-                               ExternalRegistration As String) As Boolean
+                               ExternalRegistration As String) As Boolean Implements IX_voipSCPD.SetClient3
 
         Return SetClient3(ClientIndex, ClientPassword, PhoneName, ClientId, OutGoingNumber, InComingNumbers.ToXMLString, ExternalRegistration)
     End Function
 
-    ''' <summary>
-    ''' Create a SIP client account with incoming numbers and client username or overwrites it when the X_AVMDE_ClientIndex is already in use. When the action is called with app instance credentials and the parameter
-    ''' NewX_AVM-DE_ClientId is set, an internal link between the created SIP client and app instance is created.
-    ''' Therefore when the app instance is deleted, the SIP client is deleted too.
-    ''' </summary>
-    ''' <returns>True when success</returns>
     Public Function SetClient4(ClientIndex As Integer,
                                ClientPassword As String,
                                PhoneName As String,
                                ClientId As String,
                                OutGoingNumber As String,
                                InComingNumbers As String,
-                               InternalNumber As String) As Boolean
+                               InternalNumber As String) As Boolean Implements IX_voipSCPD.SetClient4
 
         With TR064Start(ServiceFile, "X_AVM-DE_SetClient4", New Hashtable From {{"NewX_AVM-DE_ClientIndex", ClientIndex},
                                                                                 {"NewX_AVM-DE_ClientPassword", ClientPassword},
@@ -556,30 +472,19 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' Create a SIP client account with incoming numbers and client username or overwrites it when the X_AVMDE_ClientIndex is already in use. When the action is called with app instance credentials and the parameter
-    ''' NewX_AVM-DE_ClientId is set, an internal link between the created SIP client and app instance is created.
-    ''' Therefore when the app instance is deleted, the SIP client is deleted too.
-    ''' </summary>
-    ''' <returns>True when success</returns>
     Public Function SetClient4(ClientIndex As Integer,
                                ClientPassword As String,
                                PhoneName As String,
                                ClientId As String,
                                OutGoingNumber As String,
                                InComingNumbers As SIPTelNrList,
-                               InternalNumber As String) As Boolean
+                               InternalNumber As String) As Boolean Implements IX_voipSCPD.SetClient4
 
         Return SetClient4(ClientIndex, ClientPassword, PhoneName, ClientId, OutGoingNumber, InComingNumbers.ToXMLString, InternalNumber)
 
     End Function
 
-    ''' <summary>
-    ''' Set the flag for a SIP client account. Some SIP clients need some seconds time to wake up before a SIP call can be answered. 
-    ''' The FRITZ!OS SIP server will delay SIP calls if at least one SIP client has the flag enabled.
-    ''' </summary>
-    ''' <returns>True when success</returns>
-    Public Function SetDelayedCallNotification(ClientIndex As Integer, DelayedCallNotification As Boolean) As Boolean
+    Public Function SetDelayedCallNotification(ClientIndex As Integer, DelayedCallNotification As Boolean) As Boolean Implements IX_voipSCPD.SetDelayedCallNotification
 
         With TR064Start(ServiceFile, "X_AVM-DE_SetDelayedCallNotification", New Hashtable From {{"NewX_AVM-DE_ClientIndex", ClientIndex},
                                                                                                 {"NewX_AVM-DE_DelayedCallNotification", DelayedCallNotification.ToInt}})
@@ -589,12 +494,7 @@ Public Class X_voipSCPD
 #End Region
 
 #Region "Numbers"
-    ''' <summary>
-    ''' Return amount of telephone numbers usable as incoming number. 
-    ''' </summary>
-    ''' <param name="NumberOfNumbers"></param>
-    ''' <returns>True when success</returns>
-    Public Function GetNumberOfNumbers(ByRef NumberOfNumbers As Integer) As Boolean
+    Public Function GetNumberOfNumbers(ByRef NumberOfNumbers As Integer) As Boolean Implements IX_voipSCPD.GetNumberOfNumbers
         With TR064Start(ServiceFile, "X_AVM-DE_GetNumberOfNumbers", Nothing)
 
             If .ContainsKey("NewNumberOfNumbers") Then
@@ -611,13 +511,7 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' Return a list of all telephone numbers. 
-    ''' </summary>
-    ''' <param name="NumberList">Represents the list of all telephone numbers.</param>
-    ''' <returns>True when success</returns>
-    ''' <remarks>The list contains all configured numbers for all number types. The index can be used to see how many numbers are configured For one type. </remarks>
-    Public Function GetNumbers(ByRef NumberList As SIPTelNrList) As Boolean
+    Public Function GetNumbers(ByRef NumberList As SIPTelNrList) As Boolean Implements IX_voipSCPD.GetNumbers
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetNumbers", Nothing)
 
@@ -644,21 +538,7 @@ Public Class X_voipSCPD
 #End Region
 
 #Region "Dialing"
-
-    ''' <summary>
-    ''' Return phone name by <paramref name="i"/> (1 … n) usable for X_AVM-DE_SetDialConfig.
-    ''' <list type="bullet">
-    ''' <item>FON1: Telefon</item>
-    ''' <item>FON2: Telefon</item>
-    ''' <item>ISDN: ISDN/DECT Rundruf</item>
-    ''' <item>DECT: Mobilteil 1</item>
-    ''' </list>
-    ''' </summary>
-    ''' <param name="PhoneName">Represents the PhoneName of index <paramref name="i"/>.</param>
-    ''' <param name="i">Represents the index of all dialable phones.</param>
-    ''' <remarks>SIP IP phones are not usable for X_AVM-DE_SetDialConfig.</remarks>
-    ''' <returns>True when success</returns>
-    Public Function GetPhonePort(ByRef PhoneName As String, i As Integer) As Boolean
+    Public Function GetPhonePort(ByRef PhoneName As String, i As Integer) As Boolean Implements IX_voipSCPD.GetPhonePort
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetPhonePort", New Hashtable From {{"NewIndex", i}})
 
@@ -677,12 +557,7 @@ Public Class X_voipSCPD
 
     End Function
 
-    ''' <summary>
-    ''' Ermittelt das aktuell ausgewählte Telefon der Fritz!Box Wählhilfe
-    ''' </summary>
-    ''' <param name="PhoneName">Phoneport des ausgewählten Telefones.</param>
-    ''' <returns>True when success</returns>
-    Public Function DialGetConfig(ByRef PhoneName As String) As Boolean
+    Public Function DialGetConfig(ByRef PhoneName As String) As Boolean Implements IX_voipSCPD.DialGetConfig
         With TR064Start(ServiceFile, "X_AVM-DE_DialGetConfig", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_PhoneName") Then
@@ -701,31 +576,19 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' Disconnect the dialling process. 
-    ''' </summary>
-    ''' <returns>True</returns>
-    Public Function DialHangup() As Boolean
+    Public Function DialHangup() As Boolean Implements IX_voipSCPD.DialHangup
         With TR064Start(ServiceFile, "X_AVM-DE_DialHangup", Nothing)
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    ''' <summary>
-    ''' Startet den Wählvorgang mit der übergebenen Telefonnummer.
-    ''' </summary>
-    ''' <param name="PhoneNumber">Die zu wählende Telefonnummer.</param>
-    Public Function DialNumber(PhoneNumber As String) As Boolean
+    Public Function DialNumber(PhoneNumber As String) As Boolean Implements IX_voipSCPD.DialNumber
         With TR064Start(ServiceFile, "X_AVM-DE_DialNumber", New Hashtable From {{"NewX_AVM-DE_PhoneNumber", PhoneNumber}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    ''' <summary>
-    ''' Stellt die Wählhilfe der Fritz!Box auf das gewünschte Telefon um.
-    ''' </summary>
-    ''' <param name="PhoneName">Phoneport des Telefones.</param>
-    Public Function DialSetConfig(PhoneName As String) As Boolean
+    Public Function DialSetConfig(PhoneName As String) As Boolean Implements IX_voipSCPD.DialSetConfig
         With TR064Start(ServiceFile, "X_AVM-DE_DialSetConfig", New Hashtable From {{"NewX_AVM-DE_PhoneName", PhoneName}})
             Return Not .ContainsKey("Error")
         End With
@@ -733,7 +596,7 @@ Public Class X_voipSCPD
 #End Region
 
 #Region "AlarmClock"
-    Public Function GetAlarmClock(ByRef AlarmClock As AlarmClock, Index As Integer) As Boolean
+    Public Function GetAlarmClock(ByRef AlarmClock As AlarmClock, Index As Integer) As Boolean Implements IX_voipSCPD.GetAlarmClock
         If AlarmClock Is Nothing Then AlarmClock = New AlarmClock
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetAlarmClock", New Hashtable From {{"NewIndex", Index}})
@@ -755,10 +618,7 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' Returns the amount of alarm clocks.
-    ''' </summary>
-    Public Function GetNumberOfAlarmClocks(ByRef NumberOfAlarmClocks As Integer) As Boolean
+    Public Function GetNumberOfAlarmClocks(ByRef NumberOfAlarmClocks As Integer) As Boolean Implements IX_voipSCPD.GetNumberOfAlarmClocks
         With TR064Start(ServiceFile, "X_AVM-DE_GetNumberOfAlarmClocks", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_NumberOfAlarmClocks") Then
@@ -775,10 +635,7 @@ Public Class X_voipSCPD
         End With
     End Function
 
-    ''' <summary>
-    ''' Enables or disables the alarm clock.
-    ''' </summary>
-    Public Function SetAlarmClockEnable(Index As Integer, AlarmClockEnable As Boolean) As Boolean
+    Public Function SetAlarmClockEnable(Index As Integer, AlarmClockEnable As Boolean) As Boolean Implements IX_voipSCPD.SetAlarmClockEnable
         With TR064Start(ServiceFile, "X_AVM-DE_SetAlarmClockEnable", New Hashtable From {{"NewIndex", Index},
                                                                                          {"NewX_AVM-DE_AlarmClockEnable", AlarmClockEnable.ToInt}})
             Return Not .ContainsKey("Error")

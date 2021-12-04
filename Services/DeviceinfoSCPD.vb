@@ -4,10 +4,10 @@
 ''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf"/>
 ''' </summary>
 Public Class DeviceinfoSCPD
-    Implements IService
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
+    Implements IDeviceinfoSCPD
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IDeviceinfoSCPD.TR064Start
+    Private Property PushStatus As Action(Of LogLevel, String) Implements IDeviceinfoSCPD.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IDeviceinfoSCPD.Servicefile
 
     Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
 
@@ -19,37 +19,29 @@ Public Class DeviceinfoSCPD
     End Sub
 
 #Region "deviceinfoSCPD"
-    Public Function GetInfo(Optional ByRef ManufacturerName As String = "",
-                            Optional ByRef ManufacturerOUI As String = "",
-                            Optional ByRef ModelName As String = "",
-                            Optional ByRef Description As String = "",
-                            Optional ByRef ProductClass As String = "",
-                            Optional ByRef SerialNumber As String = "",
-                            Optional ByRef SoftwareVersion As String = "",
-                            Optional ByRef HardwareVersion As String = "",
-                            Optional ByRef SpecVersion As String = "",
-                            Optional ByRef ProvisioningCode As String = "",
-                            Optional ByRef UpTime As Integer = 0,
-                            Optional ByRef DeviceLog As String = "") As Boolean
+
+
+    Public Function GetInfo(ByRef Info As DeviceInfo) As Boolean Implements IDeviceinfoSCPD.GetInfo
+        If Info Is Nothing Then Info = New DeviceInfo
 
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
             If .ContainsKey("NewSoftwareVersion") Then
 
-                ManufacturerName = .Item("NewManufacturerName").ToString
-                ManufacturerOUI = .Item("NewManufacturerOUI").ToString
-                ModelName = .Item("NewModelName").ToString
-                Description = .Item("NewDescription").ToString
-                ProductClass = .Item("NewProductClass").ToString
-                SerialNumber = .Item("NewSerialNumber").ToString
-                SoftwareVersion = .Item("NewSoftwareVersion").ToString
-                HardwareVersion = .Item("NewHardwareVersion").ToString
-                SpecVersion = .Item("NewSpecVersion").ToString
-                ProvisioningCode = .Item("NewProvisioningCode").ToString
-                UpTime = CInt(.Item("NewUpTime"))
-                DeviceLog = .Item("NewDeviceLog").ToString
+                Info.ManufacturerName = .Item("NewManufacturerName").ToString
+                Info.ManufacturerOUI = .Item("NewManufacturerOUI").ToString
+                Info.ModelName = .Item("NewModelName").ToString
+                Info.Description = .Item("NewDescription").ToString
+                Info.ProductClass = .Item("NewProductClass").ToString
+                Info.SerialNumber = .Item("NewSerialNumber").ToString
+                Info.SoftwareVersion = .Item("NewSoftwareVersion").ToString
+                Info.HardwareVersion = .Item("NewHardwareVersion").ToString
+                Info.SpecVersion = .Item("NewSpecVersion").ToString
+                Info.ProvisioningCode = .Item("NewProvisioningCode").ToString
+                Info.UpTime = CInt(.Item("NewUpTime"))
+                Info.DeviceLog = .Item("NewDeviceLog").ToString
 
-                PushStatus.Invoke(LogLevel.Debug, $"Geräteinformationen der Fritz!Box: {Description}")
+                PushStatus.Invoke(LogLevel.Debug, $"Geräteinformationen der Fritz!Box: {Info.Description}")
 
                 Return True
             Else
@@ -58,17 +50,17 @@ Public Class DeviceinfoSCPD
                 Return False
             End If
         End With
-
     End Function
 
+
     ''' <param name="ProvisioningCode">ddd.ddd.ddd.ddd, d == [0-9] </param>
-    Public Function SetProvisioningCode(ProvisioningCode As String) As Boolean
+    Public Function SetProvisioningCode(ProvisioningCode As String) As Boolean Implements IDeviceinfoSCPD.SetProvisioningCode
         With TR064Start(ServiceFile, "SetProvisioningCode", New Hashtable From {{"NewProvisioningCode", ProvisioningCode}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    Public Function GetDeviceLog(ByRef DeviceLog As String) As Boolean
+    Public Function GetDeviceLog(ByRef DeviceLog As String) As Boolean Implements IDeviceinfoSCPD.GetDeviceLog
         With TR064Start(ServiceFile, "GetDeviceLog", Nothing)
             If .ContainsKey("NewDeviceLog") Then
 
@@ -85,7 +77,7 @@ Public Class DeviceinfoSCPD
         End With
     End Function
 
-    Public Function GetSecurityPort(ByRef SecurityPort As Integer) As Boolean
+    Public Function GetSecurityPort(ByRef SecurityPort As Integer) As Boolean Implements IDeviceinfoSCPD.GetSecurityPort
         With TR064Start(ServiceFile, "GetSecurityPort", Nothing)
             If .ContainsKey("NewSecurityPort") Then
 

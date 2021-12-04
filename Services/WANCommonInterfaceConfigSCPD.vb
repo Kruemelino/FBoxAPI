@@ -4,10 +4,10 @@
 ''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf"/>
 ''' </summary>
 Public Class WANCommonInterfaceConfigSCPD
-    Implements IService
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
+    Implements IWANCommonInterfaceConfigSCPD
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IWANCommonInterfaceConfigSCPD.TR064Start
+    Private Property PushStatus As Action(Of LogLevel, String) Implements IWANCommonInterfaceConfigSCPD.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IWANCommonInterfaceConfigSCPD.Servicefile
 
     Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
 
@@ -21,7 +21,7 @@ Public Class WANCommonInterfaceConfigSCPD
     Public Function GetCommonLinkProperties(ByRef WANAccessType As AccessType,
                                             ByRef Layer1UpstreamMaxBitRate As Integer,
                                             ByRef Layer1DownstreamMaxBitRate As Integer,
-                                            ByRef PhysicalLinkStatus As PhysicalLinkStatus) As Boolean
+                                            ByRef PhysicalLinkStatus As PhysicalLinkStatus) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetCommonLinkProperties
 
         With TR064Start(ServiceFile, "GetCommonLinkProperties", Nothing)
 
@@ -45,10 +45,7 @@ Public Class WANCommonInterfaceConfigSCPD
 
     End Function
 
-    ''' <summary>
-    ''' Needs IGD to work
-    ''' </summary>
-    Public Function GetTotalBytesSent(ByRef TotalBytesSent As Integer) As Boolean
+    Public Function GetTotalBytesSent(ByRef TotalBytesSent As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetTotalPacketsSent
 
         With TR064Start(ServiceFile, "GetTotalBytesSent", Nothing)
 
@@ -69,10 +66,7 @@ Public Class WANCommonInterfaceConfigSCPD
 
     End Function
 
-    ''' <summary>
-    ''' Needs IGD to work
-    ''' </summary>
-    Public Function GetTotalBytesReceived(ByRef TotalBytesReceived As Integer) As Boolean
+    Public Function GetTotalBytesReceived(ByRef TotalBytesReceived As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetTotalBytesReceived
 
         With TR064Start(ServiceFile, "GetTotalBytesReceived", Nothing)
 
@@ -93,10 +87,7 @@ Public Class WANCommonInterfaceConfigSCPD
 
     End Function
 
-    ''' <summary>
-    ''' Needs IGD to work
-    ''' </summary>
-    Public Function GetTotalPacketsSent(ByRef TotalPacketsSent As Integer) As Boolean
+    Public Function GetTotalPacketsSent(ByRef TotalPacketsSent As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetTotalBytesSent
 
         With TR064Start(ServiceFile, "GetTotalPacketsSent", Nothing)
 
@@ -117,10 +108,7 @@ Public Class WANCommonInterfaceConfigSCPD
 
     End Function
 
-    ''' <summary>
-    ''' Needs IGD to work
-    ''' </summary>
-    Public Function GetTotalPacketsReceived(ByRef TotalPacketsReceived As Integer) As Boolean
+    Public Function GetTotalPacketsReceived(ByRef TotalPacketsReceived As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetTotalPacketsReceived
 
         With TR064Start(ServiceFile, "GetTotalPacketsReceived", Nothing)
 
@@ -141,7 +129,7 @@ Public Class WANCommonInterfaceConfigSCPD
 
     End Function
 
-    Public Function SetWANAccessType(AccessType As AccessType) As Boolean
+    Public Function SetWANAccessType(AccessType As AccessType) As Boolean Implements IWANCommonInterfaceConfigSCPD.SetWANAccessType
 
         With TR064Start(ServiceFile, "X_AVM-DE_SetWANAccessType", New Hashtable From {{"NewAccessType", AccessType.ToString}})
             Return Not .ContainsKey("Error")
@@ -149,7 +137,7 @@ Public Class WANCommonInterfaceConfigSCPD
 
     End Function
 
-    Public Function GetOnlineMonitor(ByRef OnlineMonitor As OnlineMonitor, SyncGroupIndex As Integer) As Boolean
+    Public Function GetOnlineMonitor(ByRef OnlineMonitor As OnlineMonitor, SyncGroupIndex As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetOnlineMonitor
         If OnlineMonitor Is Nothing Then OnlineMonitor = New OnlineMonitor
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetOnlineMonitor", New Hashtable From {{"NewSyncGroupIndex", SyncGroupIndex}})
@@ -173,7 +161,7 @@ Public Class WANCommonInterfaceConfigSCPD
                 Return True
 
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"X_AVM-DE_GetVoIPAccount konnte nicht aufgelößt werden. '{ .Item("Error")}'")
+                PushStatus.Invoke(LogLevel.Warn, $"X_AVM-GetOnlineMonitor konnte nicht aufgelößt werden. '{ .Item("Error")}'")
 
                 Return False
             End If

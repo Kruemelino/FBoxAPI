@@ -1,9 +1,9 @@
 ﻿Public Class UserModeSCPD
-    Implements IService
+    Implements IServiceBase
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IService.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IService.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IService.Servicefile
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IServiceBase.TR064Start
+    Private Property PushStatus As Action(Of LogLevel, String) Implements IServiceBase.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IServiceBase.Servicefile
     Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
 
         TR064Start = Start

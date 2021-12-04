@@ -240,3 +240,120 @@ Public Enum AccessType
     DSL
     Ethernet
 End Enum
+
+Public Enum UpdateEnum
+    ''' <summary>
+    ''' The update state is unknown
+    ''' </summary>
+    unknown
+
+    ''' <summary>
+    ''' Update for the device failed
+    ''' </summary>
+    failed
+
+    ''' <summary>
+    ''' Update for the device was successful 
+    ''' </summary>
+    succeeded
+End Enum
+
+#Region "HomeAuto"
+Public Enum EnabledEnum
+    ''' <summary>
+    ''' Feature not supported
+    ''' </summary> 
+    DISABLED
+
+    ''' <summary>
+    ''' Feature supported
+    ''' </summary>
+    ENABLED
+
+    ''' <summary>
+    ''' Feature undefined
+    ''' </summary>
+    UNDEFINED
+End Enum
+Public Enum PresentEnum
+    ''' <summary>
+    ''' Device is disconnected
+    ''' </summary> 
+    DISCONNECTED
+
+    ''' <summary>
+    ''' Device is registered
+    ''' </summary>
+    REGISTERED
+
+    ''' <summary>
+    ''' Device is connected
+    ''' </summary>
+    CONNECTED
+
+    ''' <summary>
+    ''' unknown
+    ''' </summary>
+    UNKNOWN
+End Enum
+Public Enum SwModeEnum
+    ''' <summary>
+    ''' Automatic timer
+    ''' </summary>
+    AUTO
+    ''' <summary>
+    ''' Undefined timer
+    ''' </summary>
+    MANUAL
+    ''' <summary>
+    ''' Undefined timer
+    ''' </summary>
+    UNDEFINED
+End Enum
+Public Enum SwStateEnum
+    ''' <summary>
+    ''' Switch o
+    ''' </summary>
+    OFF
+    ''' <summary>
+    ''' Switch On
+    ''' </summary>
+    [ON]
+    ''' <summary>
+    ''' Toggle switch state
+    ''' </summary>
+    TOGGLE
+    ''' <summary>
+    ''' Undefined switch state
+    ''' </summary>
+    UNDEFINED
+End Enum
+Public Enum ValidEnum
+    ''' <summary>
+    ''' Invalid value
+    ''' </summary>
+    INVALID
+    ''' <summary>
+    ''' Valid value
+    ''' </summary>
+    VALID
+    ''' <summary>
+    ''' Undefined value
+    ''' </summary>
+    UNDEFINED
+End Enum
+Public Enum VentilEnum
+    ''' <summary>
+    ''' Valve closed
+    ''' </summary>
+    CLOSED
+    ''' <summary>
+    ''' Valve opened
+    ''' </summary>
+    OPEN
+    ''' <summary>
+    ''' Valve temperature controlled
+    ''' </summary>
+    TEMP
+End Enum
+#End Region
