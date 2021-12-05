@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_ AVM-DE_TAM 
 ''' Date: 2019-06-28
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf</see>
 ''' </summary>
-Public Class X_tamSCPD
+Friend Class X_tamSCPD
     Implements IX_tamSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_tamSCPD.TR064Start

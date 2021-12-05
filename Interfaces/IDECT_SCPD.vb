@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – DeviceInfo
 ''' Date: 2009-7-15
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_dectSCPD.pdf</see>
 ''' </summary>
-Friend Interface IDECT_SCPD
+Public Interface IDECT_SCPD
     Inherits IServiceBase
 
     ''' <summary>

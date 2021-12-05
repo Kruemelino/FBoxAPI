@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – LANConfigSecurity
 ''' Date: 2020-02-27
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/lanconfigsecuritySCPD.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/lanconfigsecuritySCPD.pdf</see>
 ''' </summary>
-Public Class LANConfigSecuritySCPD
+Friend Class LANConfigSecuritySCPD
     Implements ILANConfigSecuritySCPD
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements ILANConfigSecuritySCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements ILANConfigSecuritySCPD.PushStatus

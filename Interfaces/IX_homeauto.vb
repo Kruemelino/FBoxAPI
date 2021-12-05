@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – Homeauto
 ''' Date: 2019-04-29
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf</see>
 ''' </summary>
-Friend Interface IX_homeauto
+Public Interface IX_homeauto
     Inherits IServiceBase
 
     ''' <summary>

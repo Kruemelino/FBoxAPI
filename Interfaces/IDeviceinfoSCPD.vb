@@ -1,10 +1,10 @@
 ﻿''' <summary>
 ''' TR-064 Support – DeviceInfo
 ''' Date: 2009-7-15
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf</see>
 ''' </summary>
 ''' 
-Friend Interface IDeviceinfoSCPD
+Public Interface IDeviceinfoSCPD
     Inherits IServiceBase
     Function GetInfo(ByRef Info As DeviceInfo) As Boolean
     Function SetProvisioningCode(ProvisioningCode As String) As Boolean

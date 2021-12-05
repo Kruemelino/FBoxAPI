@@ -10,14 +10,19 @@ Public Class FritzBoxTR64
     Private Property FBoxIPAdresse As String
 
 #Region "Services"
-    Public Property Deviceconfig As DeviceconfigSCPD
-    Public Property Deviceinfo As DeviceinfoSCPD
-    Public Property LANConfigSecurity As LANConfigSecuritySCPD
-    Public Property X_contact As X_contactSCPD
-    Public Property X_tam As X_tamSCPD
-    Public Property X_voip As X_voipSCPD
+    Public Property DECT As IDECT_SCPD
+    Public Property Deviceconfig As IDeviceconfigSCPD
+    Public Property Deviceinfo As IDeviceinfoSCPD
+    Public Property Hosts As IHostsSCPD
+    Public Property LANConfigSecurity As ILANConfigSecuritySCPD
+    Public Property X_contact As IX_contactSCPD
+    Public Property X_HomeAuto As IX_homeauto
+    Public Property X_tam As IX_tamSCPD
+    Public Property X_voip As IX_voipSCPD
     Public Property UserMode As UserModeSCPD
-    Public Property WANCommonInterfaceConfig As WANCommonInterfaceConfigSCPD
+    Public Property WANCommonInterfaceConfig As IWANCommonInterfaceConfigSCPD
+    Public Property Wlanconfig As IWlanconfigSCPD
+
 #End Region
 
 
@@ -53,11 +58,15 @@ Public Class FritzBoxTR64
                     PushStatus(LogLevel.Debug, "Fritz!Box TR064 API erfolgreich initialisiert.")
 
                     ' Lade die AVM Services
+                    DECT = New DECT_SCPD(AddressOf TR064Start, AddressOf PushStatus)
                     Deviceconfig = New DeviceconfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start, AddressOf PushStatus)
+                    Hosts = New HostsSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start, AddressOf PushStatus)
                     WANCommonInterfaceConfig = New WANCommonInterfaceConfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
+                    Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     X_contact = New X_contactSCPD(AddressOf TR064Start, AddressOf PushStatus)
+                    X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     X_voip = New X_voipSCPD(AddressOf TR064Start, AddressOf PushStatus)
 

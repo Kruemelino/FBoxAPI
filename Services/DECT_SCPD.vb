@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – DeviceInfo
 ''' Date: 2009-7-15
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_dectSCPD.pdf</see>
 ''' </summary>
-Public Class DECT_SCPD
+Friend Class DECT_SCPD
     Implements IDECT_SCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IDECT_SCPD.TR064Start

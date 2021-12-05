@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – DeviceConfig
 ''' Date: 2021-01-20
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf</see>
 ''' </summary>
-Public Class DeviceconfigSCPD
+Friend Class DeviceconfigSCPD
     Implements IDeviceconfigSCPD
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IDeviceconfigSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IDeviceconfigSCPD.PushStatus

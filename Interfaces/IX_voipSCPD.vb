@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_VoIP
 ''' Date: 2019-08-14
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voip-avm.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voip-avm.pdf</see>
 ''' </summary>
-Friend Interface IX_voipSCPD
+Public Interface IX_voipSCPD
     Inherits IServiceBase
 
 #Region "GetInfo"

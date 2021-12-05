@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_OnTel
 ''' Date: 2021-02-09
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf</see>
 ''' </summary>
-Public Class X_contactSCPD
+Friend Class X_contactSCPD
     Implements IX_contactSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_contactSCPD.TR064Start

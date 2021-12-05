@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_VoIP
 ''' Date: 2019-08-14
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voip-avm.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voip-avm.pdf</see>
 ''' </summary>
-Public Class X_voipSCPD
+Friend Class X_voipSCPD
     Implements IX_voipSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_voipSCPD.TR064Start
@@ -390,7 +390,7 @@ Public Class X_voipSCPD
             If .ContainsKey("NewX_AVM-DE_ClientList") Then
 
                 If Not DeserializeXML(.Item("NewX_AVM-DE_ClientList").ToString(), False, ClientList) Then
-                    PushStatus.Invoke(LogLevel.Warn, $"X_AVM-DE_GetNumbers konnte für nicht deserialisiert werden.")
+                    PushStatus.Invoke(LogLevel.Warn, $"X_AVM-DE_ClientList konnte für nicht deserialisiert werden.")
                 End If
 
                 ' Wenn keine SIP-Clients angeschlossen wurden, gib eine leere Klasse zurück

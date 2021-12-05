@@ -357,3 +357,35 @@ Public Enum VentilEnum
     TEMP
 End Enum
 #End Region
+
+#Region "WLANConfiguration"
+Public Enum WPSModeEnum
+    ''' <summary>
+    ''' Push Button Configuration
+    ''' </summary>
+    pbc
+
+    ''' <summary>
+    ''' Stop running WPS session
+    ''' </summary>
+    [stop]
+
+    ''' <summary>
+    ''' WPS disabled or unknown WPS mode 
+    ''' </summary>
+    other
+End Enum
+
+Public Enum WPSStatusEnum
+    off
+    inactive
+    active
+    success
+    err_common
+    err_timeout
+    err_reconfig
+    err_internal
+    err_abort
+End Enum
+
+#End Region

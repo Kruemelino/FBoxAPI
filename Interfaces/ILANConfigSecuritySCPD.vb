@@ -1,10 +1,10 @@
 ﻿''' <summary>
 ''' TR-064 Support – LANConfigSecurity
 ''' Date: 2020-02-27
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/lanconfigsecuritySCPD.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/lanconfigsecuritySCPD.pdf</see>
 ''' </summary>
 
-Friend Interface ILANConfigSecuritySCPD
+Public Interface ILANConfigSecuritySCPD
     Inherits IServiceBase
 
     ''' <param name="MaxCharsPassword">32</param>

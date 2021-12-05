@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – DeviceConfig
 ''' Date: 2021-01-20
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf</see>
 ''' </summary>
-Friend Interface IDeviceconfigSCPD
+Public Interface IDeviceconfigSCPD
     Inherits IServiceBase
 
     Function GetPersistentData(ByRef PersistentData As String) As Boolean

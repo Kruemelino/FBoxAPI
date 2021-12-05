@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – WANCommonInterfaceConfig
 ''' Date: 2018-09-05
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wancommonifconfigSCPD.pdf</see>
 ''' </summary>
-Public Class WANCommonInterfaceConfigSCPD
+Friend Class WANCommonInterfaceConfigSCPD
     Implements IWANCommonInterfaceConfigSCPD
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IWANCommonInterfaceConfigSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IWANCommonInterfaceConfigSCPD.PushStatus

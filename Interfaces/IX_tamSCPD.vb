@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_ AVM-DE_TAM 
 ''' Date: 2019-06-28
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf</see>
 ''' </summary>
-Friend Interface IX_tamSCPD
+Public Interface IX_tamSCPD
     Inherits IServiceBase
 
     ''' <summary>

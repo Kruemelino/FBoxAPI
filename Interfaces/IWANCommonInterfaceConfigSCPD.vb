@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – WANCommonInterfaceConfig
 ''' Date: 2018-09-05
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wancommonifconfigSCPD.pdf</see>
 ''' </summary>
-Friend Interface IWANCommonInterfaceConfigSCPD
+Public Interface IWANCommonInterfaceConfigSCPD
     Inherits IServiceBase
 
     Function GetCommonLinkProperties(ByRef WANAccessType As AccessType,

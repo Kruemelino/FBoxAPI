@@ -1,9 +1,9 @@
 ﻿''' <summary>
 ''' TR-064 Support – Homeauto
 ''' Date: 2019-04-29
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf"/>
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf</see>
 ''' </summary>
-Public Class X_homeautoSCPD
+Friend Class X_homeautoSCPD
     Implements IX_homeauto
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_homeauto.TR064Start
