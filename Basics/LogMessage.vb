@@ -4,8 +4,15 @@
         Message = m
     End Sub
 
+    Public Sub New(l As LogLevel, m As String, e As Exception)
+        Level = l
+        Message = m
+        Ex = e
+    End Sub
+
     Public Property Level As LogLevel
     Public Property Message As String
+    Public Property Ex As Exception
 End Class
 
 ''' <summary>

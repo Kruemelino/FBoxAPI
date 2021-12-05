@@ -13,6 +13,8 @@ Imports System.Xml.Serialization
 
     <XmlIgnore> Friend Property SCPD As ServiceControlProtocolDefinition
     <XmlIgnore> Friend Property FBoxIPAdresse As String
+    <XmlIgnore> Friend Property XML As Serializer
+    <XmlIgnore> Friend Property PushStatus As Action(Of LogLevel, Exception, String)
 
     Friend Function GetActionByName(ActionName As String) As Action
         Return SCPD?.ActionList.Find(Function(Action) Action.Name = ActionName)
@@ -29,11 +31,11 @@ Imports System.Xml.Serialization
         If SCPD Is Nothing Then
             ' Wenn keine IPAddresse vorhanden ist, was eigentlich nicht möglich ist, dann wirf einen Fehler aus.
             If FBoxIPAdresse.IsStringNothingOrEmpty Then
-                'NLogger.Error($"Action '{ActionName}': IP Adresse nicht vorhanden.")
+                PushStatus?.Invoke(LogLevel.Error, New Exception($"Action '{ActionName}': IP Adresse nicht vorhanden."), String.Empty)
             Else
-                If Not DeserializeXML($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{DfltTR064Port}{SCPDURL}", True, SCPD) Then
+                If Not XML.Deserialize($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{DfltTR064Port}{SCPDURL}", True, SCPD) Then
                     ' Fehlerfall
-                    'NLogger.Error($"Action '{ActionName}': ServiceControlProtocolDefinition nicht geladen.")
+                    PushStatus?.Invoke(LogLevel.Error, New Exception($"Action '{ActionName}': ServiceControlProtocolDefinition nicht geladen."), String.Empty)
                 End If
             End If
         End If
@@ -66,7 +68,7 @@ Imports System.Xml.Serialization
         ActionInputData.Clear()
     End Function
 
-    Friend Function Start([Action] As Action, InputArguments As Hashtable, NetworkCredential As NetworkCredential) As Hashtable
+    Friend Function Start([Action] As Action, InputArguments As Hashtable, http As HttpFunctions, NetworkCredential As NetworkCredential) As Hashtable
         Dim ReturnXMLDoc As New XmlDocument
         Dim OutputHashTable As New Hashtable
         Dim Response As String = String.Empty
@@ -75,28 +77,28 @@ Imports System.Xml.Serialization
 
             If FBoxIPAdresse.IsStringNothingOrEmpty Then
                 ' Wenn keine IPAddresse vorhanden ist, was eigentlich nicht möglich ist, dann wirf einen Fehler aus.
-                'NLogger.Error($"Action '{[Action]}': IP Adresse nicht vorhanden.")
-                .Add("Error", String.Empty)
+                PushStatus?.Invoke(LogLevel.Error, New Exception($"Action '{[Action]}': IP Adresse nicht vorhanden."), String.Empty)
+                .Add("Error", $"Action '{[Action]}': IP Adresse nicht vorhanden.")
             Else
                 ' Header festlegen
                 Dim TR064Header As New WebHeaderCollection From {{HttpRequestHeader.ContentType, TR064ContentType},
                                                                  {HttpRequestHeader.UserAgent, TR064UserAgent},
                                                                  {"SOAPACTION", $"""{ServiceType}#{Action.Name}"""}}
 
-                If UploadData(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, ControlURL).Uri,
-                              GetRequest(Action, InputArguments).InnerXml,
-                              NetworkCredential,
-                              Response,
-                              TR064Header) Then
+                If http.UploadData(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, ControlURL).Uri,
+                                   GetRequest(Action, InputArguments).InnerXml,
+                                   NetworkCredential,
+                                   Response,
+                                   TR064Header) Then
 
-                    'NLogger.Trace($"Action {Action.Name}: {Response}")
+                    PushStatus?.Invoke(LogLevel.Trace, Nothing, $"Action {Action.Name}: {Response}")
 
                     Try
                         ReturnXMLDoc.LoadXml(Response)
                     Catch ex As XmlException
                         ' Fehlerfall
                         .Add("Error", Response)
-                        'NLogger.Error(ex, Response)
+                        PushStatus?.Invoke(LogLevel.Error, ex, Response)
                     End Try
 
                     ' TODO: Serialisieren
@@ -109,7 +111,7 @@ Imports System.Xml.Serialization
                 Else
                     ' Fehlerfall
                     .Add("Error", Response)
-                    'NLogger.Error(Response)
+                    PushStatus?.Invoke(LogLevel.Error, New Exception(Response), String.Empty)
                 End If
 
             End If

@@ -9,12 +9,16 @@ Friend Class X_voipSCPD
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_voipSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IX_voipSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_voipSCPD.Servicefile
+    Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
         ServiceFile = SCPDFiles.x_voipSCPD
+
         TR064Start = Start
 
         PushStatus = Status
+
+        XML = XMLSerializer
     End Sub
 
 #Region "GetInfo"
@@ -336,7 +340,7 @@ Friend Class X_voipSCPD
                 Client.PhoneName = .Item("NewX_AVM-DE_PhoneName").ToString
                 Client.ClientId = .Item("NewX_AVM-DE_ClientId").ToString
                 Client.OutGoingNumber = .Item("NewX_AVM-DE_OutGoingNumber").ToString
-                If Not DeserializeXML(.Item("NewX_AVM-DE_InComingNumbers").ToString(), False, Client.InComingNumbers) Then
+                If Not XML.Deserialize(.Item("NewX_AVM-DE_InComingNumbers").ToString(), False, Client.InComingNumbers) Then
                     PushStatus.Invoke(LogLevel.Warn, $"NewX_AVM-DE_InComingNumbers konnte für nicht deserialisiert werden. '{ .Item("Error")}'")
                 End If
                 Client.ExternalRegistration = CBool(.Item("NewX_AVM-DE_ExternalRegistration"))
@@ -366,7 +370,7 @@ Friend Class X_voipSCPD
                 Client.PhoneName = .Item("NewX_AVM-DE_PhoneName").ToString
                 Client.ClientId = .Item("NewX_AVM-DE_ClientId").ToString
                 Client.OutGoingNumber = .Item("NewX_AVM-DE_OutGoingNumber").ToString
-                If Not DeserializeXML(.Item("NewX_AVM-DE_InComingNumbers").ToString(), False, Client.InComingNumbers) Then
+                If Not XML.Deserialize(.Item("NewX_AVM-DE_InComingNumbers").ToString(), False, Client.InComingNumbers) Then
                     PushStatus.Invoke(LogLevel.Warn, $"NewX_AVM-DE_InComingNumbers konnte für nicht deserialisiert werden. '{ .Item("Error")}'")
                 End If
                 Client.ExternalRegistration = CBool(.Item("NewX_AVM-DE_ExternalRegistration"))
@@ -389,7 +393,7 @@ Friend Class X_voipSCPD
 
             If .ContainsKey("NewX_AVM-DE_ClientList") Then
 
-                If Not DeserializeXML(.Item("NewX_AVM-DE_ClientList").ToString(), False, ClientList) Then
+                If Not XML.Deserialize(.Item("NewX_AVM-DE_ClientList").ToString(), False, ClientList) Then
                     PushStatus.Invoke(LogLevel.Warn, $"X_AVM-DE_ClientList konnte für nicht deserialisiert werden.")
                 End If
 
@@ -450,7 +454,13 @@ Friend Class X_voipSCPD
                                InComingNumbers As SIPTelNrList,
                                ExternalRegistration As String) As Boolean Implements IX_voipSCPD.SetClient3
 
-        Return SetClient3(ClientIndex, ClientPassword, PhoneName, ClientId, OutGoingNumber, InComingNumbers.ToXMLString, ExternalRegistration)
+        Dim XMLString As String = String.Empty
+        If XML.SerializeToString(InComingNumbers, XMLString) Then
+            Return SetClient3(ClientIndex, ClientPassword, PhoneName, ClientId, OutGoingNumber, XMLString, ExternalRegistration)
+        Else
+            Return False
+        End If
+
     End Function
 
     Public Function SetClient4(ClientIndex As Integer,
@@ -480,7 +490,13 @@ Friend Class X_voipSCPD
                                InComingNumbers As SIPTelNrList,
                                InternalNumber As String) As Boolean Implements IX_voipSCPD.SetClient4
 
-        Return SetClient4(ClientIndex, ClientPassword, PhoneName, ClientId, OutGoingNumber, InComingNumbers.ToXMLString, InternalNumber)
+
+        Dim XMLString As String = String.Empty
+        If XML.SerializeToString(InComingNumbers, XMLString) Then
+            Return SetClient4(ClientIndex, ClientPassword, PhoneName, ClientId, OutGoingNumber, XMLString, InternalNumber)
+        Else
+            Return False
+        End If
 
     End Function
 
@@ -517,7 +533,7 @@ Friend Class X_voipSCPD
 
             If .ContainsKey("NewNumberList") Then
 
-                If Not DeserializeXML(.Item("NewNumberList").ToString(), False, NumberList) Then
+                If Not XML.Deserialize(.Item("NewNumberList").ToString(), False, NumberList) Then
                     PushStatus.Invoke(LogLevel.Warn, $"X_AVM-DE_GetNumbers konnte für nicht deserialisiert werden. '{ .Item("Error")}'")
                 End If
 

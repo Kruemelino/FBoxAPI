@@ -1,9 +1,15 @@
 ﻿Imports System.Net
 Imports System.Text
-Friend Module WebFunctions
+Friend Class HttpFunctions
 
     Private Const DefaultHeaderKeepAlive As Boolean = False
     Private Const DefaultHeaderUserAgent As String = "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko"
+
+    Private Property PushStatus As Action(Of LogLevel, Exception, String)
+
+    Public Sub New(Status As Action(Of LogLevel, Exception, String))
+        PushStatus = Status
+    End Sub
 
 #Region "Netzwerkfunktionen"
     ''' <summary>
@@ -24,9 +30,10 @@ Friend Module WebFunctions
 
         Try
             PingReply = PingSender.Send(IPAdresse, timeout, buffer, Options)
+
         Catch ex As Exception
 
-            'NLogger.Warn(ex, $"Ping zu {IPAdresse} nicht erfolgreich")
+            PushStatus.Invoke(LogLevel.Warn, ex, $"Ping zu {IPAdresse} nicht erfolgreich")
             Ping = False
         End Try
 
@@ -41,7 +48,7 @@ Friend Module WebFunctions
                                 IPAdresse = _IPAddress.ToString
                                 ' Prüfen ob es eine generel gültige lokale IPv6 Adresse gibt: fd00::2665:11ff:fed8:6086
                                 ' und wie die zu ermitteln ist
-                                'NLogger.Info($"IPv6: { .Address}, IPv4: {IPAdresse}")
+                                PushStatus.Invoke(LogLevel.Debug, Nothing, $"IPv6: { .Address}, IPv4: {IPAdresse}")
                                 Exit For
                             End If
                         Next
@@ -50,14 +57,12 @@ Friend Module WebFunctions
                     End If
                     Ping = True
                 Else
-                    'NLogger.Warn($"Ping zu '{IPAdresse}' nicht erfolgreich: { .Status}")
+                    PushStatus.Invoke(LogLevel.Warn, Nothing, $"Ping zu '{IPAdresse}' nicht erfolgreich: { .Status}")
                     Ping = False
                 End If
             End With
         End If
         PingSender.Dispose()
-        'Options = Nothing
-        'PingSender = Nothing
     End Function
 
 #Region "GET"
@@ -90,22 +95,22 @@ Friend Module WebFunctions
 
                         Try
                             Response = .DownloadString(UniformResourceIdentifier)
+
                             Return True
 
                         Catch ex As ArgumentNullException
                             ' Der address-Parameter ist null.
-                            'NLogger.Error(ex, "Der address-Parameter ist null.")
+                            PushStatus.Invoke(LogLevel.Error, ex, "Der address-Parameter ist null.")
 
                         Catch ex As WebException
                             ' Der durch Kombinieren von BaseAddress und address gebildete URI ist ungültig.
                             ' - oder -
                             ' Fehler beim Herunterladen der Ressource.
-
-                            'NLogger.Error(ex, $"Link: {UniformResourceIdentifier.AbsoluteUri} ")
+                            PushStatus.Invoke(LogLevel.Error, ex, $"Link: {UniformResourceIdentifier.AbsoluteUri} ")
 
                         Catch ex As NotSupportedException
                             ' Die Methode wurde gleichzeitig für mehrere Threads aufgerufen.
-                            'NLogger.Error(ex, "Die Methode wurde gleichzeitig für mehrere Threads aufgerufen.")
+                            PushStatus.Invoke(LogLevel.Error, ex, "Die Methode wurde gleichzeitig für mehrere Threads aufgerufen.")
 
                         End Try
                     End With
@@ -152,12 +157,14 @@ Friend Module WebFunctions
                     ' Der address-Parameter ist null.
                     ' - oder -
                     ' Der Data - Parameter ist null.
-                    'NLogger.Error(ex, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Data: '{PostData}' ")
+                    PushStatus.Invoke(LogLevel.Error, ex, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Data: '{PostData}' ")
+
                 Catch ex As WebException
                     ' Der durch Kombinieren von BaseAddress und address gebildete URI ist ungültig.
                     ' - oder -
                     ' Der Server, der Host dieser Ressource ist, hat nicht geantwortet.
-                    'NLogger.Error(ex, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Data: '{PostData}' ")
+                    PushStatus.Invoke(LogLevel.Error, ex, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Data: '{PostData}' ")
+
                 End Try
             End With
         End Using
@@ -168,4 +175,4 @@ Friend Module WebFunctions
 
 #End Region
 
-End Module
+End Class

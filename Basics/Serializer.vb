@@ -1,9 +1,13 @@
 ﻿Imports System.IO
-Imports System.Text
 Imports System.Xml
 Imports System.Xml.Serialization
 
-Friend Module Serializer
+Friend Class Serializer
+    Private Property PushStatus As Action(Of LogLevel, Exception, String)
+
+    Public Sub New(Status As Action(Of LogLevel, Exception, String))
+        PushStatus = Status
+    End Sub
 
 #Region "XML"
 #Region "CheckXMLData"
@@ -63,7 +67,7 @@ Friend Module Serializer
     ''' <param name="IsPath">Angabe, ob es sich um einen Pfad handelt.</param>
     ''' <param name="ReturnObj">Deserialisiertes Datenobjekt vom Type <typeparamref name="T"/>.</param>
     ''' <returns>True oder False, je nach Ergebnis der Deserialisierung</returns>
-    Friend Function DeserializeXML(Of T)(Data As String, IsPath As Boolean, ByRef ReturnObj As T) As Boolean
+    Friend Function Deserialize(Of T)(Data As String, IsPath As Boolean, ByRef ReturnObj As T) As Boolean
 
         Dim xDoc As New XmlDocument
         If CheckXMLData(Data, IsPath, xDoc) Then
@@ -84,11 +88,12 @@ Friend Module Serializer
 
                     Catch ex As InvalidOperationException
 
-                        'NLogger.Fatal(ex, $"Bei der Deserialisierung ist ein Fehler aufgetreten.")
+                        PushStatus.Invoke(LogLevel.Fatal, ex, $"Bei der Deserialisierung ist ein Fehler aufgetreten.")
                         Return False
                     End Try
                 Else
-                    'NLogger.Fatal($"Fehler beim Deserialisieren.")
+
+                    PushStatus.Invoke(LogLevel.Fatal, New Exception($"Fehler beim Deserialisieren."), String.Empty)
                     Return False
                 End If
 
@@ -96,9 +101,9 @@ Friend Module Serializer
             End Using
 
         Else
-            'NLogger.Fatal($"Fehler beim Deserialisieren: {Data} kann nicht deserialisert werden.")
-            Return False
 
+            PushStatus.Invoke(LogLevel.Fatal, New Exception($"Fehler beim Deserialisieren: {Data} kann nicht deserialisert werden."), String.Empty)
+            Return False
         End If
         xDoc = Nothing
     End Function
@@ -107,7 +112,7 @@ Friend Module Serializer
 
 #Region "XML Serialisieren"
 
-    Friend Function XmlSerializeToString(Of T)(objectData As T, ByRef result As String) As Boolean
+    Friend Function SerializeToString(Of T)(objectData As T, ByRef result As String) As Boolean
 
         If objectData IsNot Nothing Then
             Dim XmlSerializerNamespace As New XmlSerializerNamespaces()
@@ -122,7 +127,8 @@ Friend Module Serializer
 
                         Return True
                     Catch ex As InvalidOperationException
-                        'NLogger.Fatal(ex, $"Fehler beim Serialisieren von {GetType(T).FullName}: {objectData}")
+
+                        PushStatus.Invoke(LogLevel.Fatal, ex, $"Fehler beim Serialisieren von {GetType(T).FullName}: {objectData}")
 
                         Return False
                     End Try
@@ -138,22 +144,22 @@ Friend Module Serializer
 
 #Region "XmlDeserializationEvents"
     Private Sub On_UnknownAttribute(sender As Object, e As XmlAttributeEventArgs)
-        'NLogger.Warn($"Unknown Attribute: {e.Attr.Name} in {e.ObjectBeingDeserialized}")
+        PushStatus.Invoke(LogLevel.Warn, Nothing, $"Unknown Attribute: {e.Attr.Name} in {e.ObjectBeingDeserialized}")
     End Sub
 
     Private Sub On_UnknownElement(sender As Object, e As XmlElementEventArgs)
-        'NLogger.Warn($"Unknown Element: {e.Element.Name} in {e.ObjectBeingDeserialized}")
+        PushStatus.Invoke(LogLevel.Warn, Nothing, $"Unknown Element: {e.Element.Name} in {e.ObjectBeingDeserialized}")
     End Sub
 
     Private Sub On_UnknownNode(sender As Object, e As XmlNodeEventArgs)
-        'NLogger.Warn($"Unknown Node: {e.Name} in {e.ObjectBeingDeserialized}")
+        PushStatus.Invoke(LogLevel.Warn, Nothing, $"Unknown Node: {e.Name} in {e.ObjectBeingDeserialized}")
     End Sub
 
     Private Sub On_UnreferencedObject(sender As Object, e As UnreferencedObjectEventArgs)
-        'NLogger.Warn($"Unreferenced Object: {e.UnreferencedId}")
+        PushStatus.Invoke(LogLevel.Warn, Nothing, $"Unreferenced Object: {e.UnreferencedId}")
     End Sub
 #End Region
 
 #End Region
 
-End Module
+End Class

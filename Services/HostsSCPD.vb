@@ -9,14 +9,17 @@ Friend Class HostsSCPD
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IHostsSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IHostsSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IHostsSCPD.Servicefile
+    Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
 
         ServiceFile = SCPDFiles.hostsSCPD
 
         TR064Start = Start
 
         PushStatus = Status
+
+        XML = XMLSerializer
     End Sub
 
     Public Function GetHostNumberOfEntries(ByRef HostNumberOfEntries As Integer) As Boolean Implements IHostsSCPD.GetHostNumberOfEntries
@@ -200,7 +203,7 @@ Friend Class HostsSCPD
 
             If .ContainsKey("NewX_AVM-DE_HostListPath") Then
 
-                If Not DeserializeXML(.Item("NewX_AVM-DE_HostListPath").ToString(), False, Hosts) Then
+                If Not XML.Deserialize(.Item("NewX_AVM-DE_HostListPath").ToString(), False, Hosts) Then
                     PushStatus.Invoke(LogLevel.Warn, $"X_AVM-DE_GetHostListPath konnte für nicht deserialisiert werden.")
                 End If
 

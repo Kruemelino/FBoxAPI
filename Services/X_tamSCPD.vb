@@ -9,14 +9,17 @@ Friend Class X_tamSCPD
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_tamSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IX_tamSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_tamSCPD.Servicefile
+    Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
 
         ServiceFile = SCPDFiles.x_tamSCPD
 
         TR064Start = Start
 
         PushStatus = Status
+
+        XML = XMLSerializer
     End Sub
 
     Public Function GetTAMInfo(ByRef TAMInfo As TAMInfo, i As Integer) As Boolean Implements IX_tamSCPD.GetTAMInfo
@@ -110,7 +113,7 @@ Friend Class X_tamSCPD
 
             If .ContainsKey("NewTAMList") Then
 
-                If Not DeserializeXML(.Item("NewTAMList").ToString(), False, List) Then
+                If Not XML.Deserialize(.Item("NewTAMList").ToString(), False, List) Then
                     PushStatus.Invoke(LogLevel.Warn, $"GetTAMList konnte für nicht deserialisiert werden.")
                 End If
 

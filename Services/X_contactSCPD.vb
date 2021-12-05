@@ -9,14 +9,17 @@ Friend Class X_contactSCPD
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_contactSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IX_contactSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_contactSCPD.Servicefile
+    Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
 
         ServiceFile = SCPDFiles.x_contactSCPD
 
         TR064Start = Start
 
         PushStatus = Status
+
+        XML = XMLSerializer
     End Sub
 
     Public Function GetInfoByIndex(Index As Integer,
@@ -512,7 +515,7 @@ Friend Class X_contactSCPD
 
             If .ContainsKey("NewDeflectionList") Then
 
-                If Not DeserializeXML(.Item("NewDeflectionList").ToString(), False, DeflectionList) Then
+                If Not XML.Deserialize(.Item("NewDeflectionList").ToString(), False, DeflectionList) Then
                     PushStatus.Invoke(LogLevel.Warn, $"GetDeflections konnte für nicht deserialisiert werden.")
                 End If
 

@@ -9,14 +9,17 @@ Friend Class WlanconfigSCPD
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IWlanconfigSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IWlanconfigSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IWlanconfigSCPD.Servicefile
+    Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
 
         ServiceFile = SCPDFiles.wlanconfigSCPD
 
         TR064Start = Start
 
         PushStatus = Status
+
+        XML = XMLSerializer
     End Sub
 
     Public Function SetEnable(Enable As Boolean) As Boolean Implements IWlanconfigSCPD.SetEnable
@@ -325,7 +328,7 @@ Friend Class WlanconfigSCPD
 
             If .ContainsKey("NewX_AVM-DE_WLANDeviceListPath") Then
 
-                If Not DeserializeXML(.Item("NewX_AVM-DE_WLANDeviceListPath").ToString(), False, AssociatedDevices) Then
+                If Not XML.Deserialize(.Item("NewX_AVM-DE_WLANDeviceListPath").ToString(), False, AssociatedDevices) Then
                     PushStatus.Invoke(LogLevel.Warn, $"X_AVM-DE_GetWLANDeviceListPath konnte für nicht deserialisiert werden.")
                 End If
 

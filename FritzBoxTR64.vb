@@ -6,6 +6,8 @@ Public Class FritzBoxTR64
     Public Event Status As EventHandler(Of NotifyEventArgs(Of LogMessage))
     Public Property Bereit As Boolean = False
     Private Property FBTR64Desc As TR64Desc
+    Private Property XML As Serializer
+    Private Property Http As HttpFunctions
     Private Property Credential As NetworkCredential
     Private Property FBoxIPAdresse As String
 
@@ -25,7 +27,6 @@ Public Class FritzBoxTR64
 
 #End Region
 
-
     ''' <summary>
     ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Die <see cref="NetworkCredential"/> werden hier übergeben.<br/>
     ''' Falls die auzuführende Funktion keine Anmeldung erfordert, kann <paramref name="Anmeldeinformationen"/> Nothing sein.
@@ -34,6 +35,9 @@ Public Class FritzBoxTR64
     ''' <param name="Anmeldeinformationen">Die Anmeldeinformationen (Benutzername und Passwort) als <see cref="NetworkCredential"/>.</param>
     Public Sub New(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential)
         Dim Response As String = String.Empty
+
+
+        ' TODO: ContructorEvents
 
         ' IP Adresse der Fritz!Box setzen
         FBoxIPAdresse = FritzBoxAdresse
@@ -47,44 +51,56 @@ Public Class FritzBoxTR64
         ' Funktioniert nicht: ByPass SSL Certificate Validation Checking wird ignoriert. Es kommt zu unerklärlichen System.Net.WebException in FritzBoxPOST
         ' FBTR64Desc = DeserializeObject(Of TR64Desc)($"http://{FBoxIPAdresse}:{FritzBoxDefault.PDfltFBSOAP}{Tr064Files.tr64desc}")
 
+        Http = New HttpFunctions(AddressOf PushStatus)
+
         ' Workaround: XML-Datei als String herunterladen und separat deserialisieren
-        If Ping(FBoxIPAdresse) Then
+        If Http.Ping(FBoxIPAdresse) Then
             ' Herunterladen
-            If DownloadString(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, SCPDFiles.tr64desc.Description).Uri, Response) Then
+            If Http.DownloadString(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, SCPDFiles.tr64desc.Description).Uri, Response) Then
+
+                'PushStatus(LogLevel.Info, $"TR-064: {Response}")
+
+                ' XML initialisieren
+                XML = New Serializer(AddressOf PushStatus)
+
                 ' Deserialisieren
-                If DeserializeXML(Response, False, FBTR64Desc) Then
+                If XML.Deserialize(Response, False, FBTR64Desc) Then
                     ' Füge das Flag hinzu, dass die TR064-Schnittstelle bereit ist.
                     Bereit = True
-                    PushStatus(LogLevel.Debug, "Fritz!Box TR064 API erfolgreich initialisiert.")
+                    'PushStatus(LogLevel.Debug, "Fritz!Box TR064 API erfolgreich initialisiert.")
 
                     ' Lade die AVM Services
                     DECT = New DECT_SCPD(AddressOf TR064Start, AddressOf PushStatus)
                     Deviceconfig = New DeviceconfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
                     Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start, AddressOf PushStatus)
-                    Hosts = New HostsSCPD(AddressOf TR064Start, AddressOf PushStatus)
+                    Hosts = New HostsSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
                     LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start, AddressOf PushStatus)
                     WANCommonInterfaceConfig = New WANCommonInterfaceConfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
-                    Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
-                    X_contact = New X_contactSCPD(AddressOf TR064Start, AddressOf PushStatus)
+                    Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
+                    X_contact = New X_contactSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
                     X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start, AddressOf PushStatus)
-                    X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus)
-                    X_voip = New X_voipSCPD(AddressOf TR064Start, AddressOf PushStatus)
+                    X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
+                    X_voip = New X_voipSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
 
                     ' Lade den UserModus
                     UserMode = New UserModeSCPD(AddressOf TR064Start, AddressOf PushStatus)
                 Else
-                    PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc.")
+                    'PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc.")
                 End If
             Else
-                PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Herunterladen der FBTR64Desc.")
+                'PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Herunterladen der FBTR64Desc.")
             End If
         Else
-            PushStatus(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fritz!Box unter {FBoxIPAdresse} nicht verfügbar.")
+            'PushStatus(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fritz!Box unter {FBoxIPAdresse} nicht verfügbar.")
         End If
     End Sub
 
     Private Sub PushStatus(Level As LogLevel, Message As String)
         RaiseEvent Status(Me, New NotifyEventArgs(Of LogMessage)(New LogMessage(Level, Message)))
+    End Sub
+
+    Private Sub PushStatus(Level As LogLevel, Ex As Exception, Message As String)
+        RaiseEvent Status(Me, New NotifyEventArgs(Of LogMessage)(New LogMessage(Level, Message, Ex)))
     End Sub
 
     Private Function TR064Start(SCPDURL As SCPDFiles, ActionName As String, Optional InputHashTable As Hashtable = Nothing) As Hashtable
@@ -93,7 +109,7 @@ Public Class FritzBoxTR64
             With GetService(SCPDURL)
                 If?.ActionExists(ActionName) Then
                     If .CheckInput(ActionName, InputHashTable) Then
-                        Return .Start(.GetActionByName(ActionName), InputHashTable, Credential)
+                        Return .Start(.GetActionByName(ActionName), InputHashTable, Http, Credential)
                     Else
                         PushStatus(LogLevel.Error, $"InputData for Action '{ActionName}' not valid!")
                     End If
@@ -114,7 +130,17 @@ Public Class FritzBoxTR64
             Dim FBoxService As Service = FBTR64Desc.Device.ServiceList.Find(Function(Service) Service.SCPDURL.AreEqual(SCPDURL.Description))
 
             ' Weise die Fritz!Box IP-Adresse zu
-            If FBoxService IsNot Nothing Then FBoxService.FBoxIPAdresse = FBoxIPAdresse
+            If FBoxService IsNot Nothing Then
+                With FBoxService
+                    ' IP Adresse der Fritz!Box übergeben
+                    .FBoxIPAdresse = FBoxIPAdresse
+                    ' XML-Klasse übergeben
+                    .XML = XML
+                    ' Routine für die Statusmeldungen übergeben
+                    .PushStatus = AddressOf PushStatus
+                End With
+
+            End If
 
             Return FBoxService
         Else
@@ -178,12 +204,19 @@ Public Class FritzBoxTR64
             ServicePointManager.ServerCertificateValidationCallback = Nothing
         End If
         disposedValue = True
+
+        Http = Nothing
+        XML = Nothing
     End Sub
 
     ' Dieser Code wird von Visual Basic hinzugefügt, um das Dispose-Muster richtig zu implementieren.
     Public Sub Dispose() Implements IDisposable.Dispose
         ' Ändern Sie diesen Code nicht. Fügen Sie Bereinigungscode in Dispose(disposing As Boolean) weiter oben ein.
         Dispose(True)
+    End Sub
+
+    Protected Overrides Sub Finalize()
+        MyBase.Finalize()
     End Sub
 #End Region
 
