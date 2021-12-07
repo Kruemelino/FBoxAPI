@@ -28,25 +28,37 @@ Public Class FritzBoxTR64
 #End Region
 
     ''' <summary>
+    ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Achtung! Die Routine <see cref="Init(String, NetworkCredential)" muss separat ausgeführt werden./>
+    ''' </summary>
+    Public Sub New()
+
+    End Sub
+
+    ''' <summary>
     ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Die <see cref="NetworkCredential"/> werden hier übergeben.<br/>
     ''' Falls die auzuführende Funktion keine Anmeldung erfordert, kann <paramref name="Anmeldeinformationen"/> Nothing sein.
     ''' </summary>
     ''' <param name="FritzBoxAdresse">Die IP Adresse der Fritz!Box.</param>
     ''' <param name="Anmeldeinformationen">Die Anmeldeinformationen (Benutzername und Passwort) als <see cref="NetworkCredential"/>.</param>
     Public Sub New(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential)
-        Dim Response As String = String.Empty
+        Init(FritzBoxAdresse, Anmeldeinformationen)
+    End Sub
 
-
-        ' TODO: ContructorEvents
+    ''' <summary>
+    ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Die <see cref="NetworkCredential"/> werden hier übergeben.<br/>
+    ''' Falls die auzuführende Funktion keine Anmeldung erfordert, kann <paramref name="Anmeldeinformationen"/> Nothing sein.
+    ''' </summary>
+    ''' <param name="FritzBoxAdresse">Die IP Adresse der Fritz!Box.</param>
+    ''' <param name="Anmeldeinformationen">Die Anmeldeinformationen (Benutzername und Passwort) als <see cref="NetworkCredential"/>.</param>
+    Public Sub Init(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential)
+        ' ByPass SSL Certificate Validation Checking
+        ServicePointManager.ServerCertificateValidationCallback = Function(se As Object, cert As System.Security.Cryptography.X509Certificates.X509Certificate, chain As System.Security.Cryptography.X509Certificates.X509Chain, sslerror As Security.SslPolicyErrors) True
 
         ' IP Adresse der Fritz!Box setzen
         FBoxIPAdresse = FritzBoxAdresse
 
         ' Netzwerkanmeldeinformationen zuweisen
         Credential = Anmeldeinformationen
-
-        ' ByPass SSL Certificate Validation Checking
-        ServicePointManager.ServerCertificateValidationCallback = Function(se As Object, cert As System.Security.Cryptography.X509Certificates.X509Certificate, chain As System.Security.Cryptography.X509Certificates.X509Chain, sslerror As Security.SslPolicyErrors) True
 
         ' Funktioniert nicht: ByPass SSL Certificate Validation Checking wird ignoriert. Es kommt zu unerklärlichen System.Net.WebException in FritzBoxPOST
         ' FBTR64Desc = DeserializeObject(Of TR64Desc)($"http://{FBoxIPAdresse}:{FritzBoxDefault.PDfltFBSOAP}{Tr064Files.tr64desc}")
@@ -55,10 +67,12 @@ Public Class FritzBoxTR64
 
         ' Workaround: XML-Datei als String herunterladen und separat deserialisieren
         If Http.Ping(FBoxIPAdresse) Then
+            Dim Response As String = String.Empty
+
             ' Herunterladen
             If Http.DownloadString(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, SCPDFiles.tr64desc.Description).Uri, Response) Then
 
-                'PushStatus(LogLevel.Info, $"TR-064: {Response}")
+                PushStatus(LogLevel.Trace, $"TR-064: {Response}")
 
                 ' XML initialisieren
                 XML = New Serializer(AddressOf PushStatus)
@@ -67,32 +81,40 @@ Public Class FritzBoxTR64
                 If XML.Deserialize(Response, False, FBTR64Desc) Then
                     ' Füge das Flag hinzu, dass die TR064-Schnittstelle bereit ist.
                     Bereit = True
-                    'PushStatus(LogLevel.Debug, "Fritz!Box TR064 API erfolgreich initialisiert.")
+                    PushStatus(LogLevel.Debug, "Fritz!Box TR064 API erfolgreich initialisiert.")
 
                     ' Lade die AVM Services
-                    DECT = New DECT_SCPD(AddressOf TR064Start, AddressOf PushStatus)
-                    Deviceconfig = New DeviceconfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
-                    Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start, AddressOf PushStatus)
-                    Hosts = New HostsSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
-                    LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start, AddressOf PushStatus)
-                    WANCommonInterfaceConfig = New WANCommonInterfaceConfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
-                    Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
-                    X_contact = New X_contactSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
-                    X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start, AddressOf PushStatus)
-                    X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
-                    X_voip = New X_voipSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
+                    InitAVMServices()
 
                     ' Lade den UserModus
                     UserMode = New UserModeSCPD(AddressOf TR064Start, AddressOf PushStatus)
                 Else
-                    'PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc.")
+                    PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc.")
                 End If
             Else
-                'PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Herunterladen der FBTR64Desc.")
+                PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Herunterladen der FBTR64Desc.")
             End If
         Else
-            'PushStatus(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fritz!Box unter {FBoxIPAdresse} nicht verfügbar.")
+            PushStatus(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fritz!Box unter {FBoxIPAdresse} nicht verfügbar.")
         End If
+
+    End Sub
+
+    ''' <summary>
+    ''' Lade die AVM Services
+    ''' </summary>
+    Private Sub InitAVMServices()
+        DECT = New DECT_SCPD(AddressOf TR064Start, AddressOf PushStatus)
+        Deviceconfig = New DeviceconfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
+        Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start, AddressOf PushStatus)
+        Hosts = New HostsSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
+        LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start, AddressOf PushStatus)
+        WANCommonInterfaceConfig = New WANCommonInterfaceConfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
+        Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
+        X_contact = New X_contactSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
+        X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start, AddressOf PushStatus)
+        X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
+        X_voip = New X_voipSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
     End Sub
 
     Private Sub PushStatus(Level As LogLevel, Message As String)
@@ -114,9 +136,10 @@ Public Class FritzBoxTR64
                         PushStatus(LogLevel.Error, $"InputData for Action '{ActionName}' not valid!")
                     End If
                 Else
-                    PushStatus(LogLevel.Error, $"Action '{ActionName}'does not exist!")
+                    PushStatus(LogLevel.Error, $"Action '{ActionName}' does not exist!")
                 End If
             End With
+            PushStatus(LogLevel.Error, $"Fritz!Box TR064 API nicht gestartet (Init Routine starten!).")
         End If
 
         ' TODO Fehlermeldung konkretisieren
