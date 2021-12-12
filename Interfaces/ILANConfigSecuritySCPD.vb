@@ -32,7 +32,6 @@ Public Interface ILANConfigSecuritySCPD
     ''' Get the usernames of all users in a xml-list. Each item has an attribute “last_user”, which is set to '1' for only that username, which was used since last login.
     ''' </summary>
     ''' <param name="UserList">Get the usernames of all users in a xml-list.</param>
-    ''' <returns>True when success</returns>
     Function GetUserList(ByRef UserList As String) As Boolean
 
 End Interface

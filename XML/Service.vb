@@ -102,7 +102,7 @@ Imports System.Xml.Serialization
                     End Try
 
                     ' TODO: Serialisieren
-                    If ReturnXMLDoc.InnerXml.IsNotStringEmpty Then
+                    If ReturnXMLDoc.InnerXml.IsNotStringNothingOrEmpty Then
                         For Each OUTArguments As Argument In Action.ArgumentList.FindAll(Function(GetbyDirection) GetbyDirection.Direction = ArgumentDirection.OUT)
                             .Add(OUTArguments.Name, ReturnXMLDoc.GetElementsByTagName(OUTArguments.Name).Item(0).InnerText)
                         Next

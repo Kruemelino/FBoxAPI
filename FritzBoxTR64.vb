@@ -28,7 +28,7 @@ Public Class FritzBoxTR64
 #End Region
 
     ''' <summary>
-    ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Achtung! Die Routine <see cref="Init(String, NetworkCredential)" muss separat ausgeführt werden./>
+    ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Achtung! Die Routine <see cref="Init(String, NetworkCredential)"/> muss separat ausgeführt werden./>
     ''' </summary>
     Public Sub New()
 
@@ -71,8 +71,6 @@ Public Class FritzBoxTR64
 
             ' Herunterladen
             If Http.DownloadString(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, SCPDFiles.tr64desc.Description).Uri, Response) Then
-
-                PushStatus(LogLevel.Trace, $"TR-064: {Response}")
 
                 ' XML initialisieren
                 XML = New Serializer(AddressOf PushStatus)

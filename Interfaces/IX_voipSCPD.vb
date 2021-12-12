@@ -33,7 +33,6 @@ Public Interface IX_voipSCPD
     ''' </summary>
     ''' <param name="LKZ">Represents the actual country code.</param>
     ''' <param name="LKZPrefix">Represents the international call prefix.</param>
-    ''' <returns>True when success</returns>
     Function SetVoIPCommonCountryCode(LKZ As String, LKZPrefix As String) As Boolean
 
     ''' <summary>
@@ -41,7 +40,6 @@ Public Interface IX_voipSCPD
     ''' </summary>
     ''' <param name="LKZ">Represents the actual country code.</param>
     ''' <param name="LKZPrefix">Represents the international call prefix.</param>
-    ''' <returns>True when success</returns>
     Function GetVoIPCommonCountryCode(ByRef LKZ As String, Optional ByRef LKZPrefix As String = "") As Boolean
 
     ''' <summary>
@@ -50,7 +48,6 @@ Public Interface IX_voipSCPD
     ''' </summary>
     ''' <param name="OKZ">Represents the actual area code.</param>
     ''' <param name="OKZPrefix">Represents the national Call prefix.</param>
-    ''' <returns>True when success</returns>
     Function SetVoIPCommonAreaCode(OKZ As String, OKZPrefix As String) As Boolean
 
     ''' <summary>
@@ -58,7 +55,6 @@ Public Interface IX_voipSCPD
     ''' </summary>
     ''' <param name="OKZ">Represents the actual area code.</param>
     ''' <param name="OKZPrefix">Represents the national Call prefix.</param>
-    ''' <returns>True when success</returns>
     Function GetVoIPCommonAreaCode(ByRef OKZ As String, Optional ByRef OKZPrefix As String = "") As Boolean
 #End Region
 
@@ -106,7 +102,6 @@ Public Interface IX_voipSCPD
     ''' Return a list of all SIP client accounts. 
     ''' </summary>
     ''' <param name="ClientList">Represents the list of all SIP client accounts.</param>
-    ''' <returns>True when success</returns>
     ''' <remarks>The list contains all configured SIP client accounts a XML list.</remarks>
     Function GetClients(ByRef ClientList As SIPClientList) As Boolean
 
@@ -117,7 +112,6 @@ Public Interface IX_voipSCPD
     ''' an internal link between the created SIP client and app instance is created. Therefore when the app instance
     ''' is deleted, the SIP client is deleted too.
     ''' </remarks>
-    ''' <returns>True when success</returns>
     Function SetClient2(ClientIndex As Integer,
                                ClientPassword As String,
                                PhoneName As String,
@@ -135,7 +129,6 @@ Public Interface IX_voipSCPD
     ''' If the value for X_AVM-DE_IncomingNumbers is empty, the SIP client has to ring for all incoming numbers. 
     ''' </remarks>
     ''' <param name="ExternalRegistration">Value ignored 2015-10-22</param>
-    ''' <returns>True when success</returns>
     Function SetClient3(ClientIndex As Integer,
                                ClientPassword As String,
                                PhoneName As String,
@@ -155,7 +148,6 @@ Public Interface IX_voipSCPD
     ''' If the value for X_AVM-DE_IncomingNumbers is empty, the SIP client has to ring for all incoming numbers. 
     ''' </remarks>
     ''' <param name="ExternalRegistration">Value ignored 2015-10-22</param>
-    ''' <returns>True when success</returns>
     Function SetClient3(ClientIndex As Integer,
                                ClientPassword As String,
                                PhoneName As String,
@@ -169,7 +161,6 @@ Public Interface IX_voipSCPD
     ''' NewX_AVM-DE_ClientId is set, an internal link between the created SIP client and app instance is created.
     ''' Therefore when the app instance is deleted, the SIP client is deleted too.
     ''' </summary>
-    ''' <returns>True when success</returns>
     Function SetClient4(ClientIndex As Integer,
                                ClientPassword As String,
                                PhoneName As String,
@@ -183,7 +174,6 @@ Public Interface IX_voipSCPD
     ''' NewX_AVM-DE_ClientId is set, an internal link between the created SIP client and app instance is created.
     ''' Therefore when the app instance is deleted, the SIP client is deleted too.
     ''' </summary>
-    ''' <returns>True when success</returns>
     Function SetClient4(ClientIndex As Integer,
                                ClientPassword As String,
                                PhoneName As String,
@@ -196,7 +186,6 @@ Public Interface IX_voipSCPD
     ''' Set the flag for a SIP client account. Some SIP clients need some seconds time to wake up before a SIP call can be answered. 
     ''' The FRITZ!OS SIP server will delay SIP calls if at least one SIP client has the flag enabled.
     ''' </summary>
-    ''' <returns>True when success</returns>
     Function SetDelayedCallNotification(ClientIndex As Integer, DelayedCallNotification As Boolean) As Boolean
 #End Region
 
@@ -205,14 +194,12 @@ Public Interface IX_voipSCPD
     ''' Return amount of telephone numbers usable as incoming number. 
     ''' </summary>
     ''' <param name="NumberOfNumbers"></param>
-    ''' <returns>True when success</returns>
     Function GetNumberOfNumbers(ByRef NumberOfNumbers As Integer) As Boolean
 
     ''' <summary>
     ''' Return a list of all telephone numbers. 
     ''' </summary>
     ''' <param name="NumberList">Represents the list of all telephone numbers.</param>
-    ''' <returns>True when success</returns>
     ''' <remarks>The list contains all configured numbers for all number types. The index can be used to see how many numbers are configured For one type. </remarks>
     Function GetNumbers(ByRef NumberList As SIPTelNrList) As Boolean
 #End Region
@@ -230,7 +217,6 @@ Public Interface IX_voipSCPD
     ''' <param name="PhoneName">Represents the PhoneName of index <paramref name="i"/>.</param>
     ''' <param name="i">Represents the index of all dialable phones.</param>
     ''' <remarks>SIP IP phones are not usable for X_AVM-DE_SetDialConfig.</remarks>
-    ''' <returns>True when success</returns>
     Function GetPhonePort(ByRef PhoneName As String, i As Integer) As Boolean
 
 
@@ -238,7 +224,6 @@ Public Interface IX_voipSCPD
     ''' Ermittelt das aktuell ausgewählte Telefon der Fritz!Box Wählhilfe
     ''' </summary>
     ''' <param name="PhoneName">Phoneport des ausgewählten Telefones.</param>
-    ''' <returns>True when success</returns>
     Function DialGetConfig(ByRef PhoneName As String) As Boolean
 
     ''' <summary>

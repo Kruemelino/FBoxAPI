@@ -96,6 +96,8 @@ Friend Class HttpFunctions
                         Try
                             Response = .DownloadString(UniformResourceIdentifier)
 
+                            PushStatus.Invoke(LogLevel.Trace, Nothing, Response)
+
                             Return True
 
                         Catch ex As ArgumentNullException

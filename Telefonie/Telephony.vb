@@ -6,4 +6,5 @@
 
     <XmlElement("number")> Public Property Numbers As List(Of Number)
 
+    <XmlAttribute("nid")> Public Property ID As Integer
 End Class

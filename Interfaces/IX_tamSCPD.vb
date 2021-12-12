@@ -11,7 +11,6 @@ Public Interface IX_tamSCPD
     ''' </summary>
     ''' <param name="TAMInfo">Structure, which holds all data of the TAM</param>
     ''' <param name="i">Represents the index of all tam.</param>
-    ''' <returns>True when success</returns>
     Function GetTAMInfo(ByRef TAMInfo As TAMInfo, i As Integer) As Boolean
 
     ''' <summary>
@@ -19,7 +18,6 @@ Public Interface IX_tamSCPD
     ''' </summary>
     ''' <param name="Index">Index of TAM</param>
     ''' <param name="Enable">Enable state</param>
-    ''' <returns>True when success</returns>
     Function SetEnable(Index As Integer, Enable As Boolean) As Boolean
 
     ''' <summary>
@@ -34,7 +32,6 @@ Public Interface IX_tamSCPD
     ''' </remarks>
     ''' <param name="GetMessageListURL">URL to download the list of message for a specified TAM</param>
     ''' <param name="i">ID of the specified TAM</param>
-    ''' <returns>True when success</returns>
     Function GetMessageList(ByRef GetMessageListURL As String, i As Integer) As Boolean
 
     ''' <summary>
@@ -47,7 +44,6 @@ Public Interface IX_tamSCPD
     ''' <param name="Index">Index of the MessageList</param>
     ''' <param name="MessageIndex">Index of the Message</param>
     ''' <param name="MarkedAsRead">Optional, to stay compatible with older clients, default value is 1</param>
-    ''' <returns>True when success</returns>
     Function MarkMessage(Index As Integer, MessageIndex As Integer, MarkedAsRead As Boolean) As Boolean
 
     ''' <summary>
@@ -57,13 +53,11 @@ Public Interface IX_tamSCPD
     ''' </summary>
     ''' <param name="Index">Index of the MessageList</param>
     ''' <param name="MessageIndex">Index of the Message</param>
-    ''' <returns>True when success</returns>
     Function DeleteMessage(Index As Integer, MessageIndex As Integer) As Boolean
 
     ''' <summary>
     ''' Returns the global information and the specific answering machine information as xml list.
     ''' </summary>
     ''' <param name="List">Represents the list of all tam.</param>
-    ''' <returns>True when success</returns>
     Function GetList(ByRef List As TAMList) As Boolean
 End Interface

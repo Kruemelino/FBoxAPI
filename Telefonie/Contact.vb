@@ -15,4 +15,6 @@
 
     <XmlElement("telephony")> Public Property Telephony As Telephony
 
+    <XmlElement("mod_time")> Public Property Mod_Time As String
+
 End Class

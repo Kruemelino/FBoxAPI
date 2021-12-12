@@ -318,7 +318,6 @@ Friend Class X_contactSCPD
 
     End Function
 
-
     Public Function GetCallBarringEntryByNum(Number As String, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetCallBarringEntryByNum
 
         With TR064Start(ServiceFile, "GetCallBarringEntryByNum", New Hashtable From {{"NewNumber", Number}})

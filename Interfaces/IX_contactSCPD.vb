@@ -59,7 +59,7 @@ Public Interface IX_contactSCPD
     '''     </list>
     '''     The parameters timestamp and id have to be used in combination. If only one of both is used, the feature Is Not supported. 
     ''' </param>
-    ''' <returns>True when success</returns>
+
     ''' <remarks> 
     ''' </remarks>
     Function GetCallList(ByRef CallListURL As String) As Boolean
@@ -69,7 +69,7 @@ Public Interface IX_contactSCPD
     ''' Ermittelt die Liste der Telefonbücher. 
     ''' </summary>
     ''' <param name="PhonebookList">Liste der Telefonbuch IDs</param>
-    ''' <returns>True when success</returns>
+
     Function GetPhonebookList(ByRef PhonebookList As Integer()) As Boolean
 
     ''' <summary>
@@ -88,7 +88,7 @@ Public Interface IX_contactSCPD
     ''' <param name="PhonebookID">ID of the phonebook.</param>
     ''' <param name="PhonebookName">Name of the phonebook.</param>
     ''' <param name="PhonebookExtraID">The value of <paramref name="PhonebookExtraID"/> may be an empty string. </param>
-    ''' <returns>True when success</returns>
+
     Function GetPhonebook(PhonebookID As Integer,
                                  ByRef PhonebookURL As String,
                                  Optional ByRef PhonebookName As String = "",
@@ -99,7 +99,7 @@ Public Interface IX_contactSCPD
     ''' </summary>
     ''' <param name="PhonebookName">Name des neuen Telefonbuches.</param>
     ''' <param name="PhonebookExtraID">ExtraID des neuen Telefonbuches. (Optional)</param>
-    ''' <returns>True when success</returns>
+
     Function AddPhonebook(PhonebookName As String, Optional PhonebookExtraID As String = "") As Boolean
 
     ''' <summary>
@@ -108,7 +108,7 @@ Public Interface IX_contactSCPD
     ''' <remarks>The default phonebook (PhonebookID = 0) is not deletable, but therefore, each entry will be deleted And the phonebook will be empty afterwards.</remarks>
     ''' <param name="NewPhonebookID">ID of the phonebook.</param>
     ''' <param name="PhonebookExtraID">Optional parameter to make a phonebook unique.</param>
-    ''' <returns>True when success</returns>
+
     Function DeletePhonebook(NewPhonebookID As Integer, Optional PhonebookExtraID As String = "") As Boolean
 #End Region
 
@@ -119,7 +119,7 @@ Public Interface IX_contactSCPD
     ''' <param name="PhonebookID">Number for a single phonebook.</param>
     ''' <param name="PhonebookEntryID">Unique identifier (number) for a single entry in a phonebook.</param>
     ''' <param name="PhonebookEntryData">XML document with a single entry. </param>
-    ''' <returns>True when success</returns>
+
     Function GetPhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean
 
     ''' <summary>
@@ -128,7 +128,7 @@ Public Interface IX_contactSCPD
     ''' <param name="PhonebookID">Number for a single phonebook.</param>
     ''' <param name="PhonebookEntryUniqueID">Unique identifier (number) for a single entry in a phonebook.</param>
     ''' <param name="PhonebookEntryData">XML document with a single entry. </param>
-    ''' <returns>True when success</returns>
+
     Function GetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryUniqueID As Integer, ByRef PhonebookEntryData As String) As Boolean
 
     ''' <summary>
@@ -150,7 +150,7 @@ Public Interface IX_contactSCPD
     ''' <param name="PhonebookID">ID of the phonebook.</param>
     ''' <param name="PhonebookEntryData">XML document with a single entry</param>
     ''' <param name="PhonebookEntryUniqueID">The action returns the unique ID of the new or changed entry.</param>
-    ''' <returns>True when success</returns>
+
     Function SetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryData As String, ByRef PhonebookEntryUniqueID As Integer) As Boolean
 
     ''' <summary>
@@ -159,7 +159,7 @@ Public Interface IX_contactSCPD
     ''' </summary>
     ''' <param name="PhonebookID">ID of the phonebook.</param>
     ''' <param name="PhonebookEntryID">Number for a single entry in a phonebook.</param>
-    ''' <returns>True when success</returns>
+
     Function DeletePhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer) As Boolean
 
     ''' <summary>
@@ -168,7 +168,7 @@ Public Interface IX_contactSCPD
     ''' </summary>
     ''' <param name="PhonebookID">ID of the phonebook.</param>
     ''' <param name="NewPhonebookEntryUniqueID">Unique identifier (number) for a single entry in a phonebook.</param>
-    ''' <returns>True when success</returns>
+
     Function DeletePhonebookEntryUID(PhonebookID As Integer, NewPhonebookEntryUniqueID As Integer) As Boolean
 #End Region
 
@@ -178,23 +178,21 @@ Public Interface IX_contactSCPD
     ''' </summary>
     ''' <param name="PhonebookEntryID">ID of the specific call barring phonebook.</param>
     ''' <param name="PhonebookEntryData">A call barring entry</param>
-    ''' <returns>True when success</returns>
     Function GetCallBarringEntry(PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean
 
     ''' <summary>
     ''' Returns a call barring entry by its number. If the number exists in the internal phonebook 
-    ''' but not in the specific call barring phonebook, error code 714 Is returned.
+    ''' but not in the specific call barring phonebook, error code 714 is returned.
     ''' </summary>
     ''' <param name="Number">phone number</param>
     ''' <param name="PhonebookEntryData">XML document with a single call barring entry.</param>
-    ''' <returns>True when success</returns>
     Function GetCallBarringEntryByNum(Number As String, ByRef PhonebookEntryData As String) As Boolean
 
     ''' <summary>
     ''' Returns a url which leads to an xml formatted file which contains all entries of the call barring phonebook.
     ''' </summary>
     ''' <param name="PhonebookURL">Url of the call barring phonebook</param>
-    ''' <returns>True when success</returns>
+
     Function GetCallBarringList(ByRef PhonebookURL As String) As Boolean
 
     ''' <summary>
@@ -205,14 +203,12 @@ Public Interface IX_contactSCPD
     ''' </summary>
     ''' <param name="PhonebookEntryData">XML document with a single call barring entry.</param>
     ''' <param name="PhonebookEntryUniqueID">Unique identifier (number) for a single entry in the specific call barring phonebook.</param>
-    ''' <returns>True when success</returns>
     Function SetCallBarringEntry(PhonebookEntryData As String, Optional ByRef PhonebookEntryUniqueID As Integer = 0) As Boolean
 
     ''' <summary>
     ''' Delete an entry of the call barring phonebook by its uniqueid.
     ''' </summary>
     ''' <param name="NewPhonebookEntryUniqueID">uniqueid of an entry</param>
-    ''' <returns>True when success</returns>
     Function DeleteCallBarringEntryUID(NewPhonebookEntryUniqueID As Integer) As Boolean
 #End Region
 
@@ -221,7 +217,6 @@ Public Interface IX_contactSCPD
     ''' Ermittelt die Liste der DECTHandset. 
     ''' </summary>
     ''' <param name="DectIDList">Liste der DECT IDs</param>
-    ''' <returns>True when success</returns>
     Function GetDECTHandsetList(ByRef DectIDList As Integer()) As Boolean
 
     Function GetDECTHandsetInfo(DectID As Integer, ByRef HandsetName As String, ByRef PhonebookID As String) As Boolean
@@ -234,7 +229,6 @@ Public Interface IX_contactSCPD
     ''' Get the number of deflection entrys.
     ''' </summary>
     ''' <param name="NumberOfDeflections">Returns the number of deflection entrys</param>
-    ''' <returns>True when success</returns>
     Function GetNumberOfDeflections(ByRef NumberOfDeflections As String) As Boolean
 
     ''' <summary>
@@ -243,14 +237,12 @@ Public Interface IX_contactSCPD
     ''' </summary>
     ''' <param name="DeflectionInfo">Komplexes Datenelement, was alle Informationen zu der Rufumleitung enthält.</param>
     ''' <param name="DeflectionId">Die ID der Rufumleitung</param>
-    ''' <returns>True when success</returns>
     Function GetDeflection(ByRef DeflectionInfo As Deflection, DeflectionId As Integer) As Boolean
 
     ''' <summary>
     ''' Returns a list of deflections.
     ''' </summary>
     ''' <param name="DeflectionList">List of deflections</param>
-    ''' <returns>True when success</returns>
     Function GetDeflections(ByRef DeflectionList As DeflectionList) As Boolean
 
     ''' <summary>
@@ -259,7 +251,6 @@ Public Interface IX_contactSCPD
     ''' </summary>
     ''' <param name="DeflectionId">Die ID der Rufumleitung</param>
     ''' <param name="Enable">Neuer Aktivierungszustand</param>
-    ''' <returns>True when success</returns>
     Function SetDeflectionEnable(DeflectionId As Integer, Enable As Boolean) As Boolean
 
 #End Region
