@@ -1,5 +1,5 @@
 ﻿''' <summary>
-''' TR-064 Support – X_ AVM-DE_TAM 
+''' TR-064 Support – X_AVM-DE_TAM 
 ''' Date: 2019-06-28
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf</see>
 ''' </summary>
@@ -90,8 +90,7 @@ Friend Class X_tamSCPD
 
     Public Function DeleteMessage(Index As Integer, MessageIndex As Integer) As Boolean Implements IX_tamSCPD.DeleteMessage
 
-        With TR064Start(ServiceFile, "DeleteMessage", New Hashtable From {{"NewIndex", Index},
-                                                                                           {"NewMessageIndex", MessageIndex}})
+        With TR064Start(ServiceFile, "DeleteMessage", New Hashtable From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}})
 
 
             If Not .ContainsKey("Error") Then

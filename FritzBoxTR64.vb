@@ -19,6 +19,7 @@ Public Class FritzBoxTR64
     Public Property LANConfigSecurity As ILANConfigSecuritySCPD
     Public Property X_contact As IX_contactSCPD
     Public Property X_HomeAuto As IX_homeauto
+    Public Property X_MyFritz As IX_myfritz
     Public Property X_tam As IX_tamSCPD
     Public Property X_voip As IX_voipSCPD
     Public Property UserMode As UserModeSCPD
@@ -122,6 +123,7 @@ Public Class FritzBoxTR64
         Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         X_contact = New X_contactSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start, AddressOf PushStatus)
+        X_MyFritz = New X_myfritzSCPD(AddressOf TR064Start, AddressOf PushStatus)
         X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         X_voip = New X_voipSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
     End Sub
