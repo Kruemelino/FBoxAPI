@@ -1,67 +1,41 @@
 ﻿Imports System.Net
 Imports System.Text
-Friend Class HttpFunctions
+Friend Class TR064HttpBasics
 
     Private Const DefaultHeaderKeepAlive As Boolean = False
     Private Const DefaultHeaderUserAgent As String = "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko"
+    Private Const DefaultMinTimout As Integer = 100
+    Private ReadOnly Property GlobalTimeout As Integer
+    Private ReadOnly Property PushStatus As Action(Of LogLevel, Exception, String)
 
-    Private Property PushStatus As Action(Of LogLevel, Exception, String)
-
-    Public Sub New(Status As Action(Of LogLevel, Exception, String))
+    Public Sub New(Status As Action(Of LogLevel, Exception, String), timeout As Integer)
         PushStatus = Status
+        GlobalTimeout = Math.Max(timeout, DefaultMinTimout)
     End Sub
 
 #Region "Netzwerkfunktionen"
     ''' <summary>
-    ''' Führt einen Ping zur Gegenstelle aus.
+    ''' Führt einen Ping zur Gegenstelle aus
     ''' </summary>
-    ''' <param name="IPAdresse">IP-Adresse Netzwerkname der Gegenstelle. Rückgabe der IP-Adresse</param>
+    ''' <param name="IPAdresse">IP-Adresse Netzwerkname der Gegenstelle.</param>
     ''' <returns>Boolean</returns>
-    Friend Function Ping(ByRef IPAdresse As String) As Boolean
-        Ping = False
+    Friend Function Ping(IPAdresse As String) As Boolean
 
-        Dim IPHostInfo As IPHostEntry
         Dim PingSender As New NetworkInformation.Ping()
         Dim Options As New NetworkInformation.PingOptions() With {.DontFragment = True}
         Dim PingReply As NetworkInformation.PingReply = Nothing
 
         Dim buffer As Byte() = Encoding.ASCII.GetBytes(String.Empty)
-        Dim timeout As Integer = 120
 
         Try
-            PingReply = PingSender.Send(IPAdresse, timeout, buffer, Options)
+            PingReply = PingSender.Send(IPAdresse, GlobalTimeout, buffer, Options)
 
         Catch ex As Exception
-
-            PushStatus.Invoke(LogLevel.Warn, ex, $"Ping zu {IPAdresse} nicht erfolgreich")
-            Ping = False
+            PushStatus.Invoke(LogLevel.Warn, ex, $"Ping zu {IPAdresse} nicht erfolgreich (timeout: {GlobalTimeout}).")
         End Try
 
-        If PingReply IsNot Nothing Then
-            With PingReply
-                If .Status = NetworkInformation.IPStatus.Success Then
-                    If .Address.AddressFamily = Sockets.AddressFamily.InterNetworkV6 Then
-                        'Zugehörige IPv4 ermitteln
-                        IPHostInfo = Dns.GetHostEntry(.Address)
-                        For Each _IPAddress As IPAddress In IPHostInfo.AddressList
-                            If _IPAddress.AddressFamily = Sockets.AddressFamily.InterNetwork Then
-                                IPAdresse = _IPAddress.ToString
-                                ' Prüfen ob es eine generel gültige lokale IPv6 Adresse gibt: fd00::2665:11ff:fed8:6086
-                                ' und wie die zu ermitteln ist
-                                PushStatus.Invoke(LogLevel.Debug, Nothing, $"IPv6: { .Address}, IPv4: {IPAdresse}")
-                                Exit For
-                            End If
-                        Next
-                    Else
-                        IPAdresse = .Address.ToString
-                    End If
-                    Ping = True
-                Else
-                    PushStatus.Invoke(LogLevel.Warn, Nothing, $"Ping zu '{IPAdresse}' nicht erfolgreich: { .Status}")
-                    Ping = False
-                End If
-            End With
-        End If
+        Return PingReply IsNot Nothing AndAlso PingReply.Status = NetworkInformation.IPStatus.Success
+
         PingSender.Dispose()
     End Function
 
@@ -83,7 +57,7 @@ Friend Class HttpFunctions
 
                 Using webClient As New WebClient With {.Proxy = Nothing,
                                                        .CachePolicy = New Cache.HttpRequestCachePolicy(Cache.HttpRequestCacheLevel.BypassCache),
-                                                       .Encoding = If(ZeichenCodierung, Encoding.GetEncoding(FritzBoxInformations.DfltCodePageFritzBox))}
+                                                       .Encoding = If(ZeichenCodierung, Encoding.GetEncoding(DfltCodePageFritzBox))}
                     With webClient
 
                         With .Headers
@@ -123,7 +97,6 @@ Friend Class HttpFunctions
         End Select
         Return False
     End Function
-
 
 #End Region
 

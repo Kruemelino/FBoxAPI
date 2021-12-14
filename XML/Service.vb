@@ -68,7 +68,7 @@ Imports System.Xml.Serialization
         ActionInputData.Clear()
     End Function
 
-    Friend Function Start([Action] As Action, InputArguments As Hashtable, http As HttpFunctions, NetworkCredential As NetworkCredential) As Hashtable
+    Friend Function Start([Action] As Action, InputArguments As Hashtable, http As TR064HttpBasics, NetworkCredential As NetworkCredential) As Hashtable
         Dim ReturnXMLDoc As New XmlDocument
         Dim OutputHashTable As New Hashtable
         Dim Response As String = String.Empty
