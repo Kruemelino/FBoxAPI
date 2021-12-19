@@ -101,7 +101,6 @@ Imports System.Xml.Serialization
                         PushStatus?.Invoke(LogLevel.Error, ex, Response)
                     End Try
 
-                    ' TODO: Serialisieren
                     If ReturnXMLDoc.InnerXml.IsNotStringNothingOrEmpty Then
                         For Each OUTArguments As Argument In Action.ArgumentList.FindAll(Function(GetbyDirection) GetbyDirection.Direction = ArgumentDirection.OUT)
                             .Add(OUTArguments.Name, ReturnXMLDoc.GetElementsByTagName(OUTArguments.Name).Item(0).InnerText)
@@ -157,7 +156,7 @@ Imports System.Xml.Serialization
 
                                 ' XML-Element mit dem namen des Inputwertes generieren und dem XML-Action Element anhängen
                                 With .AppendChild(GetRequest.CreateElement("u", CStr(submitItem.Key), ServiceType))
-                                    .InnerText = submitItem.Value.ToString
+                                    .InnerText = submitItem.Value?.ToString
                                 End With ' InputValue XML Element
                             Next
                         End If
