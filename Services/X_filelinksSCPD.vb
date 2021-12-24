@@ -3,7 +3,7 @@
 ''' Date: 2016-07-07
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_filelinksSCPD.pdf</see>
 ''' </summary>
-Friend Class X_filelinks
+Friend Class X_filelinksSCPD
     Implements IX_filelinks
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_filelinks.TR064Start

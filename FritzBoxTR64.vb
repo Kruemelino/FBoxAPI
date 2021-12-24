@@ -123,7 +123,7 @@ Public Class FritzBoxTR64
         WANCommonInterfaceConfig = New WANCommonInterfaceConfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
         Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         X_contact = New X_contactSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
-        X_contact = New X_filelinks(AddressOf TR064Start, AddressOf PushStatus, XML)
+        X_filelinks = New X_filelinksSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start, AddressOf PushStatus)
         X_MyFritz = New X_myfritzSCPD(AddressOf TR064Start, AddressOf PushStatus)
         X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
@@ -241,8 +241,8 @@ Public Class FritzBoxTR64
         End If
         disposedValue = True
 
-        Http = Nothing
-        XML = Nothing
+        'Http = Nothing
+        'XML = Nothing
     End Sub
 
     ' Dieser Code wird von Visual Basic hinzugefügt, um das Dispose-Muster richtig zu implementieren.
