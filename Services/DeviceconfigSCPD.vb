@@ -196,6 +196,12 @@ Friend Class DeviceconfigSCPD
         End With
 
     End Function
+
+    Public Function LoginTest() As Boolean Implements IDeviceconfigSCPD.LoginTest
+        With TR064Start(ServiceFile, "X_AVM-DE_CreateUrlSID", Nothing)
+            Return .ContainsKey("NewX_AVM-DE_UrlSID") AndAlso Not .Item("NewX_AVM-DE_UrlSID").ToString.AreEqual(DfltFritzBoxSessionID)
+        End With
+    End Function
 #End Region
 
 End Class

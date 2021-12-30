@@ -74,6 +74,9 @@ Public Class FritzBoxTR64
         ' Lade die AVM Services (auch unabhängig davon, ob die Verbindung geklappt hat)
         InitAVMServices()
 
+        ' Führe einen Logintest durch: Ermittle die Informationen zur Fritz!Box
+        Bereit = Deviceconfig.LoginTest()
+
         ' Lade den UserModus
         UserMode = New UserModeSCPD(AddressOf TR064Start, AddressOf PushStatus)
 
@@ -98,7 +101,6 @@ Public Class FritzBoxTR64
                     Bereit = True
 
                     PushStatus(LogLevel.Debug, "Fritz!Box TR064 API erfolgreich initialisiert.")
-
                 Else
                     PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc.")
                 End If
@@ -129,6 +131,7 @@ Public Class FritzBoxTR64
         X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         X_voip = New X_voipSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
     End Sub
+
 #End Region
 
     Private Sub PushStatus(Level As LogLevel, Message As String)

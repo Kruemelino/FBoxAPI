@@ -80,4 +80,9 @@ Public Interface IDeviceconfigSCPD
     ''' <param name="SupportDataMode">"normal", "mesh", "unknown"</param>
     Function SendSupportData(SupportDataMode As String) As Boolean
 
+    ''' <summary>
+    ''' Inoffizielle Funktion zum Test von Username und Passwort.
+    ''' </summary>
+    Function LoginTest() As Boolean
+
 End Interface

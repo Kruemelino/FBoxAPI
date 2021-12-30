@@ -20,7 +20,6 @@ Friend Class DeviceinfoSCPD
 
 #Region "deviceinfoSCPD"
 
-
     Public Function GetInfo(ByRef Info As DeviceInfo) As Boolean Implements IDeviceinfoSCPD.GetInfo
         If Info Is Nothing Then Info = New DeviceInfo
 
@@ -51,7 +50,6 @@ Friend Class DeviceinfoSCPD
             End If
         End With
     End Function
-
 
     ''' <param name="ProvisioningCode">ddd.ddd.ddd.ddd, d == [0-9] </param>
     Public Function SetProvisioningCode(ProvisioningCode As String) As Boolean Implements IDeviceinfoSCPD.SetProvisioningCode
