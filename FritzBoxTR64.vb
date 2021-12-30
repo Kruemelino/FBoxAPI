@@ -4,7 +4,7 @@ Public Class FritzBoxTR64
     Implements IDisposable
 
     Public Event Status As EventHandler(Of NotifyEventArgs(Of LogMessage))
-    Public Property Bereit As Boolean = False
+    Public Property Ready As Boolean = False
     Private Property FBTR64Desc As TR64Desc
     Private Property XML As Serializer
     Private Property Http As TR064HttpBasics
@@ -75,7 +75,7 @@ Public Class FritzBoxTR64
         InitAVMServices()
 
         ' Führe einen Logintest durch: Ermittle die Informationen zur Fritz!Box
-        Bereit = Deviceconfig.LoginTest()
+        Ready = Credential Is Nothing OrElse Deviceconfig.LoginTest()
 
         ' Lade den UserModus
         UserMode = New UserModeSCPD(AddressOf TR064Start, AddressOf PushStatus)
@@ -98,7 +98,7 @@ Public Class FritzBoxTR64
                 ' Deserialisieren
                 If XML.Deserialize(Response, False, FBTR64Desc) Then
                     ' Füge das Flag hinzu, dass die TR064-Schnittstelle bereit ist.
-                    Bereit = True
+                    Ready = True
 
                     PushStatus(LogLevel.Debug, "Fritz!Box TR064 API erfolgreich initialisiert.")
                 Else
@@ -144,7 +144,7 @@ Public Class FritzBoxTR64
 
     Private Function TR064Start(SCPDURL As SCPDFiles, ActionName As String, Optional InputHashTable As Hashtable = Nothing) As Hashtable
 
-        If Bereit Then
+        If Ready Then
             With GetService(SCPDURL)
                 If?.ActionExists(ActionName) Then
                     If .CheckInput(ActionName, InputHashTable) Then
