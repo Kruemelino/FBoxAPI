@@ -33,7 +33,6 @@ Public Interface IX_filelinks
 
     ''' <summary>
     ''' Change a filelink entry selected by <paramref name="ID"/>.
-
     ''' </summary>
     ''' <remarks>Required rights: NASRight</remarks>
     Function SetFilelinkEntry(ID As String, AccessCountLimit As Integer, Expire As Integer) As Boolean
