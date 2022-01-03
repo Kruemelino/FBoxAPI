@@ -389,3 +389,40 @@ Public Enum WPSStatusEnum
 End Enum
 
 #End Region
+
+#Region "Hostfilter"
+Public Enum TicketIDStatusEnum
+    ''' <summary>
+    ''' The TicketID may be already used or was never valid.
+    ''' </summary>
+    invalid
+
+    ''' <summary>
+    ''' The TicketID is not retrieved via action MarkTicket nor marked via WebGUI.
+    ''' </summary>
+    unmarked
+
+    ''' <summary>
+    ''' The TicketID is retrieved via action MarkTicket or marked via WebGUI and not used.
+    ''' </summary>
+    marked
+End Enum
+
+Public Enum WANAccessEnum
+    ''' <summary>
+    ''' The LAN device has access to WAN.
+    ''' </summary>
+    granted
+
+    ''' <summary>
+    ''' The LAN device has no access to WAN.
+    ''' </summary>
+    denied
+
+    ''' <summary>
+    ''' Something went wrong, the state could not yet be retrieved.
+    ''' </summary>
+    [error]
+End Enum
+
+#End Region

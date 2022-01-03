@@ -43,6 +43,8 @@ Public Module FritzBoxInformations
 
         <Description("/deviceinfoSCPD.xml")> deviceinfoSCPD
 
+        <Description("/ethifconfigSCPD.xml")> ethifconfigSCPD
+
         <Description("/hostsSCPD.xml")> hostsSCPD
 
         <Description("/igdconnSCPD.xml")> igdconnSCPD
@@ -99,6 +101,8 @@ Public Module FritzBoxInformations
         <Description("/x_homeautoSCPD.xml")> x_homeautoSCPD
 
         <Description("/x_homeplugSCPD.xml")> x_homeplugSCPD
+
+        <Description("/x_hostfilterSCPD.xml")> x_hostfilterSCPD
 
         <Description("/x_myfritzSCPD.xml")> x_myfritzSCPD
 
