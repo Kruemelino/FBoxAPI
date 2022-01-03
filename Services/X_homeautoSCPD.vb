@@ -4,11 +4,11 @@
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf</see>
 ''' </summary>
 Friend Class X_homeautoSCPD
-    Implements IX_homeauto
+    Implements IX_homeautoSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_homeauto.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IX_homeauto.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_homeauto.Servicefile
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_homeautoSCPD.TR064Start
+    Private Property PushStatus As Action(Of LogLevel, String) Implements IX_homeautoSCPD.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_homeautoSCPD.Servicefile
 
     Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
 
@@ -19,7 +19,7 @@ Friend Class X_homeautoSCPD
         PushStatus = Status
     End Sub
 
-    Public Function GetInfo(ByRef AllowedCharsAIN As String, ByRef MaxCharsAIN As Integer, ByRef MinCharsAIN As Integer, ByRef MaxCharsDeviceName As Integer, ByRef MinCharsDeviceName As Integer) As Boolean Implements IX_homeauto.GetInfo
+    Public Function GetInfo(ByRef AllowedCharsAIN As String, ByRef MaxCharsAIN As Integer, ByRef MinCharsAIN As Integer, ByRef MaxCharsDeviceName As Integer, ByRef MinCharsDeviceName As Integer) As Boolean Implements IX_homeautoSCPD.GetInfo
 
         With TR064Start(ServiceFile, "GetMessageList", Nothing)
             If .ContainsKey("NewAllowedCharsAIN") Then
@@ -43,7 +43,7 @@ Friend Class X_homeautoSCPD
 
     End Function
 
-    Public Function GetGenericDeviceInfos(Index As Integer, ByRef DeviceInfo As HomeAutoDeviceInfo) As Boolean Implements IX_homeauto.GetGenericDeviceInfos
+    Public Function GetGenericDeviceInfos(Index As Integer, ByRef DeviceInfo As HomeAutoDeviceInfo) As Boolean Implements IX_homeautoSCPD.GetGenericDeviceInfos
 
         If DeviceInfo Is Nothing Then DeviceInfo = New HomeAutoDeviceInfo
 
@@ -93,7 +93,7 @@ Friend Class X_homeautoSCPD
 
     End Function
 
-    Public Function GetSpecificDeviceInfos(AIN As String, ByRef DeviceInfo As HomeAutoDeviceInfo) As Boolean Implements IX_homeauto.GetSpecificDeviceInfos
+    Public Function GetSpecificDeviceInfos(AIN As String, ByRef DeviceInfo As HomeAutoDeviceInfo) As Boolean Implements IX_homeautoSCPD.GetSpecificDeviceInfos
 
         If DeviceInfo Is Nothing Then DeviceInfo = New HomeAutoDeviceInfo
 
@@ -142,13 +142,13 @@ Friend Class X_homeautoSCPD
         End With
     End Function
 
-    Public Function SetDeviceName(AIN As String, DeviceName As String) As Boolean Implements IX_homeauto.SetDeviceName
+    Public Function SetDeviceName(AIN As String, DeviceName As String) As Boolean Implements IX_homeautoSCPD.SetDeviceName
         With TR064Start(ServiceFile, "SetDeviceName", New Hashtable From {{"NewAIN", AIN}, {"NewDeviceName", DeviceName}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    Public Function SetSwitch(AIN As String, SwitchState As SwStateEnum) As Boolean Implements IX_homeauto.SetSwitch
+    Public Function SetSwitch(AIN As String, SwitchState As SwStateEnum) As Boolean Implements IX_homeautoSCPD.SetSwitch
         With TR064Start(ServiceFile, "SetSwitch", New Hashtable From {{"NewAIN", AIN}, {"NewSwitchState", SwitchState.ToString}})
             Return Not .ContainsKey("Error")
         End With

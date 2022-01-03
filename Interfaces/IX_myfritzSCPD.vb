@@ -3,7 +3,7 @@
 ''' Date: 2017-05-16
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_myfritzSCPD.pdf</see>
 ''' </summary>
-Public Interface IX_myfritz
+Public Interface IX_myfritzSCPD
     Inherits IServiceBase
 
     Function GetInfo(ByRef Enabled As Boolean, ByRef DynDNSName As String, ByRef Port As Integer, ByRef DeviceRegistered As Boolean) As Boolean

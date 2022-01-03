@@ -18,9 +18,9 @@ Public Class FritzBoxTR64
     Public Property Hosts As IHostsSCPD
     Public Property LANConfigSecurity As ILANConfigSecuritySCPD
     Public Property X_contact As IX_contactSCPD
-    Public Property X_filelinks As IX_filelinks
-    Public Property X_HomeAuto As IX_homeauto
-    Public Property X_MyFritz As IX_myfritz
+    Public Property X_filelinks As IX_filelinksSCPD
+    Public Property X_HomeAuto As IX_homeautoSCPD
+    Public Property X_MyFritz As IX_myfritzSCPD
     Public Property X_tam As IX_tamSCPD
     Public Property X_voip As IX_voipSCPD
     Public Property UserMode As UserModeSCPD

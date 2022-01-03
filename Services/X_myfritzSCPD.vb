@@ -4,11 +4,11 @@
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_myfritzSCPD.pdf</see>
 ''' </summary>
 Friend Class X_myfritzSCPD
-    Implements IX_myfritz
+    Implements IX_myfritzSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_myfritz.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IX_myfritz.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_myfritz.Servicefile
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_myfritzSCPD.TR064Start
+    Private Property PushStatus As Action(Of LogLevel, String) Implements IX_myfritzSCPD.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_myfritzSCPD.Servicefile
 
     Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
 
@@ -20,7 +20,7 @@ Friend Class X_myfritzSCPD
 
     End Sub
 
-    Public Function GetInfo(ByRef Enabled As Boolean, ByRef DynDNSName As String, ByRef Port As Integer, ByRef DeviceRegistered As Boolean) As Boolean Implements IX_myfritz.GetInfo
+    Public Function GetInfo(ByRef Enabled As Boolean, ByRef DynDNSName As String, ByRef Port As Integer, ByRef DeviceRegistered As Boolean) As Boolean Implements IX_myfritzSCPD.GetInfo
 
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
@@ -42,7 +42,7 @@ Friend Class X_myfritzSCPD
 
     End Function
 
-    Public Function GetNumberOfServices(ByRef NumberOfServices As Integer) As Boolean Implements IX_myfritz.GetNumberOfServices
+    Public Function GetNumberOfServices(ByRef NumberOfServices As Integer) As Boolean Implements IX_myfritzSCPD.GetNumberOfServices
         With TR064Start(ServiceFile, "GetNumberOfServices", Nothing)
 
             If .ContainsKey("NewNumberOfServices") Then
@@ -59,7 +59,7 @@ Friend Class X_myfritzSCPD
         End With
     End Function
 
-    Public Function GetServiceByIndex(NumberOfServices As Integer, ByRef Info As MyFritzInfo) As Boolean Implements IX_myfritz.GetServiceByIndex
+    Public Function GetServiceByIndex(NumberOfServices As Integer, ByRef Info As MyFritzInfo) As Boolean Implements IX_myfritzSCPD.GetServiceByIndex
         If Info Is Nothing Then Info = New MyFritzInfo
 
         With TR064Start(ServiceFile, "GetServiceByIndex", New Hashtable From {{"NewIndex", NumberOfServices}})
@@ -94,7 +94,7 @@ Friend Class X_myfritzSCPD
         End With
     End Function
 
-    Public Function SetServiceByIndex(NumberOfServices As Integer, ByRef Info As MyFritzInfo) As Boolean Implements IX_myfritz.SetServiceByIndex
+    Public Function SetServiceByIndex(NumberOfServices As Integer, ByRef Info As MyFritzInfo) As Boolean Implements IX_myfritzSCPD.SetServiceByIndex
         With TR064Start(ServiceFile, "SetServiceByIndex", New Hashtable From {{"NewIndex", NumberOfServices},
                                                                               {"NewEnabled", Info.Enabled},
                                                                               {"NewName", Info.Name},
@@ -110,7 +110,7 @@ Friend Class X_myfritzSCPD
         End With
     End Function
 
-    Public Function DeleteServiceByIndex(NumberOfServices As Integer) As Boolean Implements IX_myfritz.DeleteServiceByIndex
+    Public Function DeleteServiceByIndex(NumberOfServices As Integer) As Boolean Implements IX_myfritzSCPD.DeleteServiceByIndex
         With TR064Start(ServiceFile, "DeleteServiceByIndex", New Hashtable From {{"NewIndex", NumberOfServices}})
             Return Not .ContainsKey("Error")
         End With

@@ -3,7 +3,7 @@
 ''' Date: 2019-04-29
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf</see>
 ''' </summary>
-Public Interface IX_homeauto
+Public Interface IX_homeautoSCPD
     Inherits IServiceBase
 
     ''' <summary>

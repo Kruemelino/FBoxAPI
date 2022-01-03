@@ -4,11 +4,11 @@
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_filelinksSCPD.pdf</see>
 ''' </summary>
 Friend Class X_filelinksSCPD
-    Implements IX_filelinks
+    Implements IX_filelinksSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_filelinks.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IX_filelinks.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_filelinks.Servicefile
+    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_filelinksSCPD.TR064Start
+    Private Property PushStatus As Action(Of LogLevel, String) Implements IX_filelinksSCPD.PushStatus
+    Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_filelinksSCPD.Servicefile
 
     Private Property XML As Serializer
 
@@ -23,7 +23,7 @@ Friend Class X_filelinksSCPD
         XML = XMLSerializer
     End Sub
 
-    Public Function GetNumberOfFilelinkEntries(ByRef NumberOfEntries As Integer) As Boolean Implements IX_filelinks.GetNumberOfFilelinkEntries
+    Public Function GetNumberOfFilelinkEntries(ByRef NumberOfEntries As Integer) As Boolean Implements IX_filelinksSCPD.GetNumberOfFilelinkEntries
         With TR064Start(ServiceFile, "GetNumberOfFilelinkEntries", Nothing)
             If .ContainsKey("NewNumberOfEntries") Then
 
@@ -41,7 +41,7 @@ Friend Class X_filelinksSCPD
         End With
     End Function
 
-    Public Function GetGenericFilelinkEntry(Index As Integer, ByRef Entry As FileLinkEntry) As Boolean Implements IX_filelinks.GetGenericFilelinkEntry
+    Public Function GetGenericFilelinkEntry(Index As Integer, ByRef Entry As FileLinkEntry) As Boolean Implements IX_filelinksSCPD.GetGenericFilelinkEntry
         If Entry Is Nothing Then Entry = New FileLinkEntry
 
         With TR064Start(ServiceFile, "GetGenericFilelinkEntry", New Hashtable From {{"NewIndex", Index}})
@@ -70,7 +70,7 @@ Friend Class X_filelinksSCPD
         End With
     End Function
 
-    Public Function GetSpecificFilelinkEntry(ID As String, ByRef Entry As FileLinkEntry) As Boolean Implements IX_filelinks.GetSpecificFilelinkEntry
+    Public Function GetSpecificFilelinkEntry(ID As String, ByRef Entry As FileLinkEntry) As Boolean Implements IX_filelinksSCPD.GetSpecificFilelinkEntry
         If Entry Is Nothing Then Entry = New FileLinkEntry
 
         With TR064Start(ServiceFile, "GetSpecificFilelinkEntry", New Hashtable From {{"NewID", ID}})
@@ -98,7 +98,7 @@ Friend Class X_filelinksSCPD
         End With
     End Function
 
-    Public Function NewFilelinkEntry(Path As String, AccessCountLimit As Integer, Expire As Integer, ByRef ID As String) As Boolean Implements IX_filelinks.NewFilelinkEntry
+    Public Function NewFilelinkEntry(Path As String, AccessCountLimit As Integer, Expire As Integer, ByRef ID As String) As Boolean Implements IX_filelinksSCPD.NewFilelinkEntry
         With TR064Start(ServiceFile, "NewFilelinkEntry", New Hashtable From {{"NewPath", Path},
                                                                              {"NewAccessCountLimit", AccessCountLimit},
                                                                              {"NewExpire", Expire}})
@@ -118,7 +118,7 @@ Friend Class X_filelinksSCPD
         End With
     End Function
 
-    Public Function SetFilelinkEntry(ID As String, AccessCountLimit As Integer, Expire As Integer) As Boolean Implements IX_filelinks.SetFilelinkEntry
+    Public Function SetFilelinkEntry(ID As String, AccessCountLimit As Integer, Expire As Integer) As Boolean Implements IX_filelinksSCPD.SetFilelinkEntry
         With TR064Start(ServiceFile, "SetFilelinkEntry", New Hashtable From {{"NewID", ID},
                                                                              {"NewAccessCountLimit", AccessCountLimit},
                                                                              {"NewExpire", Expire}})
@@ -126,13 +126,13 @@ Friend Class X_filelinksSCPD
         End With
     End Function
 
-    Public Function DeleteFilelinkEntry(ID As String) As Boolean Implements IX_filelinks.DeleteFilelinkEntry
+    Public Function DeleteFilelinkEntry(ID As String) As Boolean Implements IX_filelinksSCPD.DeleteFilelinkEntry
         With TR064Start(ServiceFile, "DeleteFilelinkEntry", New Hashtable From {{"NewID", ID}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
-    Public Function GetFilelinkListPath(FilelinkListPath As String) As Boolean Implements IX_filelinks.GetFilelinkListPath
+    Public Function GetFilelinkListPath(FilelinkListPath As String) As Boolean Implements IX_filelinksSCPD.GetFilelinkListPath
         With TR064Start(ServiceFile, "GetFilelinkListPath", Nothing)
             If .ContainsKey("NewFilelinkListPath") Then
 
@@ -150,7 +150,7 @@ Friend Class X_filelinksSCPD
         End With
     End Function
 
-    Public Function GetFilelinkList(ByRef List As FileLinkList) As Boolean Implements IX_filelinks.GetFilelinkList
+    Public Function GetFilelinkList(ByRef List As FileLinkList) As Boolean Implements IX_filelinksSCPD.GetFilelinkList
         With TR064Start(ServiceFile, "GetFilelinkListPath", Nothing)
 
             If .ContainsKey("GetFilelinkListPath") Then

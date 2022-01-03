@@ -3,7 +3,7 @@
 ''' Date: 2016-07-07
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_filelinksSCPD.pdf</see>
 ''' </summary>
-Public Interface IX_filelinks
+Public Interface IX_filelinksSCPD
     Inherits IServiceBase
 
     ''' <summary>
