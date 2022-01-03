@@ -25,8 +25,4 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Speedtest\" />
-  </ItemGroup>
-
 </Project>

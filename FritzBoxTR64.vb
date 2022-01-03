@@ -21,6 +21,7 @@ Public Class FritzBoxTR64
     Public Property X_filelinks As IX_filelinksSCPD
     Public Property X_HomeAuto As IX_homeautoSCPD
     Public Property X_MyFritz As IX_myfritzSCPD
+    Public Property X_Speedtest As IX_speedtestSCPD
     Public Property X_tam As IX_tamSCPD
     Public Property X_voip As IX_voipSCPD
     Public Property UserMode As UserModeSCPD
@@ -128,6 +129,7 @@ Public Class FritzBoxTR64
         X_filelinks = New X_filelinksSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start, AddressOf PushStatus)
         X_MyFritz = New X_myfritzSCPD(AddressOf TR064Start, AddressOf PushStatus)
+        X_Speedtest = New X_SpeedtestSCPD(AddressOf TR064Start, AddressOf PushStatus)
         X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         X_voip = New X_voipSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
     End Sub
