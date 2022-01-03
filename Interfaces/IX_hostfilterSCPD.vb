@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_HostFilter
-''' Date:  2020-04-01
+''' Date: 2020-04-01
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_hostfilterSCPD.pdf</see>
 ''' </summary>
 Public Interface IX_hostfilterSCPD

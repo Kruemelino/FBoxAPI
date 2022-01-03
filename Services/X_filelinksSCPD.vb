@@ -34,7 +34,7 @@ Friend Class X_filelinksSCPD
                 Return True
 
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetNumberOfFilelinkEntries konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
+                PushStatus.Invoke(LogLevel.Warn, $"GetNumberOfFilelinkEntries konnte nicht aufgelößt werden. '{ .Item("Error")}'")
 
                 Return False
             End If
@@ -63,7 +63,7 @@ Friend Class X_filelinksSCPD
                 Return True
 
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetGenericFilelinkEntry konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
+                PushStatus.Invoke(LogLevel.Warn, $"GetGenericFilelinkEntry konnte nicht aufgelößt werden. '{ .Item("Error")}'")
 
                 Return False
             End If
@@ -91,7 +91,7 @@ Friend Class X_filelinksSCPD
                 Return True
 
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetSpecificFilelinkEntry konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
+                PushStatus.Invoke(LogLevel.Warn, $"GetSpecificFilelinkEntry konnte nicht aufgelößt werden. '{ .Item("Error")}'")
 
                 Return False
             End If
@@ -111,7 +111,7 @@ Friend Class X_filelinksSCPD
                 Return True
 
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"NewFilelinkEntry konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
+                PushStatus.Invoke(LogLevel.Warn, $"NewFilelinkEntry konnte nicht aufgelößt werden. '{ .Item("Error")}'")
 
                 Return False
             End If
@@ -143,7 +143,7 @@ Friend Class X_filelinksSCPD
                 Return True
 
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetFilelinkListPath konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
+                PushStatus.Invoke(LogLevel.Warn, $"GetFilelinkListPath konnte nicht aufgelößt werden. '{ .Item("Error")}'")
 
                 Return False
             End If
@@ -165,7 +165,7 @@ Friend Class X_filelinksSCPD
                 Return True
 
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"X_AVM-DE_GetHostListPath konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
+                PushStatus.Invoke(LogLevel.Warn, $"X_AVM-DE_GetHostListPath konnte nicht aufgelößt werden. '{ .Item("Error")}'")
                 List = Nothing
 
                 Return False

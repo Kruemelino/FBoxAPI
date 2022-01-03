@@ -20,6 +20,7 @@ Public Class FritzBoxTR64
     Public Property X_contact As IX_contactSCPD
     Public Property X_filelinks As IX_filelinksSCPD
     Public Property X_HomeAuto As IX_homeautoSCPD
+    Public Property X_HomePlug As IX_homeplugSCPD
     Public Property X_HostFilter As IX_hostfilterSCPD
     Public Property X_MyFritz As IX_myfritzSCPD
     Public Property X_Speedtest As IX_speedtestSCPD
@@ -129,6 +130,7 @@ Public Class FritzBoxTR64
         X_contact = New X_contactSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         X_filelinks = New X_filelinksSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start, AddressOf PushStatus)
+        X_HomePlug = New X_homePlugSCPD(AddressOf TR064Start, AddressOf PushStatus)
         X_HostFilter = New X_hostfilterSCPD(AddressOf TR064Start, AddressOf PushStatus)
         X_MyFritz = New X_myfritzSCPD(AddressOf TR064Start, AddressOf PushStatus)
         X_Speedtest = New X_SpeedtestSCPD(AddressOf TR064Start, AddressOf PushStatus)
