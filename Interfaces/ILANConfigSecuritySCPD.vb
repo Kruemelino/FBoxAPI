@@ -10,7 +10,7 @@ Public Interface ILANConfigSecuritySCPD
     ''' <param name="MaxCharsPassword">32</param>
     ''' <param name="MinCharsPassword">0</param>
     ''' <param name="AllowedCharsPassword">01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!”#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~(*)</param>
-    Function GetInfo(ByRef MaxCharsPassword As Integer, ByRef MinCharsPassword As Integer, AllowedCharsPassword As String) As Boolean
+    Function GetInfo(ByRef MaxCharsPassword As Integer, ByRef MinCharsPassword As Integer, ByRef AllowedCharsPassword As String) As Boolean
 
     ''' <summary>
     ''' This action can be invoked without authentication.

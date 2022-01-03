@@ -18,7 +18,7 @@ Friend Class LANConfigSecuritySCPD
         PushStatus = Status
     End Sub
 
-    Public Function GetInfo(ByRef MaxCharsPassword As Integer, ByRef MinCharsPassword As Integer, AllowedCharsPassword As String) As Boolean Implements ILANConfigSecuritySCPD.GetInfo
+    Public Function GetInfo(ByRef MaxCharsPassword As Integer, ByRef MinCharsPassword As Integer, ByRef AllowedCharsPassword As String) As Boolean Implements ILANConfigSecuritySCPD.GetInfo
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
             If .ContainsKey("NewMaxCharsPassword") And .ContainsKey("NewMinCharsPassword") And .ContainsKey("NewAllowedCharsPassword") Then
