@@ -110,7 +110,6 @@ Imports System.Xml.Serialization
                 Else
                     ' Fehlerfall
                     .Add("Error", Response)
-                    PushStatus?.Invoke(LogLevel.Error, New Exception(Response), String.Empty)
                 End If
 
             End If

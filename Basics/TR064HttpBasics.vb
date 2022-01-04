@@ -133,13 +133,15 @@ Friend Class TR064HttpBasics
                     ' - oder -
                     ' Der Data - Parameter ist null.
                     PushStatus.Invoke(LogLevel.Error, ex, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Data: '{PostData}' ")
-
+                    ' Rückgabewert festlegen
+                    Response = ex.Message
                 Catch ex As WebException
                     ' Der durch Kombinieren von BaseAddress und address gebildete URI ist ungültig.
                     ' - oder -
                     ' Der Server, der Host dieser Ressource ist, hat nicht geantwortet.
                     PushStatus.Invoke(LogLevel.Error, ex, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Data: '{PostData}' ")
-
+                    ' Rückgabewert festlegen
+                    Response = ex.Message
                 End Try
             End With
         End Using
