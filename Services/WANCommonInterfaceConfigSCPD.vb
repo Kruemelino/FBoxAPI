@@ -5,11 +5,11 @@
 ''' </summary>
 Friend Class WANCommonInterfaceConfigSCPD
     Implements IWANCommonInterfaceConfigSCPD
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IWANCommonInterfaceConfigSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWANCommonInterfaceConfigSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IWANCommonInterfaceConfigSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IWANCommonInterfaceConfigSCPD.Servicefile
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
 
         ServiceFile = SCPDFiles.wancommonifconfigSCPD
 
@@ -18,19 +18,19 @@ Friend Class WANCommonInterfaceConfigSCPD
         PushStatus = Status
     End Sub
 
-    Public Function GetCommonLinkProperties(ByRef WANAccessType As AccessType,
+    Public Function GetCommonLinkProperties(ByRef WANAccessType As AccessTypeEnum,
                                             ByRef Layer1UpstreamMaxBitRate As Integer,
                                             ByRef Layer1DownstreamMaxBitRate As Integer,
-                                            ByRef PhysicalLinkStatus As PhysicalLinkStatus) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetCommonLinkProperties
+                                            ByRef PhysicalLinkStatus As PhysicalLinkStatusEnum) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetCommonLinkProperties
 
         With TR064Start(ServiceFile, "GetCommonLinkProperties", Nothing)
 
             If .ContainsKey("NewWANAccessType") Then
 
-                WANAccessType = CType(.Item("NewWANAccessType"), AccessType)
+                WANAccessType = CType(.Item("NewWANAccessType"), AccessTypeEnum)
                 Layer1UpstreamMaxBitRate = CInt(.Item("NewLayer1UpstreamMaxBitRate"))
                 Layer1DownstreamMaxBitRate = CInt(.Item("NewLayer1DownstreamMaxBitRate"))
-                PhysicalLinkStatus = CType(.Item("NewPhysicalLinkStatus"), PhysicalLinkStatus)
+                PhysicalLinkStatus = CType(.Item("NewPhysicalLinkStatus"), PhysicalLinkStatusEnum)
 
                 PushStatus.Invoke(LogLevel.Debug, $"GetCommonLinkProperties aus der Fritz!Box ausgelesen: '{WANAccessType}', '{Layer1UpstreamMaxBitRate}','{Layer1DownstreamMaxBitRate}','{PhysicalLinkStatus}'")
 
@@ -129,9 +129,9 @@ Friend Class WANCommonInterfaceConfigSCPD
 
     End Function
 
-    Public Function SetWANAccessType(AccessType As AccessType) As Boolean Implements IWANCommonInterfaceConfigSCPD.SetWANAccessType
+    Public Function SetWANAccessType(AccessType As AccessTypeEnum) As Boolean Implements IWANCommonInterfaceConfigSCPD.SetWANAccessType
 
-        With TR064Start(ServiceFile, "X_AVM-DE_SetWANAccessType", New Hashtable From {{"NewAccessType", AccessType.ToString}})
+        With TR064Start(ServiceFile, "X_AVM-DE_SetWANAccessType", New Dictionary(Of String, String) From {{"NewAccessType", AccessType.ToString}})
             Return Not .ContainsKey("Error")
         End With
 
@@ -140,7 +140,7 @@ Friend Class WANCommonInterfaceConfigSCPD
     Public Function GetOnlineMonitor(ByRef OnlineMonitor As OnlineMonitor, SyncGroupIndex As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetOnlineMonitor
         If OnlineMonitor Is Nothing Then OnlineMonitor = New OnlineMonitor
 
-        With TR064Start(ServiceFile, "X_AVM-DE_GetOnlineMonitor", New Hashtable From {{"NewSyncGroupIndex", SyncGroupIndex}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetOnlineMonitor", New Dictionary(Of String, String) From {{"NewSyncGroupIndex", SyncGroupIndex}})
 
             If .ContainsKey("NewVoIPRegistrar") Then
                 OnlineMonitor.SyncGroupIndex = SyncGroupIndex

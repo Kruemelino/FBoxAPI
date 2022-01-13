@@ -6,10 +6,10 @@
 Public Class UserInterfaceSCPD
     Implements IUserInterfaceSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IUserInterfaceSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IUserInterfaceSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IUserInterfaceSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IUserInterfaceSCPD.Servicefile
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
 
         ServiceFile = SCPDFiles.userifSCPD
 
@@ -48,7 +48,7 @@ Public Class UserInterfaceSCPD
     End Function
 
     Public Function CheckUpdate(LaborVersion As String) As Boolean Implements IUserInterfaceSCPD.CheckUpdate
-        With TR064Start(ServiceFile, "X_AVM-DE_CheckUpdate", New Hashtable From {{"NewX_AVM-DE_LaborVersion", LaborVersion}})
+        With TR064Start(ServiceFile, "X_AVM-DE_CheckUpdate", New Dictionary(Of String, String) From {{"NewX_AVM-DE_LaborVersion", LaborVersion}})
             Return Not .ContainsKey("Error")
         End With
     End Function
@@ -92,7 +92,7 @@ Public Class UserInterfaceSCPD
     End Function
 
     Public Function DoManualUpdate(DownloadURL As String, AllowDowngrade As Boolean) As Boolean Implements IUserInterfaceSCPD.DoManualUpdate
-        With TR064Start(ServiceFile, "X_AVM-DE_DoManualUpdate", New Hashtable From {{"NewX_AVM-DE_DownloadURL", DownloadURL},
+        With TR064Start(ServiceFile, "X_AVM-DE_DoManualUpdate", New Dictionary(Of String, String) From {{"NewX_AVM-DE_DownloadURL", DownloadURL},
                                                                                     {"NewX_AVM-DE_AllowDowngrade", AllowDowngrade.ToInt}})
             Return Not .ContainsKey("Error")
         End With
@@ -123,7 +123,7 @@ Public Class UserInterfaceSCPD
     End Function
 
     Public Function SetInternationalConfig(Language As String, Country As String, Annex As String) As Boolean Implements IUserInterfaceSCPD.SetInternationalConfig
-        With TR064Start(ServiceFile, "X_AVM-DE_SetInternationalConfig", New Hashtable From {{"NewX_AVM-DE_Language", Language},
+        With TR064Start(ServiceFile, "X_AVM-DE_SetInternationalConfig", New Dictionary(Of String, String) From {{"NewX_AVM-DE_Language", Language},
                                                                                             {"NewX_AVM-DE_Country", Country},
                                                                                             {"NewX_AVM-DE_Annex", Annex}})
             Return Not .ContainsKey("Error")
@@ -156,7 +156,7 @@ Public Class UserInterfaceSCPD
     End Function
 
     Public Function SetConfig(AutoUpdateMode As AutoUpdateModeEnum) As Boolean Implements IUserInterfaceSCPD.SetConfig
-        With TR064Start(ServiceFile, "X_AVM-DE_SetConfig", New Hashtable From {{"NewX_AVM-DE_AutoUpdateMode", AutoUpdateMode.ToString}})
+        With TR064Start(ServiceFile, "X_AVM-DE_SetConfig", New Dictionary(Of String, String) From {{"NewX_AVM-DE_AutoUpdateMode", AutoUpdateMode.ToString}})
             Return Not .ContainsKey("Error")
         End With
     End Function

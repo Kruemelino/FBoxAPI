@@ -6,10 +6,10 @@
 Public Interface IWANCommonInterfaceConfigSCPD
     Inherits IServiceBase
 
-    Function GetCommonLinkProperties(ByRef WANAccessType As AccessType,
+    Function GetCommonLinkProperties(ByRef WANAccessType As AccessTypeEnum,
                                             ByRef Layer1UpstreamMaxBitRate As Integer,
                                             ByRef Layer1DownstreamMaxBitRate As Integer,
-                                            ByRef PhysicalLinkStatus As PhysicalLinkStatus) As Boolean
+                                            ByRef PhysicalLinkStatus As PhysicalLinkStatusEnum) As Boolean
 
     ''' <summary>
     ''' Needs IGD to work
@@ -31,7 +31,7 @@ Public Interface IWANCommonInterfaceConfigSCPD
     ''' </summary>
     Function GetTotalPacketsReceived(ByRef TotalPacketsReceived As Integer) As Boolean
 
-    Function SetWANAccessType(AccessType As AccessType) As Boolean
+    Function SetWANAccessType(AccessType As AccessTypeEnum) As Boolean
 
     Function GetOnlineMonitor(ByRef OnlineMonitor As OnlineMonitor, SyncGroupIndex As Integer) As Boolean
 End Interface

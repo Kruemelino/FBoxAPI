@@ -6,12 +6,12 @@
 Friend Class HostsSCPD
     Implements IHostsSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IHostsSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IHostsSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IHostsSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IHostsSCPD.Servicefile
     Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
 
         ServiceFile = SCPDFiles.hostsSCPD
 
@@ -41,7 +41,7 @@ Friend Class HostsSCPD
     Public Function GetSpecificHostEntry(MACAddress As String, ByRef Host As HostEntry) As Boolean Implements IHostsSCPD.GetSpecificHostEntry
         If Host Is Nothing Then Host = New HostEntry
 
-        With TR064Start(ServiceFile, "GetSpecificHostEntry", New Hashtable From {{"NewMACAddress", MACAddress}})
+        With TR064Start(ServiceFile, "GetSpecificHostEntry", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}})
 
             If .ContainsKey("NewIPAddress") Then
                 Host.MACAddress = MACAddress
@@ -65,7 +65,7 @@ Friend Class HostsSCPD
     Public Function GetGenericHostEntry(HostNumberOfEntries As Integer, ByRef Host As HostEntry) As Boolean Implements IHostsSCPD.GetGenericHostEntry
         If Host Is Nothing Then Host = New HostEntry
 
-        With TR064Start(ServiceFile, "GetSpecificHostEntry", New Hashtable From {{"NewIndex", HostNumberOfEntries}})
+        With TR064Start(ServiceFile, "GetSpecificHostEntry", New Dictionary(Of String, String) From {{"NewIndex", HostNumberOfEntries}})
 
             If .ContainsKey("NewIPAddress") Then
                 Host.Index = HostNumberOfEntries
@@ -104,7 +104,7 @@ Friend Class HostsSCPD
     End Function
 
     Public Function GetAutoWakeOnLANByMACAddress(MACAddress As String, ByRef AutoWOLEnabled As Boolean) As Boolean Implements IHostsSCPD.GetAutoWakeOnLANByMACAddress
-        With TR064Start(ServiceFile, "X_AVM-DE_GetAutoWakeOnLANByMACAddress", New Hashtable From {{"NewMACAddress", MACAddress}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetAutoWakeOnLANByMACAddress", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}})
 
             If .ContainsKey("NewAutoWOLEnabled") Then
                 AutoWOLEnabled = CBool(.Item("NewAutoWOLEnabled"))
@@ -120,21 +120,21 @@ Friend Class HostsSCPD
     End Function
 
     Public Function SetAutoWakeOnLANByMACAddress(MACAddress As String, AutoWOLEnabled As Boolean) As Boolean Implements IHostsSCPD.SetAutoWakeOnLANByMACAddress
-        With TR064Start(ServiceFile, "X_AVM-DE_SetAutoWakeOnLANByMACAddress", New Hashtable From {{"NewMACAddress", MACAddress}, {"NewAutoWOLEnabled", AutoWOLEnabled.ToInt}})
+        With TR064Start(ServiceFile, "X_AVM-DE_SetAutoWakeOnLANByMACAddress", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}, {"NewAutoWOLEnabled", AutoWOLEnabled.ToInt}})
 
             Return Not .ContainsKey("Error")
         End With
     End Function
 
     Public Function SetHostNameByMACAddress(MACAddress As String, HostName As String) As Boolean Implements IHostsSCPD.SetHostNameByMACAddress
-        With TR064Start(ServiceFile, "X_AVM-DE_SetAutoWakeOnLANByMACAddress", New Hashtable From {{"NewMACAddress", MACAddress}, {"NewHostName", HostName}})
+        With TR064Start(ServiceFile, "X_AVM-DE_SetAutoWakeOnLANByMACAddress", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}, {"NewHostName", HostName}})
 
             Return Not .ContainsKey("Error")
         End With
     End Function
 
     Public Function WakeOnLANByMACAddress(MACAddress As String) As Boolean Implements IHostsSCPD.WakeOnLANByMACAddress
-        With TR064Start(ServiceFile, "X_AVM-DE_WakeOnLANByMACAddress", New Hashtable From {{"NewMACAddress", MACAddress}})
+        With TR064Start(ServiceFile, "X_AVM-DE_WakeOnLANByMACAddress", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}})
 
             Return Not .ContainsKey("Error")
         End With
@@ -143,7 +143,7 @@ Friend Class HostsSCPD
     Public Function GetSpecificHostEntryByIp(IPAddress As String, ByRef Host As HostEntry) As Boolean Implements IHostsSCPD.GetSpecificHostEntryByIp
         If Host Is Nothing Then Host = New HostEntry
 
-        With TR064Start(ServiceFile, "GetSpecificHostEntry", New Hashtable From {{"NewIPAddress", IPAddress}})
+        With TR064Start(ServiceFile, "GetSpecificHostEntry", New Dictionary(Of String, String) From {{"NewIPAddress", IPAddress}})
 
             If .ContainsKey("NewMACAddress") Then
                 Host.IPAddress = IPAddress
@@ -176,7 +176,7 @@ Friend Class HostsSCPD
     End Function
 
     Public Function HostDoUpdate(MACAddress As String) As Boolean Implements IHostsSCPD.HostDoUpdate
-        With TR064Start(ServiceFile, "X_AVM-DE_HostDoUpdate", New Hashtable From {{"NewMACAddress", MACAddress}})
+        With TR064Start(ServiceFile, "X_AVM-DE_HostDoUpdate", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}})
 
             Return Not .ContainsKey("Error")
         End With

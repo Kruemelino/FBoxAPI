@@ -6,11 +6,11 @@
 Friend Class X_myfritzSCPD
     Implements IX_myfritzSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_myfritzSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_myfritzSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IX_myfritzSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_myfritzSCPD.Servicefile
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
 
         ServiceFile = SCPDFiles.x_myfritzSCPD
 
@@ -62,7 +62,7 @@ Friend Class X_myfritzSCPD
     Public Function GetServiceByIndex(NumberOfServices As Integer, ByRef Info As MyFritzInfo) As Boolean Implements IX_myfritzSCPD.GetServiceByIndex
         If Info Is Nothing Then Info = New MyFritzInfo
 
-        With TR064Start(ServiceFile, "GetServiceByIndex", New Hashtable From {{"NewIndex", NumberOfServices}})
+        With TR064Start(ServiceFile, "GetServiceByIndex", New Dictionary(Of String, String) From {{"NewIndex", NumberOfServices}})
 
             If .ContainsKey("NewEnable") And .ContainsKey("NewName") Then
 
@@ -95,7 +95,7 @@ Friend Class X_myfritzSCPD
     End Function
 
     Public Function SetServiceByIndex(NumberOfServices As Integer, ByRef Info As MyFritzInfo) As Boolean Implements IX_myfritzSCPD.SetServiceByIndex
-        With TR064Start(ServiceFile, "SetServiceByIndex", New Hashtable From {{"NewIndex", NumberOfServices},
+        With TR064Start(ServiceFile, "SetServiceByIndex", New Dictionary(Of String, String) From {{"NewIndex", NumberOfServices},
                                                                               {"NewEnabled", Info.Enabled},
                                                                               {"NewName", Info.Name},
                                                                               {"NewScheme", Info.Scheme},
@@ -111,7 +111,7 @@ Friend Class X_myfritzSCPD
     End Function
 
     Public Function DeleteServiceByIndex(NumberOfServices As Integer) As Boolean Implements IX_myfritzSCPD.DeleteServiceByIndex
-        With TR064Start(ServiceFile, "DeleteServiceByIndex", New Hashtable From {{"NewIndex", NumberOfServices}})
+        With TR064Start(ServiceFile, "DeleteServiceByIndex", New Dictionary(Of String, String) From {{"NewIndex", NumberOfServices}})
             Return Not .ContainsKey("Error")
         End With
     End Function

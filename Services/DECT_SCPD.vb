@@ -6,11 +6,11 @@
 Friend Class DECT_SCPD
     Implements IDECT_SCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IDECT_SCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IDECT_SCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IDECT_SCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IDECT_SCPD.Servicefile
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
 
         ServiceFile = SCPDFiles.x_dectSCPD
 
@@ -39,16 +39,16 @@ Friend Class DECT_SCPD
     Public Function GetGenericDectEntry(ByRef GenericDectEntry As DectEntry, NumberOfEntries As Integer) As Boolean Implements IDECT_SCPD.GetGenericDectEntry
         If GenericDectEntry Is Nothing Then GenericDectEntry = New DectEntry
 
-        With TR064Start(ServiceFile, "GetGenericDectEntry", New Hashtable From {{"NewIndex", NumberOfEntries}})
+        With TR064Start(ServiceFile, "GetGenericDectEntry", New Dictionary(Of String, String) From {{"NewIndex", NumberOfEntries}})
 
             If .ContainsKey("NewID") Then
-                GenericDectEntry.ID = .Item("NewID").ToString
+                GenericDectEntry.ID = .Item("NewID")
                 GenericDectEntry.Active = CBool(.Item("NewActive"))
-                GenericDectEntry.Name = .Item("NewName").ToString
-                GenericDectEntry.Model = .Item("NewModel").ToString
+                GenericDectEntry.Name = .Item("NewName")
+                GenericDectEntry.Model = .Item("NewModel")
                 GenericDectEntry.UpdateAvailable = CBool(.Item("NewUpdateAvailable"))
                 GenericDectEntry.UpdateSuccessful = CType(.Item("NewUpdateSuccessful"), UpdateEnum)
-                GenericDectEntry.UpdateInfo = .Item("NewUpdateInfo").ToString
+                GenericDectEntry.UpdateInfo = .Item("NewUpdateInfo")
 
                 Return True
 
@@ -63,17 +63,17 @@ Friend Class DECT_SCPD
     Public Function GetSpecificDectEntry(ByRef SpecificDectEntry As DectEntry, ID As String) As Boolean Implements IDECT_SCPD.GetSpecificDectEntry
         If SpecificDectEntry Is Nothing Then SpecificDectEntry = New DectEntry
 
-        With TR064Start(ServiceFile, "GetSpecificDectEntry", New Hashtable From {{"NewID", ID}})
+        With TR064Start(ServiceFile, "GetSpecificDectEntry", New Dictionary(Of String, String) From {{"NewID", ID}})
 
             If .ContainsKey("NewID") Then
                 SpecificDectEntry.ID = ID
 
                 SpecificDectEntry.Active = CBool(.Item("NewActive"))
-                SpecificDectEntry.Name = .Item("NewName").ToString
-                SpecificDectEntry.Model = .Item("NewModel").ToString
+                SpecificDectEntry.Name = .Item("NewName")
+                SpecificDectEntry.Model = .Item("NewModel")
                 SpecificDectEntry.UpdateAvailable = CBool(.Item("NewUpdateAvailable"))
                 SpecificDectEntry.UpdateSuccessful = CType(.Item("NewUpdateSuccessful"), UpdateEnum)
-                SpecificDectEntry.UpdateInfo = .Item("NewUpdateInfo").ToString
+                SpecificDectEntry.UpdateInfo = .Item("NewUpdateInfo")
 
                 Return True
 
@@ -86,7 +86,7 @@ Friend Class DECT_SCPD
     End Function
 
     Public Function DectDoUpdate(ByRef ID As String) As Boolean Implements IDECT_SCPD.DectDoUpdate
-        With TR064Start(ServiceFile, "DectDoUpdate", New Hashtable From {{"NewID", ID}})
+        With TR064Start(ServiceFile, "DectDoUpdate", New Dictionary(Of String, String) From {{"NewID", ID}})
             Return Not .ContainsKey("Error")
         End With
     End Function

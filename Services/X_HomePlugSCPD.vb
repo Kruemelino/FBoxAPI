@@ -6,11 +6,11 @@
 Public Class X_homePlugSCPD
     Implements IX_homeplugSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_homeplugSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_homeplugSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IX_homeplugSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_homeplugSCPD.Servicefile
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
 
         ServiceFile = SCPDFiles.x_homeplugSCPD
 
@@ -39,7 +39,7 @@ Public Class X_homePlugSCPD
     Public Function GetNumberOfDeviceEntries(Index As Integer, ByRef Device As HomePlugDevice) As Boolean Implements IX_homeplugSCPD.GetNumberOfDeviceEntries
         If Device Is Nothing Then Device = New HomePlugDevice
 
-        With TR064Start(ServiceFile, "GetGenericDeviceEntry", New Hashtable From {{"NewIndex", Index}})
+        With TR064Start(ServiceFile, "GetGenericDeviceEntry", New Dictionary(Of String, String) From {{"NewIndex", Index}})
 
             If .ContainsKey("NewMACAddress") Then
 
@@ -65,7 +65,7 @@ Public Class X_homePlugSCPD
     Public Function GetSpecificDeviceEntry(MACAddress As String, ByRef Device As HomePlugDevice) As Boolean Implements IX_homeplugSCPD.GetSpecificDeviceEntry
         If Device Is Nothing Then Device = New HomePlugDevice
 
-        With TR064Start(ServiceFile, "GetSpecificDeviceEntry", New Hashtable From {{"NewMACAddress", MACAddress}})
+        With TR064Start(ServiceFile, "GetSpecificDeviceEntry", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}})
 
             If .ContainsKey("NewActive") Then
                 Device.MACAddress = MACAddress
@@ -87,7 +87,7 @@ Public Class X_homePlugSCPD
     End Function
 
     Public Function DeviceDoUpdate(MACAddress As String) As Boolean Implements IX_homeplugSCPD.DeviceDoUpdate
-        With TR064Start(ServiceFile, "DeviceDoUpdate", New Hashtable From {{"NewMACAddress", MACAddress}})
+        With TR064Start(ServiceFile, "DeviceDoUpdate", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}})
             Return Not .ContainsKey("Error")
         End With
     End Function

@@ -6,11 +6,11 @@
 Friend Class X_homeautoSCPD
     Implements IX_homeautoSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_homeautoSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_homeautoSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IX_homeautoSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_homeautoSCPD.Servicefile
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
 
         ServiceFile = SCPDFiles.x_homeautoSCPD
 
@@ -47,7 +47,7 @@ Friend Class X_homeautoSCPD
 
         If DeviceInfo Is Nothing Then DeviceInfo = New HomeAutoDeviceInfo
 
-        With TR064Start(ServiceFile, "GetGenericDeviceInfos", New Hashtable From {{"NewIndex", Index}})
+        With TR064Start(ServiceFile, "GetGenericDeviceInfos", New Dictionary(Of String, String) From {{"NewIndex", Index}})
 
             If .ContainsKey("NewAIN") Then
 
@@ -97,7 +97,7 @@ Friend Class X_homeautoSCPD
 
         If DeviceInfo Is Nothing Then DeviceInfo = New HomeAutoDeviceInfo
 
-        With TR064Start(ServiceFile, "GetSpecificDeviceInfos", New Hashtable From {{"NewAIN", AIN}})
+        With TR064Start(ServiceFile, "GetSpecificDeviceInfos", New Dictionary(Of String, String) From {{"NewAIN", AIN}})
 
             If .ContainsKey("NewDeviceId") Then
 
@@ -143,13 +143,13 @@ Friend Class X_homeautoSCPD
     End Function
 
     Public Function SetDeviceName(AIN As String, DeviceName As String) As Boolean Implements IX_homeautoSCPD.SetDeviceName
-        With TR064Start(ServiceFile, "SetDeviceName", New Hashtable From {{"NewAIN", AIN}, {"NewDeviceName", DeviceName}})
+        With TR064Start(ServiceFile, "SetDeviceName", New Dictionary(Of String, String) From {{"NewAIN", AIN}, {"NewDeviceName", DeviceName}})
             Return Not .ContainsKey("Error")
         End With
     End Function
 
     Public Function SetSwitch(AIN As String, SwitchState As SwStateEnum) As Boolean Implements IX_homeautoSCPD.SetSwitch
-        With TR064Start(ServiceFile, "SetSwitch", New Hashtable From {{"NewAIN", AIN}, {"NewSwitchState", SwitchState.ToString}})
+        With TR064Start(ServiceFile, "SetSwitch", New Dictionary(Of String, String) From {{"NewAIN", AIN}, {"NewSwitchState", SwitchState.ToString}})
             Return Not .ContainsKey("Error")
         End With
     End Function

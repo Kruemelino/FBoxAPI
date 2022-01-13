@@ -5,11 +5,11 @@
 ''' </summary>
 Public Class X_hostfilterSCPD
     Implements IX_hostfilterSCPD
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_hostfilterSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_hostfilterSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IX_hostfilterSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_hostfilterSCPD.Servicefile
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
 
         ServiceFile = SCPDFiles.x_hostfilterSCPD
 
@@ -19,7 +19,7 @@ Public Class X_hostfilterSCPD
     End Sub
 
     Public Function DisallowWANAccessByIP(IPv4Address As String, Disallow As Boolean) As Boolean Implements IX_hostfilterSCPD.DisallowWANAccessByIP
-        With TR064Start(ServiceFile, "DisallowWANAccessByIP", New Hashtable From {{"NewIPv4Address", IPv4Address},
+        With TR064Start(ServiceFile, "DisallowWANAccessByIP", New Dictionary(Of String, String) From {{"NewIPv4Address", IPv4Address},
                                                                                   {"NewDisallow", Disallow.ToInt}})
             Return Not .ContainsKey("Error")
         End With
@@ -32,7 +32,7 @@ Public Class X_hostfilterSCPD
     End Function
 
     Public Function GetTicketIDStatus(TicketID As String, ByRef TicketIDStatus As TicketIDStatusEnum) As Boolean Implements IX_hostfilterSCPD.GetTicketIDStatus
-        With TR064Start(ServiceFile, "GetTicketIDStatus", New Hashtable From {{"NewTicketID", TicketID}})
+        With TR064Start(ServiceFile, "GetTicketIDStatus", New Dictionary(Of String, String) From {{"NewTicketID", TicketID}})
 
             If .ContainsKey("NewTicketIDStatus") Then
 
@@ -51,7 +51,7 @@ Public Class X_hostfilterSCPD
     End Function
 
     Public Function GetWANAccessByIP(IPv4Address As String, ByRef WANAccess As WANAccessEnum, ByRef Disallow As Boolean) As Boolean Implements IX_hostfilterSCPD.GetWANAccessByIP
-        With TR064Start(ServiceFile, "GetWANAccessByIP", New Hashtable From {{"NewIPv4Address", IPv4Address}})
+        With TR064Start(ServiceFile, "GetWANAccessByIP", New Dictionary(Of String, String) From {{"NewIPv4Address", IPv4Address}})
 
             If .ContainsKey("NewWANAccess") And .ContainsKey("NewDisallow") Then
 

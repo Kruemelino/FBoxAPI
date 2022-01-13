@@ -6,12 +6,12 @@
 Friend Class X_SpeedtestSCPD
     Implements IX_speedtestSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_speedtestSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_speedtestSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IX_speedtestSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_speedtestSCPD.Servicefile
     Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
 
         ServiceFile = SCPDFiles.x_speedtestSCPD
 
@@ -48,7 +48,7 @@ Friend Class X_SpeedtestSCPD
     End Function
 
     Public Function SetConfig(EnableTcp As Boolean, EnableUdp As Boolean, EnableUdpBidirect As Boolean, WANEnableTcp As Boolean, WANEnableUdp As Boolean) As Boolean Implements IX_speedtestSCPD.SetConfig
-        With TR064Start(ServiceFile, "SetConfig", New Hashtable From {{"NewEnableTcp", EnableTcp.ToInt},
+        With TR064Start(ServiceFile, "SetConfig", New Dictionary(Of String, String) From {{"NewEnableTcp", EnableTcp.ToInt},
                                                                       {"NewEnableUdp", EnableUdp.ToInt},
                                                                       {"NewEnableUdpBidirect", EnableUdpBidirect.ToInt},
                                                                       {"NewWANEnableTcp", WANEnableTcp.ToInt},

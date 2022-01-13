@@ -6,12 +6,12 @@
 Friend Class X_contactSCPD
     Implements IX_contactSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_contactSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_contactSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IX_contactSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_contactSCPD.Servicefile
     Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
 
         ServiceFile = SCPDFiles.x_contactSCPD
 
@@ -31,7 +31,7 @@ Friend Class X_contactSCPD
                                    Optional ByRef Username As String = "",
                                    Optional ByRef Name As String = "") As Boolean Implements IX_contactSCPD.GetInfoByIndex
 
-        With TR064Start(ServiceFile, "GetInfoByIndex", New Hashtable From {{"NewIndex", Index}})
+        With TR064Start(ServiceFile, "GetInfoByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index}})
 
             If .ContainsKey("NewName") Then
 
@@ -58,7 +58,7 @@ Friend Class X_contactSCPD
 
     Public Function SetEnableByIndex(Index As Integer, Enable As Boolean) As Boolean Implements IX_contactSCPD.SetEnableByIndex
 
-        With TR064Start(ServiceFile, "SetEnableByIndex", New Hashtable From {{"NewIndex", Index},
+        With TR064Start(ServiceFile, "SetEnableByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index},
                                                                              {"NewEnable", Enable.ToInt}})
             Return Not .ContainsKey("Error")
         End With
@@ -67,7 +67,7 @@ Friend Class X_contactSCPD
 
     Public Function SetConfigByIndex(Index As Integer, Enable As Boolean, Url As String, ServiceId As String, Username As String, Password As String, Name As String) As Boolean Implements IX_contactSCPD.SetConfigByIndex
 
-        With TR064Start(ServiceFile, "SetConfigByIndex", New Hashtable From {{"NewIndex", Index},
+        With TR064Start(ServiceFile, "SetConfigByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index},
                                                                              {"NewEnable", Enable.ToInt},
                                                                              {"NewUrl", Url},
                                                                              {"NewServiceId", ServiceId},
@@ -100,7 +100,7 @@ Friend Class X_contactSCPD
 
     Public Function DeleteByIndex(Index As Integer) As Boolean Implements IX_contactSCPD.DeleteByIndex
 
-        With TR064Start(ServiceFile, "DeleteByIndex", New Hashtable From {{"NewIndex", Index}})
+        With TR064Start(ServiceFile, "DeleteByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index}})
             Return Not .ContainsKey("Error")
         End With
 
@@ -157,7 +157,7 @@ Friend Class X_contactSCPD
                                  Optional ByRef PhonebookName As String = "",
                                  Optional ByRef PhonebookExtraID As String = "") As Boolean Implements IX_contactSCPD.GetPhonebook
 
-        With TR064Start(ServiceFile, "GetPhonebook", New Hashtable From {{"NewPhonebookID", PhonebookID}})
+        With TR064Start(ServiceFile, "GetPhonebook", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID}})
 
             If .ContainsKey("NewPhonebookURL") Then
                 ' Phonebook URL auslesen
@@ -183,7 +183,7 @@ Friend Class X_contactSCPD
 
     Public Function AddPhonebook(PhonebookName As String, Optional PhonebookExtraID As String = "") As Boolean Implements IX_contactSCPD.AddPhonebook
 
-        With TR064Start(ServiceFile, "AddPhonebook", New Hashtable From {{"NewPhonebookName", PhonebookName},
+        With TR064Start(ServiceFile, "AddPhonebook", New Dictionary(Of String, String) From {{"NewPhonebookName", PhonebookName},
                                                                                               {"NewPhonebookExtraID", PhonebookExtraID}})
 
             Return Not .ContainsKey("Error")
@@ -194,7 +194,7 @@ Friend Class X_contactSCPD
 
     Public Function DeletePhonebook(NewPhonebookID As Integer, Optional PhonebookExtraID As String = "") As Boolean Implements IX_contactSCPD.DeletePhonebook
 
-        With TR064Start(ServiceFile, "DeletePhonebook", New Hashtable From {{"NewPhonebookID", NewPhonebookID},
+        With TR064Start(ServiceFile, "DeletePhonebook", New Dictionary(Of String, String) From {{"NewPhonebookID", NewPhonebookID},
                                                                                                  {"NewPhonebookExtraID", PhonebookExtraID}})
 
             Return Not .ContainsKey("Error")
@@ -207,7 +207,7 @@ Friend Class X_contactSCPD
 #Region "PhonebookEntry"
     Public Function GetPhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetPhonebookEntry
 
-        With TR064Start(ServiceFile, "GetPhonebookEntry", New Hashtable From {{"NewPhonebookID", PhonebookID},
+        With TR064Start(ServiceFile, "GetPhonebookEntry", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
                                                                                                    {"NewPhonebookEntryID", PhonebookEntryID}})
 
             If .ContainsKey("NewPhonebookEntryData") Then
@@ -231,7 +231,7 @@ Friend Class X_contactSCPD
 
     Public Function GetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryUniqueID As Integer, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetPhonebookEntryUID
 
-        With TR064Start(ServiceFile, "GetPhonebookEntryUID", New Hashtable From {{"NewPhonebookID", PhonebookID},
+        With TR064Start(ServiceFile, "GetPhonebookEntryUID", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
                                                                                                       {"NewPhonebookEntryUniqueID", PhonebookEntryUniqueID}})
 
             If .ContainsKey("NewPhonebookEntryData") Then
@@ -255,7 +255,7 @@ Friend Class X_contactSCPD
 
     Public Function SetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryData As String, ByRef PhonebookEntryUniqueID As Integer) As Boolean Implements IX_contactSCPD.SetPhonebookEntryUID
 
-        With TR064Start(ServiceFile, "SetPhonebookEntryUID", New Hashtable From {{"NewPhonebookID", PhonebookID},
+        With TR064Start(ServiceFile, "SetPhonebookEntryUID", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
                                                                                                       {"NewPhonebookEntryData", PhonebookEntryData}})
 
             If .ContainsKey("NewPhonebookEntryUniqueID") Then
@@ -276,7 +276,7 @@ Friend Class X_contactSCPD
 
     Public Function DeletePhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer) As Boolean Implements IX_contactSCPD.DeletePhonebookEntry
 
-        With TR064Start(ServiceFile, "DeletePhonebookEntry", New Hashtable From {{"NewPhonebookID", PhonebookID},
+        With TR064Start(ServiceFile, "DeletePhonebookEntry", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
                                                                                                       {"NewPhonebookEntryID", PhonebookEntryID}})
             Return Not .ContainsKey("Error")
 
@@ -285,7 +285,7 @@ Friend Class X_contactSCPD
 
     Public Function DeletePhonebookEntryUID(PhonebookID As Integer, NewPhonebookEntryUniqueID As Integer) As Boolean Implements IX_contactSCPD.DeletePhonebookEntryUID
 
-        With TR064Start(ServiceFile, "DeletePhonebookEntryUID", New Hashtable From {{"NewPhonebookID", PhonebookID},
+        With TR064Start(ServiceFile, "DeletePhonebookEntryUID", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
                                                                                                          {"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID}})
             Return Not .ContainsKey("Error")
 
@@ -297,7 +297,7 @@ Friend Class X_contactSCPD
 #Region "CallBarring"
     Public Function GetCallBarringEntry(PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetCallBarringEntry
 
-        With TR064Start(ServiceFile, "GetCallBarringEntry", New Hashtable From {{"NewPhonebookEntryID", PhonebookEntryID}})
+        With TR064Start(ServiceFile, "GetCallBarringEntry", New Dictionary(Of String, String) From {{"NewPhonebookEntryID", PhonebookEntryID}})
 
             If .ContainsKey("NewPhonebookEntryData") Then
                 ' Phonebook URL auslesen
@@ -320,7 +320,7 @@ Friend Class X_contactSCPD
 
     Public Function GetCallBarringEntryByNum(Number As String, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetCallBarringEntryByNum
 
-        With TR064Start(ServiceFile, "GetCallBarringEntryByNum", New Hashtable From {{"NewNumber", Number}})
+        With TR064Start(ServiceFile, "GetCallBarringEntryByNum", New Dictionary(Of String, String) From {{"NewNumber", Number}})
 
             If .ContainsKey("NewPhonebookEntryData") Then
                 ' Phonebook URL auslesen
@@ -365,7 +365,7 @@ Friend Class X_contactSCPD
 
     Public Function SetCallBarringEntry(PhonebookEntryData As String, Optional ByRef PhonebookEntryUniqueID As Integer = 0) As Boolean Implements IX_contactSCPD.SetCallBarringEntry
 
-        With TR064Start(ServiceFile, "SetCallBarringEntry", New Hashtable From {{"NewPhonebookEntryData", PhonebookEntryData}})
+        With TR064Start(ServiceFile, "SetCallBarringEntry", New Dictionary(Of String, String) From {{"NewPhonebookEntryData", PhonebookEntryData}})
 
             If .ContainsKey("NewPhonebookEntryUniqueID") Then
                 ' Phonebook URL auslesen
@@ -388,7 +388,7 @@ Friend Class X_contactSCPD
 
     Public Function DeleteCallBarringEntryUID(NewPhonebookEntryUniqueID As Integer) As Boolean Implements IX_contactSCPD.DeleteCallBarringEntryUID
 
-        With TR064Start(ServiceFile, "DeleteCallBarringEntryUID", New Hashtable From {{"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID}})
+        With TR064Start(ServiceFile, "DeleteCallBarringEntryUID", New Dictionary(Of String, String) From {{"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID}})
             Return Not .ContainsKey("Error")
 
         End With
@@ -424,7 +424,7 @@ Friend Class X_contactSCPD
                                        ByRef HandsetName As String,
                                        ByRef PhonebookID As String) As Boolean Implements IX_contactSCPD.GetDECTHandsetInfo
 
-        With TR064Start(ServiceFile, "GetDECTHandsetInfo", New Hashtable From {{"NewDectID", DectID}})
+        With TR064Start(ServiceFile, "GetDECTHandsetInfo", New Dictionary(Of String, String) From {{"NewDectID", DectID}})
 
             If .ContainsKey("NewHandsetName") And .ContainsKey("NewPhonebookID") Then
 
@@ -448,7 +448,7 @@ Friend Class X_contactSCPD
 
     Public Function SetDECTHandsetPhonebook(DectID As Integer, PhonebookID As Integer) As Boolean Implements IX_contactSCPD.SetDECTHandsetPhonebook
 
-        With TR064Start(ServiceFile, "SetDECTHandsetPhonebook", New Hashtable From {{"NewDectID", DectID}, {"NewPhonebookID", PhonebookID}})
+        With TR064Start(ServiceFile, "SetDECTHandsetPhonebook", New Dictionary(Of String, String) From {{"NewDectID", DectID}, {"NewPhonebookID", PhonebookID}})
             Return Not .ContainsKey("Error")
         End With
 
@@ -483,15 +483,15 @@ Friend Class X_contactSCPD
 
         If DeflectionInfo Is Nothing Then DeflectionInfo = New Deflection
 
-        With TR064Start(ServiceFile, "GetInfo", New Hashtable From {{"NewDeflectionId", DeflectionId}})
+        With TR064Start(ServiceFile, "GetInfo", New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId}})
 
             If .ContainsKey("NewEnable") Then
 
                 DeflectionInfo.Enable = CBool(.Item("NewEnable"))
-                DeflectionInfo.Type = CType(.Item("NewType"), DeflectionType)
+                DeflectionInfo.Type = CType(.Item("NewType"), DeflectionTypeEnum)
                 DeflectionInfo.Number = .Item("NewNumber").ToString
                 DeflectionInfo.DeflectionToNumber = .Item("NewDeflectionToNumber").ToString
-                DeflectionInfo.Mode = CType(.Item("NewMode"), DeflectionMode)
+                DeflectionInfo.Mode = CType(.Item("NewMode"), DeflectionModeEnum)
                 DeflectionInfo.Outgoing = .Item("NewOutgoing").ToString
                 DeflectionInfo.PhonebookID = .Item("NewPhonebookID").ToString
 
@@ -536,7 +536,7 @@ Friend Class X_contactSCPD
 
     Public Function SetDeflectionEnable(DeflectionId As Integer, Enable As Boolean) As Boolean Implements IX_contactSCPD.SetDeflectionEnable
 
-        With TR064Start(ServiceFile, "SetDeflectionEnable", New Hashtable From {{"NewDeflectionId", DeflectionId}, {"NewEnable", Enable.ToString}})
+        With TR064Start(ServiceFile, "SetDeflectionEnable", New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId}, {"NewEnable", Enable.ToString}})
 
             Return Not .ContainsKey("Error")
 

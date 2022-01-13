@@ -65,7 +65,7 @@ Public Interface IDeviceconfigSCPD
     ''' <param name="SupportDataMode">"normal", "mesh", "unknown"</param>
     ''' <param name="SupportDataTimestamp">0001-01-01T00:00:00</param>
     ''' <param name="SupportDataStatus">"unknown", "ok", "preparing", "error", "creating"</param>
-    Function GetSupportDataInfo(ByRef SupportDataMode As SupportDataMode, ByRef SupportDataID As String, ByRef SupportDataTimestamp As Date, ByRef SupportDataStatus As SupportDataStatus) As Boolean
+    Function GetSupportDataInfo(ByRef SupportDataMode As SupportDataModeEnum, ByRef SupportDataID As String, ByRef SupportDataTimestamp As Date, ByRef SupportDataStatus As SupportDataStatusEnum) As Boolean
 
     ''' <summary>
     ''' X_AVM-DE_SendSupportData<br/>

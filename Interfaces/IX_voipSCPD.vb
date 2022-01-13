@@ -7,9 +7,9 @@ Public Interface IX_voipSCPD
     Inherits IServiceBase
 
 #Region "GetInfo"
-    Function GetInfo(ByRef FaxT38Enable As Boolean, ByRef VoiceCoding As VoiceCoding) As Boolean
+    Function GetInfo(ByRef FaxT38Enable As Boolean, ByRef VoiceCoding As VoiceCodingEnum) As Boolean
 
-    Function SetConfig(T38FaxEnable As Boolean, VoiceCoding As VoiceCoding) As Boolean
+    Function SetConfig(T38FaxEnable As Boolean, VoiceCoding As VoiceCodingEnum) As Boolean
 
     Function GetInfoEx(ByRef InfoEx As VoIPInfoEx) As Boolean
 #End Region

@@ -1,6 +1,6 @@
 ﻿Imports System.Xml.Serialization
 
-Public Enum TelNrTyp
+Public Enum TelNrTypEnum
     <XmlEnum("")> notset
 
     <XmlEnum("intern")> intern
@@ -22,7 +22,7 @@ Public Enum TelNrTyp
 
 End Enum
 
-Public Enum EMailTyp
+Public Enum EMailTypEnum
 
     <XmlEnum("")> notset
 
@@ -40,7 +40,7 @@ End Enum
 ''' <summary>
 ''' Fritz!Box Deflection
 ''' </summary>
-Public Enum DeflectionMode
+Public Enum DeflectionModeEnum
     ''' <summary>
     ''' Deflect if a bell blockade is activ
     ''' </summary>
@@ -110,7 +110,7 @@ End Enum
 ''' <summary>
 ''' Fritz!Box Deflection
 ''' </summary>
-Public Enum DeflectionType
+Public Enum DeflectionTypeEnum
     ''' <summary>
     ''' Phone port 1 is selected
     ''' </summary>
@@ -187,7 +187,7 @@ Public Enum DeflectionType
     <XmlEnum> unknown
 End Enum
 
-Public Enum SIPType
+Public Enum SIPTypeEnum
     eAllCalls
     eGSM
     eISDN
@@ -196,13 +196,13 @@ Public Enum SIPType
     eVoIP
 End Enum
 
-Public Enum SupportDataMode
+Public Enum SupportDataModeEnum
     normal
     mesh
     unknown
 End Enum
 
-Public Enum SupportDataStatus
+Public Enum SupportDataStatusEnum
     unknown
     ok
     preparing
@@ -210,7 +210,7 @@ Public Enum SupportDataStatus
     creating
 End Enum
 
-Public Enum VoiceCoding
+Public Enum VoiceCodingEnum
     ''' <summary>
     ''' always use POTS quality (default value) 
     ''' </summary>
@@ -229,14 +229,14 @@ Public Enum VoiceCoding
     autocompressed
 End Enum
 
-Public Enum PhysicalLinkStatus
+Public Enum PhysicalLinkStatusEnum
     Unavailable
     Down
     Initializing
     Up
 End Enum
 
-Public Enum AccessType
+Public Enum AccessTypeEnum
     DSL
     Ethernet
 End Enum

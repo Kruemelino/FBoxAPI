@@ -1,8 +1,8 @@
 ﻿Imports System.Xml.Serialization
 
-<Serializable(), XmlType("number")> Public Class Number
+<Serializable(), XmlType("number")> Public Class NumberType
 
-    <XmlAttribute("type")> Public Property Type As TelNrTyp
+    <XmlAttribute("type")> Public Property Type As TelNrTypEnum
     <XmlAttribute("vanity")> Public Property Vanity As String
     <XmlAttribute("prio")> Public Property Prio As String
     <XmlAttribute("quickdial")> Public Property QuickDial As String

@@ -5,11 +5,11 @@
 ''' </summary>
 Friend Class DeviceinfoSCPD
     Implements IDeviceinfoSCPD
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IDeviceinfoSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IDeviceinfoSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IDeviceinfoSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IDeviceinfoSCPD.Servicefile
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
 
         ServiceFile = SCPDFiles.deviceinfoSCPD
 
@@ -53,7 +53,7 @@ Friend Class DeviceinfoSCPD
 
     ''' <param name="ProvisioningCode">ddd.ddd.ddd.ddd, d == [0-9] </param>
     Public Function SetProvisioningCode(ProvisioningCode As String) As Boolean Implements IDeviceinfoSCPD.SetProvisioningCode
-        With TR064Start(ServiceFile, "SetProvisioningCode", New Hashtable From {{"NewProvisioningCode", ProvisioningCode}})
+        With TR064Start(ServiceFile, "SetProvisioningCode", New Dictionary(Of String, String) From {{"NewProvisioningCode", ProvisioningCode}})
             Return Not .ContainsKey("Error")
         End With
     End Function

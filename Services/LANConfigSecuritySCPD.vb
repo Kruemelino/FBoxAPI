@@ -5,11 +5,11 @@
 ''' </summary>
 Friend Class LANConfigSecuritySCPD
     Implements ILANConfigSecuritySCPD
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements ILANConfigSecuritySCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ILANConfigSecuritySCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements ILANConfigSecuritySCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements ILANConfigSecuritySCPD.Servicefile
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
 
         ServiceFile = SCPDFiles.lanconfigsecuritySCPD
 
@@ -70,7 +70,7 @@ Friend Class LANConfigSecuritySCPD
     End Function
 
     Public Function SetConfigPassword(ConfigPassword As String) As Boolean Implements ILANConfigSecuritySCPD.SetConfigPassword
-        With TR064Start(ServiceFile, "SetConfigPassword", New Hashtable From {{"NewPassword", ConfigPassword}})
+        With TR064Start(ServiceFile, "SetConfigPassword", New Dictionary(Of String, String) From {{"NewPassword", ConfigPassword}})
             Return Not .ContainsKey("Error")
         End With
     End Function

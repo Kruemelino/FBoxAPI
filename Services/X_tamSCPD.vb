@@ -6,12 +6,12 @@
 Friend Class X_tamSCPD
     Implements IX_tamSCPD
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Hashtable, Hashtable) Implements IX_tamSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_tamSCPD.TR064Start
     Private Property PushStatus As Action(Of LogLevel, String) Implements IX_tamSCPD.PushStatus
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_tamSCPD.Servicefile
     Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Hashtable, Hashtable), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
 
         ServiceFile = SCPDFiles.x_tamSCPD
 
@@ -26,7 +26,7 @@ Friend Class X_tamSCPD
 
         If TAMInfo Is Nothing Then TAMInfo = New TAMInfo
 
-        With TR064Start(ServiceFile, "GetInfo", New Hashtable From {{"NewIndex", i}})
+        With TR064Start(ServiceFile, "GetInfo", New Dictionary(Of String, String) From {{"NewIndex", i}})
 
             If .ContainsKey("NewEnable") And .ContainsKey("NewPhoneNumbers") Then
 
@@ -55,14 +55,14 @@ Friend Class X_tamSCPD
 
     Public Function SetEnable(Index As Integer, Enable As Boolean) As Boolean Implements IX_tamSCPD.SetEnable
 
-        With TR064Start(ServiceFile, "SetEnable", New Hashtable From {{"NewIndex", Index}, {"NewEnable", Enable.ToInt}})
+        With TR064Start(ServiceFile, "SetEnable", New Dictionary(Of String, String) From {{"NewIndex", Index}, {"NewEnable", Enable.ToInt}})
             Return Not .ContainsKey("Error")
         End With
 
     End Function
 
     Public Function GetMessageList(ByRef GetMessageListURL As String, i As Integer) As Boolean Implements IX_tamSCPD.GetMessageList
-        With TR064Start(ServiceFile, "GetMessageList", New Hashtable From {{"NewIndex", i}})
+        With TR064Start(ServiceFile, "GetMessageList", New Dictionary(Of String, String) From {{"NewIndex", i}})
             If .ContainsKey("NewURL") Then
 
                 GetMessageListURL = .Item("NewURL").ToString
@@ -82,7 +82,7 @@ Friend Class X_tamSCPD
 
     Public Function MarkMessage(Index As Integer, MessageIndex As Integer, MarkedAsRead As Boolean) As Boolean Implements IX_tamSCPD.MarkMessage
 
-        With TR064Start(ServiceFile, "MarkMessage", New Hashtable From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}, {"NewMarkedAsRead", MarkedAsRead.ToInt}})
+        With TR064Start(ServiceFile, "MarkMessage", New Dictionary(Of String, String) From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}, {"NewMarkedAsRead", MarkedAsRead.ToInt}})
             Return Not .ContainsKey("Error")
         End With
 
@@ -90,7 +90,7 @@ Friend Class X_tamSCPD
 
     Public Function DeleteMessage(Index As Integer, MessageIndex As Integer) As Boolean Implements IX_tamSCPD.DeleteMessage
 
-        With TR064Start(ServiceFile, "DeleteMessage", New Hashtable From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}})
+        With TR064Start(ServiceFile, "DeleteMessage", New Dictionary(Of String, String) From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}})
 
 
             If Not .ContainsKey("Error") Then

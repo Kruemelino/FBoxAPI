@@ -160,13 +160,13 @@ Public Class FritzBoxTR64
         RaiseEvent Status(Me, New NotifyEventArgs(Of LogMessage)(New LogMessage(Level, Message, Ex)))
     End Sub
 
-    Private Function TR064Start(SCPDURL As SCPDFiles, ActionName As String, Optional InputHashTable As Hashtable = Nothing) As Hashtable
+    Private Function TR064Start(SCPDURL As SCPDFiles, ActionName As String, Optional InputArguments As Dictionary(Of String, String) = Nothing) As Dictionary(Of String, String)
 
         If Ready Then
             With GetService(SCPDURL)
                 If?.ActionExists(ActionName) Then
-                    If .CheckInput(ActionName, InputHashTable) Then
-                        Return .Start(.GetActionByName(ActionName), InputHashTable, Http, Credential)
+                    If .CheckInput(ActionName, InputArguments) Then
+                        Return .Start(.GetActionByName(ActionName), InputArguments, Http, Credential)
                     Else
                         PushStatus(LogLevel.Error, $"InputData for Action '{ActionName}' not valid!")
                     End If
@@ -177,7 +177,7 @@ Public Class FritzBoxTR64
             PushStatus(LogLevel.Error, $"Fritz!Box TR064 API nicht gestartet (Init Routine starten!).")
 
         End If
-        Return New Hashtable From {{"Error", $"Service für {SCPDURL} nicht vorhanden!"}}
+        Return New Dictionary(Of String, String) From {{"Error", $"Service für {SCPDURL} nicht vorhanden!"}}
     End Function
 
     Private Function GetService(SCPDURL As SCPDFiles) As Service

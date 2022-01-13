@@ -21,7 +21,7 @@ Imports System.Xml.Serialization
     End Function
 
     ''' <summary>
-    ''' Proft, ob die geforderte Action mit dem <paramref name="ActionName"/> existiert.
+    ''' Prüft, ob die geforderte Action mit dem <paramref name="ActionName"/> existiert.
     ''' </summary>
     ''' <param name="ActionName">Name der auszuführenden Action.</param>
     ''' <returns>Boolean</returns>
@@ -44,23 +44,20 @@ Imports System.Xml.Serialization
 
     End Function
 
-    Friend Function CheckInput(ActionName As String, InputData As Hashtable) As Boolean
+    ''' <summary>
+    ''' Prüft, ob die übergebenen Argumente zu der jeweiligen Action passen.
+    ''' </summary>
+    Friend Function CheckInput(ActionName As String, InputData As Dictionary(Of String, String)) As Boolean
         CheckInput = False
-        Dim ActionInputData As Hashtable = GetActionByName(ActionName).GetInputArguments
-
+        Dim ActionInputData As Dictionary(Of String, String) = GetActionByName(ActionName).ArgumentList.Where(Function(A) A.Direction = ArgumentDirection.IN).ToDictionary(Function(k) k.Name, Function(v) String.Empty)
         If InputData Is Nothing Then
-            If ActionInputData.Count.IsZero Then
-                CheckInput = True
-            End If
+            Return ActionInputData.Count.IsZero
         Else
             ' Prüfe Anzahl der zu übergebenden Daten
             If ActionInputData.Count.AreEqual(InputData.Count) Then
                 CheckInput = True
-                For Each submitItem As DictionaryEntry In ActionInputData
-                    If Not InputData.ContainsKey(submitItem.Key) Then
-                        CheckInput = False
-                        Exit For
-                    End If
+                For Each submitItem In ActionInputData
+                    If Not InputData.ContainsKey(submitItem.Key) Then Return False
                 Next
             End If
 
@@ -68,9 +65,9 @@ Imports System.Xml.Serialization
         ActionInputData.Clear()
     End Function
 
-    Friend Function Start([Action] As Action, InputArguments As Hashtable, http As TR064HttpBasics, NetworkCredential As NetworkCredential) As Hashtable
+    Friend Function Start([Action] As Action, InputArguments As Dictionary(Of String, String), http As TR064HttpBasics, NetworkCredential As NetworkCredential) As Dictionary(Of String, String)
         Dim ReturnXMLDoc As New XmlDocument
-        Dim OutputHashTable As New Hashtable
+        Dim OutputHashTable As New Dictionary(Of String, String)
         Dim Response As String = String.Empty
 
         With OutputHashTable
@@ -102,9 +99,7 @@ Imports System.Xml.Serialization
                     End Try
 
                     If ReturnXMLDoc.InnerXml.IsNotStringNothingOrEmpty Then
-                        For Each OUTArguments As Argument In Action.ArgumentList.FindAll(Function(GetbyDirection) GetbyDirection.Direction = ArgumentDirection.OUT)
-                            .Add(OUTArguments.Name, ReturnXMLDoc.GetElementsByTagName(OUTArguments.Name).Item(0).InnerText)
-                        Next
+                        OutputHashTable = Action.ArgumentList.Where(Function(A) A.Direction = ArgumentDirection.OUT).ToDictionary(Function(k) k.Name, Function(v) ReturnXMLDoc.GetElementsByTagName(v.Name).Item(0).InnerText)
                     End If
 
                 Else
@@ -123,7 +118,7 @@ Imports System.Xml.Serialization
     ''' </summary>
     ''' <param name="Action">Die <paramref name="Action"/>, die ausgeführt werden soll.</param>
     ''' <param name="InputValues">Die Daten, welche müt übergeben werden sollen.</param>
-    Private Function GetRequest(Action As Action, InputValues As Hashtable) As XmlDocument
+    Private Function GetRequest(Action As Action, InputValues As Dictionary(Of String, String)) As XmlDocument
 
         GetRequest = New XmlDocument
 
@@ -151,10 +146,10 @@ Imports System.Xml.Serialization
                         ' Die zu übergebenden Daten generieren, falls welche übergeben werden sollen
                         If InputValues IsNot Nothing Then
                             ' Schleife durch jedes Wertepaar
-                            For Each submitItem As DictionaryEntry In InputValues
+                            For Each submitItem In InputValues
 
                                 ' XML-Element mit dem namen des Inputwertes generieren und dem XML-Action Element anhängen
-                                With .AppendChild(GetRequest.CreateElement("u", CStr(submitItem.Key), ServiceType))
+                                With .AppendChild(GetRequest.CreateElement("u", submitItem.Key, ServiceType))
                                     .InnerText = submitItem.Value?.ToString
                                 End With ' InputValue XML Element
                             Next
@@ -169,4 +164,5 @@ Imports System.Xml.Serialization
         End With ' XML Document GetRequest
 
     End Function
+
 End Class
