@@ -426,3 +426,21 @@ Public Enum WANAccessEnum
 End Enum
 
 #End Region
+
+Public Enum UpdateStateEnum
+    Started
+    Stopped
+    [Error]
+    NoUpdate
+    UpdateAvailable
+    Unknown
+End Enum
+
+Public Enum AutoUpdateModeEnum
+    off
+    all
+    important
+    check
+End Enum
+
+

@@ -17,6 +17,7 @@ Public Class FritzBoxTR64
     Public Property Deviceinfo As IDeviceinfoSCPD
     Public Property Hosts As IHostsSCPD
     Public Property LANConfigSecurity As ILANConfigSecuritySCPD
+    Public Property UserInterface As IUserInterfaceSCPD
     Public Property X_contact As IX_contactSCPD
     Public Property X_filelinks As IX_filelinksSCPD
     Public Property X_HomeAuto As IX_homeautoSCPD
@@ -134,6 +135,7 @@ Public Class FritzBoxTR64
         Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start, AddressOf PushStatus)
         Hosts = New HostsSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start, AddressOf PushStatus)
+        UserInterface = New UserInterfaceSCPD(AddressOf TR064Start, AddressOf PushStatus)
         WANCommonInterfaceConfig = New WANCommonInterfaceConfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
         Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
         X_contact = New X_contactSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
