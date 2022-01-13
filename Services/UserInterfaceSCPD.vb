@@ -106,7 +106,7 @@ Public Class UserInterfaceSCPD
                 Language = .Item("NewX_AVM-DE_Language").ToString
                 Country = .Item("NewX_AVM-DE_Country").ToString
                 Annex = .Item("NewX_AVM-DE_Annex").ToString
-                Language = .Item("NewX_AVM-DE_LanguageList").ToString
+                LanguageList = .Item("NewX_AVM-DE_LanguageList").ToString
                 CountryList = .Item("NewX_AVM-DE_CountryList").ToString
                 AnnexList = .Item("NewX_AVM-DE_AnnexList").ToString
 

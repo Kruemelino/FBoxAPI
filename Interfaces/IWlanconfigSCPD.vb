@@ -25,7 +25,7 @@ Public Interface IWlanconfigSCPD
     Function GetBSSID(ByRef BSSID As String) As Boolean
     Function GetSSID(ByRef SSID As String) As Boolean
     Function SetSSID(SSID As String) As Boolean
-    Function GetBeaconType(ByRef BeaconType As String, PossibleBeaconTypes As String()) As Boolean
+    Function GetBeaconType(ByRef BeaconType As String, ByRef PossibleBeaconTypes As String()) As Boolean
     Function SetBeaconType(BeaconType As String) As Boolean
     Function GetChannelInfo(ByRef Channel As Integer, ByRef PossibleChannels As String) As Boolean
     Function SetChannel(Channel As Integer) As Boolean
@@ -41,7 +41,7 @@ Public Interface IWlanconfigSCPD
     ''' <remarks>Devices with AssociatedDeviceChannel set to 0 are not listed in this list, because these are not connected to any access point of this CPE.<br/>
     ''' The "TotalAssociations" list element shows the number of all connected WIFI devices which are listed in the file independent from the current access point or WLANConfiguration service.
     ''' </remarks>
-    Function GetWLANDeviceListPath(WLANDeviceListPath As String) As Boolean
+    Function GetWLANDeviceListPath(ByRef WLANDeviceListPath As String) As Boolean
 
     ''' <summary>
     ''' Inoffizielle Action: X_AVM-DE_GetWLANDeviceListPath wird als <see cref="WLANDeviceList"/> deserialisiert zurückgegeben.

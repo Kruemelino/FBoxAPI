@@ -160,7 +160,7 @@ Friend Class WlanconfigSCPD
         End With
     End Function
 
-    Public Function GetBeaconType(ByRef BeaconType As String, PossibleBeaconTypes() As String) As Boolean Implements IWlanconfigSCPD.GetBeaconType
+    Public Function GetBeaconType(ByRef BeaconType As String, ByRef PossibleBeaconTypes() As String) As Boolean Implements IWlanconfigSCPD.GetBeaconType
         With TR064Start(ServiceFile, "GetBeaconType", Nothing)
             If .ContainsKey("NewBeaconType") And .ContainsKey("NewX_AVM-DE_PossibleBeaconTypes") Then
 
@@ -307,7 +307,7 @@ Friend Class WlanconfigSCPD
         End With
     End Function
 
-    Public Function GetWLANDeviceListPath(WLANDeviceListPath As String) As Boolean Implements IWlanconfigSCPD.GetWLANDeviceListPath
+    Public Function GetWLANDeviceListPath(ByRef WLANDeviceListPath As String) As Boolean Implements IWlanconfigSCPD.GetWLANDeviceListPath
         With TR064Start(ServiceFile, "X_AVM-DE_GetWLANDeviceListPath", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_WLANDeviceListPath") Then
