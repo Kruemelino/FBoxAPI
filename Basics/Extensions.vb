@@ -52,8 +52,8 @@ Public Module Extensions
     ''' Wandelt den Boolean-Wert in eine 1 für Wahr und eine 0 für Falsch
     ''' </summary>
     ''' <param name="Value">Umzuwandelnder Boolean-Wert</param>
-    <Extension> Friend Function ToInt(Value As Boolean) As Integer
-        Return If(Value, 1, 0)
+    <Extension> Friend Function ToBoolStr(Value As Boolean) As String
+        Return If(Value, "1", "0")
     End Function
 #End Region
 
@@ -72,4 +72,10 @@ Public Module Extensions
             Return aattr(0).Description
         End If
     End Function
+
+    <Extension()>
+    Public Function SerializeDictionary(dictionary As Dictionary(Of String, String), Name As String) As String
+        Return $"{{ ""{Name}"" : {{ {String.Join(", ", dictionary.Select(Function(kvp) $"""{kvp.Key}"" : ""{kvp.Value}"""))} }}"
+    End Function
+
 End Module

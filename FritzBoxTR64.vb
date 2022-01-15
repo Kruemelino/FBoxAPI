@@ -1,6 +1,7 @@
 ﻿Imports System.Net
 
 Public Class FritzBoxTR64
+    Inherits LogBase
     Implements IDisposable
 
     Public Event Status As EventHandler(Of NotifyEventArgs(Of LogMessage))
@@ -79,18 +80,17 @@ Public Class FritzBoxTR64
         InitAVMServices()
 
         ' Lade den UserModus
-        UserMode = New UserModeSCPD(AddressOf TR064Start, AddressOf PushStatus)
+        UserMode = New UserModeSCPD(AddressOf TR064Start)
 
         If Credential Is Nothing Then
-
-            PushStatus(LogLevel.Debug, $"Init abgeschlossen: {FBoxIPAdresse} für eingeschränkten anonymen Zugriff.")
+            PushStatus(CreateLog(LogLevel.Info, $"Init abgeschlossen: {FBoxIPAdresse} für eingeschränkten anonymen Zugriff."))
         Else
             ' Führe einen Logintest durch: Ermittle die Informationen zur Fritz!Box
             Ready = Deviceconfig.LoginTest()
-
-            PushStatus(LogLevel.Debug, $"Init abgeschlossen: {FBoxIPAdresse} für User: {Credential.UserName}: Passwort {If(Ready, "gültig", "ungültig")}")
+            PushStatus(CreateLog(LogLevel.Info, $"Init abgeschlossen: {FBoxIPAdresse} für User: {Credential.UserName}: Passwort {If(Ready, "gültig", "ungültig")}"))
         End If
     End Sub
+
     Private Function ConnectTR064() As Boolean
         ' Funktioniert nicht: ByPass SSL Certificate Validation Checking wird ignoriert. Es kommt zu unerklärlichen System.Net.WebException in FritzBoxPOST
         ' FBTR64Desc = DeserializeObject(Of TR64Desc)($"http://{FBoxIPAdresse}:{FritzBoxDefault.PDfltFBSOAP}{Tr064Files.tr64desc}")
@@ -107,19 +107,18 @@ Public Class FritzBoxTR64
 
                 ' Deserialisieren
                 If XML.Deserialize(Response, False, FBTR64Desc) Then
-
-                    PushStatus(LogLevel.Debug, "Fritz!Box TR064 API erfolgreich initialisiert.")
+                    PushStatus(CreateLog(LogLevel.Info, "Fritz!Box TR064 API erfolgreich initialisiert."))
 
                     ' Füge das Flag hinzu, dass die TR064-Schnittstelle bereit ist.
                     Return True
                 Else
-                    PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc.")
+                    PushStatus(CreateLog(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc."))
                 End If
             Else
-                PushStatus(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Herunterladen der FBTR64Desc.")
+                PushStatus(CreateLog(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Herunterladen der FBTR64Desc."))
             End If
         Else
-            PushStatus(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fritz!Box unter {FBoxIPAdresse} nicht verfügbar.")
+            PushStatus(CreateLog(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fritz!Box unter {FBoxIPAdresse} nicht verfügbar."))
         End If
 
         Return False
@@ -130,34 +129,30 @@ Public Class FritzBoxTR64
     ''' </summary>
     Private Sub InitAVMServices()
 
-        DECT = New DECT_SCPD(AddressOf TR064Start, AddressOf PushStatus)
-        Deviceconfig = New DeviceconfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
-        Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start, AddressOf PushStatus)
-        Hosts = New HostsSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
-        LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start, AddressOf PushStatus)
-        UserInterface = New UserInterfaceSCPD(AddressOf TR064Start, AddressOf PushStatus)
-        WANCommonInterfaceConfig = New WANCommonInterfaceConfigSCPD(AddressOf TR064Start, AddressOf PushStatus)
-        Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
-        X_contact = New X_contactSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
-        X_filelinks = New X_filelinksSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
-        X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start, AddressOf PushStatus)
-        X_HomePlug = New X_homePlugSCPD(AddressOf TR064Start, AddressOf PushStatus)
-        X_HostFilter = New X_hostfilterSCPD(AddressOf TR064Start, AddressOf PushStatus)
-        X_MyFritz = New X_myfritzSCPD(AddressOf TR064Start, AddressOf PushStatus)
-        X_Speedtest = New X_SpeedtestSCPD(AddressOf TR064Start, AddressOf PushStatus)
-        X_tam = New X_tamSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
-        X_voip = New X_voipSCPD(AddressOf TR064Start, AddressOf PushStatus, XML)
+        DECT = New DECT_SCPD(AddressOf TR064Start)
+        Deviceconfig = New DeviceconfigSCPD(AddressOf TR064Start)
+        Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start)
+        Hosts = New HostsSCPD(AddressOf TR064Start, XML)
+        LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start)
+        UserInterface = New UserInterfaceSCPD(AddressOf TR064Start)
+        WANCommonInterfaceConfig = New WANCommonInterfaceConfigSCPD(AddressOf TR064Start)
+        Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, XML)
+        X_contact = New X_contactSCPD(AddressOf TR064Start, XML)
+        X_filelinks = New X_filelinksSCPD(AddressOf TR064Start, XML)
+        X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start)
+        X_HomePlug = New X_homePlugSCPD(AddressOf TR064Start)
+        X_HostFilter = New X_hostfilterSCPD(AddressOf TR064Start)
+        X_MyFritz = New X_myfritzSCPD(AddressOf TR064Start)
+        X_Speedtest = New X_SpeedtestSCPD(AddressOf TR064Start)
+        X_tam = New X_tamSCPD(AddressOf TR064Start, XML)
+        X_voip = New X_voipSCPD(AddressOf TR064Start, XML)
 
     End Sub
 
 #End Region
 
-    Private Sub PushStatus(Level As LogLevel, Message As String)
-        RaiseEvent Status(Me, New NotifyEventArgs(Of LogMessage)(New LogMessage(Level, Message)))
-    End Sub
-
-    Private Sub PushStatus(Level As LogLevel, Ex As Exception, Message As String)
-        RaiseEvent Status(Me, New NotifyEventArgs(Of LogMessage)(New LogMessage(Level, Message, Ex)))
+    Private Sub PushStatus(LMsg As LogMessage)
+        RaiseEvent Status(Me, New NotifyEventArgs(Of LogMessage)(LMsg))
     End Sub
 
     Private Function TR064Start(SCPDURL As SCPDFiles, ActionName As String, Optional InputArguments As Dictionary(Of String, String) = Nothing) As Dictionary(Of String, String)
@@ -166,15 +161,15 @@ Public Class FritzBoxTR64
             With GetService(SCPDURL)
                 If?.ActionExists(ActionName) Then
                     If .CheckInput(ActionName, InputArguments) Then
-                        Return .Start(.GetActionByName(ActionName), InputArguments, Http, Credential)
+                        Return .StartAction(.GetActionByName(ActionName), InputArguments, Http, Credential)
                     Else
-                        PushStatus(LogLevel.Error, $"InputData for Action '{ActionName}' not valid!")
+                        PushStatus(CreateLog(LogLevel.Error, $"InputData for Action '{ActionName}' not valid!"))
                     End If
                 Else
-                    PushStatus(LogLevel.Error, $"Action '{ActionName}' does not exist!")
+                    PushStatus(CreateLog(LogLevel.Error, $"Action '{ActionName}' does not exist!"))
                 End If
             End With
-            PushStatus(LogLevel.Error, $"Fritz!Box TR064 API nicht gestartet (Init Routine starten!).")
+            PushStatus(CreateLog(LogLevel.Error, "Fritz!Box TR064 API nicht gestartet (Init Routine starten!)."))
 
         End If
         Return New Dictionary(Of String, String) From {{"Error", $"Service für {SCPDURL} nicht vorhanden!"}}
@@ -197,14 +192,12 @@ Public Class FritzBoxTR64
                     .PushStatus = AddressOf PushStatus
                 End With
             Else
-
-                PushStatus(LogLevel.Error, $"Service für {SCPDURL} nicht vorhanden: {FBTR64Desc.Device.ServiceList.Count}!")
+                PushStatus(CreateLog(LogLevel.Error, $"Service für {SCPDURL} nicht vorhanden: {FBTR64Desc.Device.ServiceList.Count}!"))
             End If
 
             Return FBoxService
         Else
-
-            PushStatus(LogLevel.Error, $"SOAP zur Fritz!Box ist nicht bereit: {FBoxIPAdresse}")
+            PushStatus(CreateLog(LogLevel.Error, $"TR064 zur Fritz!Box ist nicht bereit: {FBoxIPAdresse}"))
             Return Nothing
         End If
 
@@ -224,21 +217,21 @@ Public Class FritzBoxTR64
 
     Public ReadOnly Property HardwareVersion As Integer
         Get
-            PushStatus(LogLevel.Trace, $"Fritz!Box Hardware: {FBTR64Desc.SystemVersion.HW}")
+            PushStatus(CreateLog(LogLevel.Trace, $"Fritz!Box Hardware: {FBTR64Desc.SystemVersion.HW}"))
             Return FBTR64Desc.SystemVersion.HW
         End Get
     End Property
 
     Public ReadOnly Property Major As Integer
         Get
-            PushStatus(LogLevel.Trace, $"Fritz!Box Major: {FBTR64Desc.SystemVersion.Major}")
+            PushStatus(CreateLog(LogLevel.Trace, $"Fritz!Box Major: {FBTR64Desc.SystemVersion.Major}"))
             Return FBTR64Desc.SystemVersion.Major
         End Get
     End Property
 
     Public ReadOnly Property Minor As Integer
         Get
-            PushStatus(LogLevel.Trace, $"Fritz!Box Minor: {FBTR64Desc.SystemVersion.Minor}")
+            PushStatus(CreateLog(LogLevel.Trace, $"Fritz!Box Minor: {FBTR64Desc.SystemVersion.Minor}"))
             Return FBTR64Desc.SystemVersion.Minor
         End Get
     End Property

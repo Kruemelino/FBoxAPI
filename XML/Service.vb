@@ -4,6 +4,7 @@ Imports System.Xml.Serialization
 
 <DebuggerStepThrough>
 <Serializable()> Public Class Service
+    Inherits LogBase
 
     <XmlElement("serviceType")> Public Property ServiceType As String
     <XmlElement("serviceId")> Public Property ServiceId As String
@@ -14,7 +15,7 @@ Imports System.Xml.Serialization
     <XmlIgnore> Friend Property SCPD As ServiceControlProtocolDefinition
     <XmlIgnore> Friend Property FBoxIPAdresse As String
     <XmlIgnore> Friend Property XML As Serializer
-    <XmlIgnore> Friend Property PushStatus As Action(Of LogLevel, Exception, String)
+    <XmlIgnore> Friend Property PushStatus As Action(Of LogMessage)
 
     Friend Function GetActionByName(ActionName As String) As Action
         Return SCPD?.ActionList.Find(Function(Action) Action.Name = ActionName)
@@ -31,11 +32,11 @@ Imports System.Xml.Serialization
         If SCPD Is Nothing Then
             ' Wenn keine IPAddresse vorhanden ist, was eigentlich nicht möglich ist, dann wirf einen Fehler aus.
             If FBoxIPAdresse.IsStringNothingOrEmpty Then
-                PushStatus?.Invoke(LogLevel.Error, New Exception($"Action '{ActionName}': IP Adresse nicht vorhanden."), String.Empty)
+                PushStatus?.Invoke(CreateLog(LogLevel.Error, New Exception($"Action '{ActionName}': IP Adresse nicht vorhanden.")))
             Else
                 If Not XML.Deserialize($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{DfltTR064Port}{SCPDURL}", True, SCPD) Then
                     ' Fehlerfall
-                    PushStatus?.Invoke(LogLevel.Error, New Exception($"Action '{ActionName}': ServiceControlProtocolDefinition nicht geladen."), String.Empty)
+                    PushStatus?.Invoke(CreateLog(LogLevel.Error, New Exception($"Action '{ActionName}': ServiceControlProtocolDefinition nicht geladen.")))
                 End If
             End If
         End If
@@ -65,16 +66,16 @@ Imports System.Xml.Serialization
         ActionInputData.Clear()
     End Function
 
-    Friend Function Start([Action] As Action, InputArguments As Dictionary(Of String, String), http As TR064HttpBasics, NetworkCredential As NetworkCredential) As Dictionary(Of String, String)
+    Friend Function StartAction([Action] As Action, InputArguments As Dictionary(Of String, String), http As TR064HttpBasics, NetworkCredential As NetworkCredential) As Dictionary(Of String, String)
         Dim ReturnXMLDoc As New XmlDocument
-        Dim OutputHashTable As New Dictionary(Of String, String)
+        Dim ResponseData As New Dictionary(Of String, String)
         Dim Response As String = String.Empty
 
-        With OutputHashTable
+        With ResponseData
 
             If FBoxIPAdresse.IsStringNothingOrEmpty Then
                 ' Wenn keine IPAddresse vorhanden ist, was eigentlich nicht möglich ist, dann wirf einen Fehler aus.
-                PushStatus?.Invoke(LogLevel.Error, New Exception($"Action '{[Action]}': IP Adresse nicht vorhanden."), String.Empty)
+                PushStatus?.Invoke(CreateLog(LogLevel.Error, New Exception($"Action '{[Action]}': IP Adresse nicht vorhanden.")))
                 .Add("Error", $"Action '{[Action]}': IP Adresse nicht vorhanden.")
             Else
                 ' Header festlegen
@@ -88,18 +89,22 @@ Imports System.Xml.Serialization
                                    Response,
                                    TR064Header) Then
 
-                    PushStatus?.Invoke(LogLevel.Trace, Nothing, $"Action {Action.Name}: {Response}")
+                    PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"{Action.Name}: {Response} "))
 
                     Try
                         ReturnXMLDoc.LoadXml(Response)
                     Catch ex As XmlException
                         ' Fehlerfall
                         .Add("Error", Response)
-                        PushStatus?.Invoke(LogLevel.Error, ex, Response)
+                        PushStatus?.Invoke(CreateLog(LogLevel.Error, Response, ex))
+
                     End Try
 
                     If ReturnXMLDoc.InnerXml.IsNotStringNothingOrEmpty Then
-                        OutputHashTable = Action.ArgumentList.Where(Function(A) A.Direction = ArgumentDirection.OUT).ToDictionary(Function(k) k.Name, Function(v) ReturnXMLDoc.GetElementsByTagName(v.Name).Item(0).InnerText)
+                        ResponseData = Action.ArgumentList.Where(Function(A) A.Direction = ArgumentDirection.OUT).ToDictionary(Function(k) k.Name, Function(v) ReturnXMLDoc.GetElementsByTagName(v.Name).Item(0).InnerText)
+                        ' Erzeuge eine Debug-Message
+                        PushStatus?.Invoke(CreateLog(LogLevel.Debug, ResponseData.SerializeDictionary(Action.Name)))
+
                     End If
 
                 Else
@@ -110,7 +115,7 @@ Imports System.Xml.Serialization
             End If
         End With
 
-        Return OutputHashTable
+        Return ResponseData
     End Function
 
     ''' <summary>
@@ -160,6 +165,8 @@ Imports System.Xml.Serialization
                 End With ' XML-BodyElement 
 
             End With ' XML-RootElement 
+
+            PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"Request: { .InnerXml}"))
 
         End With ' XML Document GetRequest
 

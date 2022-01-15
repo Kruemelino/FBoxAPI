@@ -3,9 +3,11 @@ Imports System.Xml
 Imports System.Xml.Serialization
 
 Friend Class Serializer
-    Private Property PushStatus As Action(Of LogLevel, Exception, String)
+    Inherits LogBase
 
-    Public Sub New(Status As Action(Of LogLevel, Exception, String))
+    Private Property PushStatus As Action(Of LogMessage)
+
+    Public Sub New(Status As Action(Of LogMessage))
         PushStatus = Status
     End Sub
 
@@ -88,12 +90,11 @@ Friend Class Serializer
 
                     Catch ex As InvalidOperationException
 
-                        PushStatus.Invoke(LogLevel.Fatal, ex, $"Bei der Deserialisierung ist ein Fehler aufgetreten.")
+                        PushStatus?.Invoke(CreateLog(LogLevel.Fatal, "Bei der Deserialisierung ist ein Fehler aufgetreten.", ex))
                         Return False
                     End Try
                 Else
-
-                    PushStatus.Invoke(LogLevel.Fatal, New Exception($"Fehler beim Deserialisieren."), String.Empty)
+                    PushStatus?.Invoke(CreateLog(LogLevel.Fatal, New Exception("Fehler beim Deserialisieren."), xDoc.InnerXml))
                     Return False
                 End If
 
@@ -101,8 +102,7 @@ Friend Class Serializer
             End Using
 
         Else
-
-            PushStatus.Invoke(LogLevel.Fatal, New Exception($"Fehler beim Deserialisieren: {Data} kann nicht deserialisert werden."), String.Empty)
+            PushStatus?.Invoke(CreateLog(LogLevel.Fatal, New Exception($"Fehler beim Deserialisieren: {Data} kann nicht deserialisert werden.")))
             Return False
         End If
         xDoc = Nothing
@@ -128,7 +128,7 @@ Friend Class Serializer
                         Return True
                     Catch ex As InvalidOperationException
 
-                        PushStatus.Invoke(LogLevel.Fatal, ex, $"Fehler beim Serialisieren von {GetType(T).FullName}: {objectData}")
+                        PushStatus?.Invoke(CreateLog(LogLevel.Fatal, New Exception($"Fehler beim Serialisieren von {GetType(T).FullName}: {objectData}")))
 
                         Return False
                     End Try
@@ -144,19 +144,19 @@ Friend Class Serializer
 
 #Region "XmlDeserializationEvents"
     Private Sub On_UnknownAttribute(sender As Object, e As XmlAttributeEventArgs)
-        PushStatus.Invoke(LogLevel.Warn, Nothing, $"Unknown Attribute: {e.Attr.Name} in {e.ObjectBeingDeserialized}")
+        PushStatus?.Invoke(CreateLog(LogLevel.Warn, $"Unknown Attribute: {e.Attr.Name} in {e.ObjectBeingDeserialized}"))
     End Sub
 
     Private Sub On_UnknownElement(sender As Object, e As XmlElementEventArgs)
-        PushStatus.Invoke(LogLevel.Warn, Nothing, $"Unknown Element: {e.Element.Name} in {e.ObjectBeingDeserialized}")
+        PushStatus?.Invoke(CreateLog(LogLevel.Warn, $"Unknown Element: {e.Element.Name} in {e.ObjectBeingDeserialized}"))
     End Sub
 
     Private Sub On_UnknownNode(sender As Object, e As XmlNodeEventArgs)
-        PushStatus.Invoke(LogLevel.Warn, Nothing, $"Unknown Node: {e.Name} in {e.ObjectBeingDeserialized}")
+        PushStatus?.Invoke(CreateLog(LogLevel.Warn, $"Unknown Node: {e.Name} in {e.ObjectBeingDeserialized}"))
     End Sub
 
     Private Sub On_UnreferencedObject(sender As Object, e As UnreferencedObjectEventArgs)
-        PushStatus.Invoke(LogLevel.Warn, Nothing, $"Unreferenced Object: {e.UnreferencedId}")
+        PushStatus?.Invoke(CreateLog(LogLevel.Warn, $"Unreferenced Object: {e.UnreferencedId}"))
     End Sub
 #End Region
 

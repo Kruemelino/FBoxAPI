@@ -7,13 +7,13 @@ Public Interface IX_contactSCPD
     Inherits IServiceBase
 
     Function GetInfoByIndex(Index As Integer,
-                                   Optional ByRef Enable As Boolean = False,
-                                   Optional ByRef Status As String = "",
-                                   Optional ByRef LastConnect As String = "",
-                                   Optional ByRef Url As String = "",
-                                   Optional ByRef ServiceId As String = "",
-                                   Optional ByRef Username As String = "",
-                                   Optional ByRef Name As String = "") As Boolean
+                            Optional ByRef Enable As Boolean = False,
+                            Optional ByRef Status As String = "",
+                            Optional ByRef LastConnect As String = "",
+                            Optional ByRef Url As String = "",
+                            Optional ByRef ServiceId As String = "",
+                            Optional ByRef Username As String = "",
+                            Optional ByRef Name As String = "") As Boolean
 
     ''' <summary>
     ''' The action is used to trigger the telephone book synchronization manually. The

@@ -7,87 +7,59 @@ Friend Class DECT_SCPD
     Implements IDECT_SCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IDECT_SCPD.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IDECT_SCPD.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IDECT_SCPD.Servicefile
+    Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_dectSCPD Implements IDECT_SCPD.Servicefile
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
-
-        ServiceFile = SCPDFiles.x_dectSCPD
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
 
         TR064Start = Start
 
-        PushStatus = Status
     End Sub
 
     Public Function GetNumberOfDectEntries(ByRef NumberOfEntries As Integer) As Boolean Implements IDECT_SCPD.GetNumberOfDectEntries
-        With TR064Start(ServiceFile, "GetNumberOfDectEntries", Nothing)
-            If .ContainsKey("NewNumberOfEntries") Then
-
-                NumberOfEntries = .Item("NewNumberOfEntries").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"GetNumberOfDectEntries der Fritz!Box: {NumberOfEntries}")
-
-                Return True
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetNumberOfDectEntries der Fritz!Box nicht ermittelt. '{ .Item("Error")}'")
-
-                Return False
-            End If
-        End With
+        Return TR064Start(ServiceFile,
+                        "GetNumberOfDectEntries",
+                        Nothing).TryGetValue("NewNumberOfEntries", NumberOfEntries)
     End Function
 
     Public Function GetGenericDectEntry(ByRef GenericDectEntry As DectEntry, NumberOfEntries As Integer) As Boolean Implements IDECT_SCPD.GetGenericDectEntry
         If GenericDectEntry Is Nothing Then GenericDectEntry = New DectEntry
 
-        With TR064Start(ServiceFile, "GetGenericDectEntry", New Dictionary(Of String, String) From {{"NewIndex", NumberOfEntries}})
+        With TR064Start(ServiceFile,
+                        "GetGenericDectEntry",
+                        New Dictionary(Of String, String) From {{"NewIndex", NumberOfEntries}})
 
-            If .ContainsKey("NewID") Then
-                GenericDectEntry.ID = .Item("NewID")
-                GenericDectEntry.Active = CBool(.Item("NewActive"))
-                GenericDectEntry.Name = .Item("NewName")
-                GenericDectEntry.Model = .Item("NewModel")
-                GenericDectEntry.UpdateAvailable = CBool(.Item("NewUpdateAvailable"))
-                GenericDectEntry.UpdateSuccessful = CType(.Item("NewUpdateSuccessful"), UpdateEnum)
-                GenericDectEntry.UpdateInfo = .Item("NewUpdateInfo")
+            Return .TryGetValue("NewID", GenericDectEntry.ID) And
+                   .TryGetValue("NewActive", GenericDectEntry.Active) And
+                   .TryGetValue("NewName", GenericDectEntry.Name) And
+                   .TryGetValue("NewModel", GenericDectEntry.Model) And
+                   .TryGetValue("NewUpdateAvailable", GenericDectEntry.UpdateAvailable) And
+                   .TryGetValue("NewUpdateSuccessful", GenericDectEntry.UpdateSuccessful) And
+                   .TryGetValue("NewUpdateInfo", GenericDectEntry.UpdateInfo)
 
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetGenericDectEntry konnte nicht aufgelößt werden. '{ .Item("Error")}'")
-
-                Return False
-            End If
         End With
     End Function
 
     Public Function GetSpecificDectEntry(ByRef SpecificDectEntry As DectEntry, ID As String) As Boolean Implements IDECT_SCPD.GetSpecificDectEntry
         If SpecificDectEntry Is Nothing Then SpecificDectEntry = New DectEntry
 
-        With TR064Start(ServiceFile, "GetSpecificDectEntry", New Dictionary(Of String, String) From {{"NewID", ID}})
+        With TR064Start(ServiceFile,
+                        "GetSpecificDectEntry",
+                        New Dictionary(Of String, String) From {{"NewID", ID}})
 
-            If .ContainsKey("NewID") Then
-                SpecificDectEntry.ID = ID
+            SpecificDectEntry.ID = ID
 
-                SpecificDectEntry.Active = CBool(.Item("NewActive"))
-                SpecificDectEntry.Name = .Item("NewName")
-                SpecificDectEntry.Model = .Item("NewModel")
-                SpecificDectEntry.UpdateAvailable = CBool(.Item("NewUpdateAvailable"))
-                SpecificDectEntry.UpdateSuccessful = CType(.Item("NewUpdateSuccessful"), UpdateEnum)
-                SpecificDectEntry.UpdateInfo = .Item("NewUpdateInfo")
+            Return .TryGetValue("NewID", SpecificDectEntry.ID) And
+                   .TryGetValue("NewActive", SpecificDectEntry.Active) And
+                   .TryGetValue("NewName", SpecificDectEntry.Name) And
+                   .TryGetValue("NewModel", SpecificDectEntry.Model) And
+                   .TryGetValue("NewUpdateAvailable", SpecificDectEntry.UpdateAvailable) And
+                   .TryGetValue("NewUpdateSuccessful", SpecificDectEntry.UpdateSuccessful) And
+                   .TryGetValue("NewUpdateInfo", SpecificDectEntry.UpdateInfo)
 
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetSpecificDectEntry konnte nicht aufgelößt werden. '{ .Item("Error")}'")
-
-                Return False
-            End If
         End With
     End Function
 
     Public Function DectDoUpdate(ByRef ID As String) As Boolean Implements IDECT_SCPD.DectDoUpdate
-        With TR064Start(ServiceFile, "DectDoUpdate", New Dictionary(Of String, String) From {{"NewID", ID}})
-            Return Not .ContainsKey("Error")
-        End With
+        Return Not TR064Start(ServiceFile, "DectDoUpdate", New Dictionary(Of String, String) From {{"NewID", ID}}).ContainsKey("Error")
     End Function
 End Class

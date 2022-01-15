@@ -7,17 +7,12 @@ Friend Class X_contactSCPD
     Implements IX_contactSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_contactSCPD.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IX_contactSCPD.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_contactSCPD.Servicefile
+    Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_contactSCPD Implements IX_contactSCPD.Servicefile
     Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
-
-        ServiceFile = SCPDFiles.x_contactSCPD
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), XMLSerializer As Serializer)
 
         TR064Start = Start
-
-        PushStatus = Status
 
         XML = XMLSerializer
     End Sub
@@ -33,99 +28,44 @@ Friend Class X_contactSCPD
 
         With TR064Start(ServiceFile, "GetInfoByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index}})
 
-            If .ContainsKey("NewName") Then
 
-                Enable = CBool(.Item("NewEnable"))
-                Status = .Item("NewStatus").ToString
-                LastConnect = .Item("NewLastConnect").ToString
-                Url = .Item("NewUrl").ToString
-                ServiceId = .Item("NewServiceId").ToString
-                Username = .Item("NewUsername").ToString
-                Name = .Item("NewName").ToString
+            Return .TryGetValue("NewEnable", Enable) And
+                   .TryGetValue("NewStatus", Status) And
+                   .TryGetValue("NewLastConnect", LastConnect) And
+                   .TryGetValue("NewUrl", Url) And
+                   .TryGetValue("NewServiceId", ServiceId) And
+                   .TryGetValue("NewUsername", Username) And
+                   .TryGetValue("NewName", Name)
 
-
-                PushStatus.Invoke(LogLevel.Debug, $"GetInfoByIndex des Telefonbuches {Index} von der Fritz!Box abgerufen: {Name}")
-
-                Return True
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetInfoByIndex des Telefonbuches {Index} von Fritz!Box nicht erhalten. '{ .Item("Error")}'")
-
-                Return False
-            End If
         End With
 
     End Function
 
     Public Function SetEnableByIndex(Index As Integer, Enable As Boolean) As Boolean Implements IX_contactSCPD.SetEnableByIndex
-
-        With TR064Start(ServiceFile, "SetEnableByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index},
-                                                                             {"NewEnable", Enable.ToInt}})
-            Return Not .ContainsKey("Error")
-        End With
-
+        Return Not TR064Start(ServiceFile, "SetEnableByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index},
+                                                                                                       {"NewEnable", Enable.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function SetConfigByIndex(Index As Integer, Enable As Boolean, Url As String, ServiceId As String, Username As String, Password As String, Name As String) As Boolean Implements IX_contactSCPD.SetConfigByIndex
-
-        With TR064Start(ServiceFile, "SetConfigByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index},
-                                                                             {"NewEnable", Enable.ToInt},
-                                                                             {"NewUrl", Url},
-                                                                             {"NewServiceId", ServiceId},
-                                                                             {"NewUsername", Username},
-                                                                             {"NewPassword", Password},
-                                                                             {"NewName", Name}})
-            Return Not .ContainsKey("Error")
-        End With
-
+        Return Not TR064Start(ServiceFile, "SetConfigByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index},
+                                                                                                       {"NewEnable", Enable.ToBoolStr},
+                                                                                                       {"NewUrl", Url},
+                                                                                                       {"NewServiceId", ServiceId},
+                                                                                                       {"NewUsername", Username},
+                                                                                                       {"NewPassword", Password},
+                                                                                                       {"NewName", Name}}).ContainsKey("Error")
     End Function
 
     Public Function GetNumberOfEntries(ByRef OntelNumberOfEntries As Integer) As Boolean Implements IX_contactSCPD.GetNumberOfEntries
-
-        With TR064Start(ServiceFile, "GetNumberOfEntries", Nothing)
-            If .ContainsKey("NewOntelNumberOfEntries") Then
-
-                OntelNumberOfEntries = CInt(.Item("NewOntelNumberOfEntries"))
-
-                PushStatus.Invoke(LogLevel.Debug, $"GetNumberOfEntries: {OntelNumberOfEntries}")
-
-                Return True
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetNumberOfEntries von Fritz!Box nicht erhalten. '{ .Item("Error")}'")
-
-                Return False
-            End If
-        End With
-
+        Return TR064Start(ServiceFile, "GetNumberOfEntries", Nothing).TryGetValue("NewOntelNumberOfEntries", OntelNumberOfEntries)
     End Function
 
     Public Function DeleteByIndex(Index As Integer) As Boolean Implements IX_contactSCPD.DeleteByIndex
-
-        With TR064Start(ServiceFile, "DeleteByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index}})
-            Return Not .ContainsKey("Error")
-        End With
-
+        Return Not TR064Start(ServiceFile, "DeleteByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index}}).ContainsKey("Error")
     End Function
 
     Public Function GetCallList(ByRef CallListURL As String) As Boolean Implements IX_contactSCPD.GetCallList
-
-        With TR064Start(ServiceFile, "GetCallList", Nothing)
-
-            If .ContainsKey("NewCallListURL") Then
-
-                CallListURL = .Item("NewCallListURL").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"Pfad zur Anrufliste der Fritz!Box: {CallListURL} ")
-
-                Return True
-            Else
-                CallListURL = String.Empty
-
-                PushStatus.Invoke(LogLevel.Warn, $"Pfad zur Anrufliste der Fritz!Box konnte nicht ermittelt. '{ .Item("Error")}'")
-
-                Return False
-            End If
-        End With
-
+        Return TR064Start(ServiceFile, "GetCallList", Nothing).TryGetValue("NewCallListURL", CallListURL)
     End Function
 
 #Region "Phonebook"
@@ -135,16 +75,11 @@ Friend Class X_contactSCPD
 
             If .ContainsKey("NewPhonebookList") Then
                 ' Comma separated list of PhonebookID 
-                PhonebookList = Array.ConvertAll(.Item("NewPhonebookList").ToString.Split(","),
-                                                         New Converter(Of String, Integer)(AddressOf Integer.Parse))
-
-                PushStatus.Invoke(LogLevel.Debug, $"Telefonbuchliste der Fritz!Box: '{String.Join(", ", PhonebookList)}'")
+                PhonebookList = Array.ConvertAll(.Item("NewPhonebookList").Split(","), New Converter(Of String, Integer)(AddressOf Integer.Parse))
 
                 Return True
             Else
                 PhonebookList = {}
-
-                PushStatus.Invoke(LogLevel.Warn, $"Telefonbuchliste der Fritz!Box konnte nicht ermittelt. '{ .Item("Error")}'")
 
                 Return False
             End If
@@ -159,240 +94,83 @@ Friend Class X_contactSCPD
 
         With TR064Start(ServiceFile, "GetPhonebook", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID}})
 
-            If .ContainsKey("NewPhonebookURL") Then
-                ' Phonebook URL auslesen
-                PhonebookURL = .Item("NewPhonebookURL").ToString
-                ' Phonebook Name auslesen
-                If .ContainsKey("NewPhonebookName") Then PhonebookName = .Item("NewPhonebookName").ToString
-                ' Phonebook ExtraID auslesen
-                If .ContainsKey("NewPhonebookExtraID") Then PhonebookExtraID = .Item("NewPhonebookExtraID").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"Pfad zum Telefonbuch '{PhonebookName}' der Fritz!Box: {PhonebookURL} ")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetPhonebook konnte für das Telefonbuch {PhonebookID} nicht aufgelößt werden. '{ .Item("Error")}'")
-                PhonebookURL = String.Empty
-
-                Return False
-            End If
+            Return .TryGetValue("NewPhonebookURL", PhonebookURL) And
+                   .TryGetValue("NewPhonebookName", PhonebookName) And
+                   .TryGetValue("NewPhonebookExtraID", PhonebookExtraID)
         End With
 
     End Function
 
     Public Function AddPhonebook(PhonebookName As String, Optional PhonebookExtraID As String = "") As Boolean Implements IX_contactSCPD.AddPhonebook
-
-        With TR064Start(ServiceFile, "AddPhonebook", New Dictionary(Of String, String) From {{"NewPhonebookName", PhonebookName},
-                                                                                              {"NewPhonebookExtraID", PhonebookExtraID}})
-
-            Return Not .ContainsKey("Error")
-
-        End With
-
+        Return Not TR064Start(ServiceFile, "AddPhonebook", New Dictionary(Of String, String) From {{"NewPhonebookName", PhonebookName},
+                                                                                                   {"NewPhonebookExtraID", PhonebookExtraID}}).ContainsKey("Error")
     End Function
 
     Public Function DeletePhonebook(NewPhonebookID As Integer, Optional PhonebookExtraID As String = "") As Boolean Implements IX_contactSCPD.DeletePhonebook
-
-        With TR064Start(ServiceFile, "DeletePhonebook", New Dictionary(Of String, String) From {{"NewPhonebookID", NewPhonebookID},
-                                                                                                 {"NewPhonebookExtraID", PhonebookExtraID}})
-
-            Return Not .ContainsKey("Error")
-
-        End With
-
+        Return Not TR064Start(ServiceFile, "DeletePhonebook", New Dictionary(Of String, String) From {{"NewPhonebookID", NewPhonebookID},
+                                                                                                      {"NewPhonebookExtraID", PhonebookExtraID}}).ContainsKey("Error")
     End Function
 #End Region
 
 #Region "PhonebookEntry"
     Public Function GetPhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetPhonebookEntry
-
-        With TR064Start(ServiceFile, "GetPhonebookEntry", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
-                                                                                                   {"NewPhonebookEntryID", PhonebookEntryID}})
-
-            If .ContainsKey("NewPhonebookEntryData") Then
-                ' Phonebook URL auslesen
-                PhonebookEntryData = .Item("NewPhonebookEntryData").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"Telefonbucheintrag '{PhonebookEntryID}' aus Telefonbuch {PhonebookID} der Fritz!Box ausgelesen: '{PhonebookEntryData}'")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetPhonebookEntry für konnte für den Telefonbucheintrag '{PhonebookEntryID}' aus Telefonbuch {PhonebookID} nicht aufgelößt werden. '{ .Item("Error")}'")
-                PhonebookEntryData = String.Empty
-
-                Return False
-            End If
-
-        End With
-
+        Return TR064Start(ServiceFile, "GetPhonebookEntry",
+                          New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
+                                                                  {"NewPhonebookEntryID", PhonebookEntryID}}).
+                          TryGetValue("NewPhonebookEntryData", PhonebookEntryData)
     End Function
 
     Public Function GetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryUniqueID As Integer, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetPhonebookEntryUID
-
-        With TR064Start(ServiceFile, "GetPhonebookEntryUID", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
-                                                                                                      {"NewPhonebookEntryUniqueID", PhonebookEntryUniqueID}})
-
-            If .ContainsKey("NewPhonebookEntryData") Then
-                ' Phonebook URL auslesen
-                PhonebookEntryData = .Item("NewPhonebookEntryData").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"Telefonbucheintrag '{PhonebookEntryUniqueID}' aus Telefonbuch {PhonebookID} der Fritz!Box ausgelesen: '{PhonebookEntryData}'")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetPhonebookEntry für konnte für den Telefonbucheintrag '{PhonebookEntryUniqueID}' aus Telefonbuch '{PhonebookID}' nicht aufgelößt werden. '{ .Item("Error")}'")
-                PhonebookEntryData = String.Empty
-
-                Return False
-            End If
-
-        End With
-
+        Return TR064Start(ServiceFile, "GetPhonebookEntryUID",
+                          New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
+                                                                  {"NewPhonebookEntryUniqueID", PhonebookEntryUniqueID}}).
+                          TryGetValue("NewPhonebookEntryData", PhonebookEntryData)
     End Function
 
     Public Function SetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryData As String, ByRef PhonebookEntryUniqueID As Integer) As Boolean Implements IX_contactSCPD.SetPhonebookEntryUID
-
-        With TR064Start(ServiceFile, "SetPhonebookEntryUID", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
-                                                                                                      {"NewPhonebookEntryData", PhonebookEntryData}})
-
-            If .ContainsKey("NewPhonebookEntryUniqueID") Then
-                ' Phonebook URL auslesen
-                PhonebookEntryUniqueID = CInt(.Item("NewPhonebookEntryUniqueID"))
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"SetPhonebookEntryUID konnte nicht aufgelöst werden. '{ .Item("Error")}'")
-                PhonebookEntryUniqueID = -1
-
-                Return False
-            End If
-        End With
-
+        Return TR064Start(ServiceFile, "SetPhonebookEntryUID",
+                          New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
+                                                                  {"NewPhonebookEntryData", PhonebookEntryData}}).
+                          TryGetValue("NewPhonebookEntryUniqueID", PhonebookEntryUniqueID)
     End Function
 
     Public Function DeletePhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer) As Boolean Implements IX_contactSCPD.DeletePhonebookEntry
+        Return Not TR064Start(ServiceFile, "DeletePhonebookEntry", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
+                                                                                                           {"NewPhonebookEntryID", PhonebookEntryID}}).ContainsKey("Error")
 
-        With TR064Start(ServiceFile, "DeletePhonebookEntry", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
-                                                                                                      {"NewPhonebookEntryID", PhonebookEntryID}})
-            Return Not .ContainsKey("Error")
-
-        End With
     End Function
 
     Public Function DeletePhonebookEntryUID(PhonebookID As Integer, NewPhonebookEntryUniqueID As Integer) As Boolean Implements IX_contactSCPD.DeletePhonebookEntryUID
-
-        With TR064Start(ServiceFile, "DeletePhonebookEntryUID", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
-                                                                                                         {"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID}})
-            Return Not .ContainsKey("Error")
-
-        End With
-
+        Return Not TR064Start(ServiceFile, "DeletePhonebookEntryUID", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID},
+                                                                                                              {"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID}}).ContainsKey("Error")
     End Function
 #End Region
 
 #Region "CallBarring"
     Public Function GetCallBarringEntry(PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetCallBarringEntry
-
-        With TR064Start(ServiceFile, "GetCallBarringEntry", New Dictionary(Of String, String) From {{"NewPhonebookEntryID", PhonebookEntryID}})
-
-            If .ContainsKey("NewPhonebookEntryData") Then
-                ' Phonebook URL auslesen
-                PhonebookEntryData = .Item("NewPhonebookEntryData").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"Rufsperre aus Telefonbuch {PhonebookEntryID} der Fritz!Box ausgelesen: '{PhonebookEntryData}'")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetCallBarringEntry konnte für die ID {PhonebookEntryID} nicht aufgelöst werden. '{ .Item("Error")}'")
-
-                PhonebookEntryData = String.Empty
-
-                Return False
-            End If
-        End With
-
+        Return TR064Start(ServiceFile, "GetCallBarringEntry",
+                          New Dictionary(Of String, String) From {{"NewPhonebookEntryID", PhonebookEntryID}}).
+                          TryGetValue("NewPhonebookEntryData", PhonebookEntryData)
     End Function
 
     Public Function GetCallBarringEntryByNum(Number As String, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetCallBarringEntryByNum
-
-        With TR064Start(ServiceFile, "GetCallBarringEntryByNum", New Dictionary(Of String, String) From {{"NewNumber", Number}})
-
-            If .ContainsKey("NewPhonebookEntryData") Then
-                ' Phonebook URL auslesen
-                PhonebookEntryData = .Item("NewPhonebookEntryData").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"Rufsperre für die Nummer {Number} der Fritz!Box ausgelesen: '{PhonebookEntryData}'")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetCallBarringEntryByNum konnte für die Nummer {Number} nicht aufgelöst werden. '{ .Item("Error")}'")
-
-                PhonebookEntryData = String.Empty
-
-                Return False
-            End If
-        End With
-
+        Return TR064Start(ServiceFile, "GetCallBarringEntryByNum",
+                          New Dictionary(Of String, String) From {{"NewNumber", Number}}).
+                          TryGetValue("NewPhonebookEntryData", PhonebookEntryData)
     End Function
 
     Public Function GetCallBarringList(ByRef PhonebookURL As String) As Boolean Implements IX_contactSCPD.GetCallBarringList
-
-        With TR064Start(ServiceFile, "GetCallBarringList", Nothing)
-
-            If .ContainsKey("NewPhonebookURL") Then
-                ' Phonebook URL auslesen
-                PhonebookURL = .Item("NewPhonebookURL").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"Pfad zur Rufsperre der Fritz!Box: {PhonebookURL} ")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetCallBarringList konnte für die Rufsperre nicht aufgelöst werden. '{ .Item("Error")}'")
-                PhonebookURL = String.Empty
-
-                Return False
-            End If
-        End With
-
+        Return TR064Start(ServiceFile, "GetCallBarringList", Nothing).TryGetValue("NewPhonebookURL", PhonebookURL)
     End Function
 
     Public Function SetCallBarringEntry(PhonebookEntryData As String, Optional ByRef PhonebookEntryUniqueID As Integer = 0) As Boolean Implements IX_contactSCPD.SetCallBarringEntry
-
-        With TR064Start(ServiceFile, "SetCallBarringEntry", New Dictionary(Of String, String) From {{"NewPhonebookEntryData", PhonebookEntryData}})
-
-            If .ContainsKey("NewPhonebookEntryUniqueID") Then
-                ' Phonebook URL auslesen
-                PhonebookEntryUniqueID = CInt(.Item("NewPhonebookEntryUniqueID"))
-
-                PushStatus.Invoke(LogLevel.Debug, $"Rufsperre in der Fritz!Box angelegt: '{PhonebookEntryUniqueID}'")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"SetCallBarringEntry konnte keinen Eintrag anlegen: '{PhonebookEntryData}' '{ .Item("Error")}'")
-
-                PhonebookEntryUniqueID = -1
-
-                Return False
-            End If
-        End With
-
+        Return TR064Start(ServiceFile, "SetCallBarringEntry",
+                          New Dictionary(Of String, String) From {{"NewPhonebookEntryData", PhonebookEntryData}}).
+                          TryGetValue("NewPhonebookEntryUniqueID", PhonebookEntryUniqueID)
     End Function
 
     Public Function DeleteCallBarringEntryUID(NewPhonebookEntryUniqueID As Integer) As Boolean Implements IX_contactSCPD.DeleteCallBarringEntryUID
-
-        With TR064Start(ServiceFile, "DeleteCallBarringEntryUID", New Dictionary(Of String, String) From {{"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID}})
-            Return Not .ContainsKey("Error")
-
-        End With
-
+        Return Not TR064Start(ServiceFile, "DeleteCallBarringEntryUID", New Dictionary(Of String, String) From {{"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID}}).ContainsKey("Error")
     End Function
 
 #End Region
@@ -404,15 +182,11 @@ Friend Class X_contactSCPD
 
             If .ContainsKey("NewDectIDList") Then
                 ' Comma separated list of DectID 
-                DectIDList = Array.ConvertAll(.Item("NewDectIDList").ToString.Split(","), New Converter(Of String, Integer)(AddressOf Integer.Parse))
-
-                PushStatus.Invoke(LogLevel.Debug, $"Liste der DECT IDs der Fritz!Box: '{String.Join(", ", DectIDList)}'")
+                DectIDList = Array.ConvertAll(.Item("NewDectIDList").Split(","), New Converter(Of String, Integer)(AddressOf Integer.Parse))
 
                 Return True
             Else
                 DectIDList = {}
-
-                PushStatus.Invoke(LogLevel.Warn, $"Liste der DECT IDs der Fritz!Box konnte nicht ermittelt. '{ .Item("Error")}'")
 
                 Return False
             End If
@@ -426,57 +200,22 @@ Friend Class X_contactSCPD
 
         With TR064Start(ServiceFile, "GetDECTHandsetInfo", New Dictionary(Of String, String) From {{"NewDectID", DectID}})
 
-            If .ContainsKey("NewHandsetName") And .ContainsKey("NewPhonebookID") Then
-
-                HandsetName = .Item("NewHandsetName").ToString
-                PhonebookID = .Item("NewPhonebookID").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"DECTHandsetInfo {DectID}: Name: {HandsetName} PhonebookID: {PhonebookID}")
-
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"DECTHandsetInfo konnte für das DECTHandset {DectID} nicht aufgelößt werden. '{ .Item("Error")}'")
-
-                Return False
-            End If
+            Return .TryGetValue("NewHandsetName", HandsetName) And
+                   .TryGetValue("NewPhonebookID", PhonebookID)
         End With
 
     End Function
 
 
     Public Function SetDECTHandsetPhonebook(DectID As Integer, PhonebookID As Integer) As Boolean Implements IX_contactSCPD.SetDECTHandsetPhonebook
-
-        With TR064Start(ServiceFile, "SetDECTHandsetPhonebook", New Dictionary(Of String, String) From {{"NewDectID", DectID}, {"NewPhonebookID", PhonebookID}})
-            Return Not .ContainsKey("Error")
-        End With
-
+        Return Not TR064Start(ServiceFile, "SetDECTHandsetPhonebook", New Dictionary(Of String, String) From {{"NewDectID", DectID},
+                                                                                                              {"NewPhonebookID", PhonebookID}}).ContainsKey("Error")
     End Function
 #End Region
 
 #Region "Deflections"
     Public Function GetNumberOfDeflections(ByRef NumberOfDeflections As String) As Boolean Implements IX_contactSCPD.GetNumberOfDeflections
-
-        With TR064Start(ServiceFile, "GetNumberOfDeflections", Nothing)
-
-            If .ContainsKey("NewNumberOfDeflections") Then
-                ' Phonebook URL auslesen
-                NumberOfDeflections = .Item("NewNumberOfDeflections").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"Anzahl der Rufweiterleitungen aus der Fritz!Box ausgelesen: '{NumberOfDeflections}'")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetNumberOfDeflections konnte nicht aufgelöst werden. '{ .Item("Error")}'")
-
-                NumberOfDeflections = String.Empty
-
-                Return False
-            End If
-        End With
-
+        Return TR064Start(ServiceFile, "GetNumberOfDeflections", Nothing).TryGetValue("NewNumberOfDeflections", NumberOfDeflections)
     End Function
 
     Public Function GetDeflection(ByRef DeflectionInfo As Deflection, DeflectionId As Integer) As Boolean Implements IX_contactSCPD.GetDeflection
@@ -485,25 +224,13 @@ Friend Class X_contactSCPD
 
         With TR064Start(ServiceFile, "GetInfo", New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId}})
 
-            If .ContainsKey("NewEnable") Then
-
-                DeflectionInfo.Enable = CBool(.Item("NewEnable"))
-                DeflectionInfo.Type = CType(.Item("NewType"), DeflectionTypeEnum)
-                DeflectionInfo.Number = .Item("NewNumber").ToString
-                DeflectionInfo.DeflectionToNumber = .Item("NewDeflectionToNumber").ToString
-                DeflectionInfo.Mode = CType(.Item("NewMode"), DeflectionModeEnum)
-                DeflectionInfo.Outgoing = .Item("NewOutgoing").ToString
-                DeflectionInfo.PhonebookID = .Item("NewPhonebookID").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"GetDeflection ({DeflectionId}): {DeflectionInfo.Mode}; {DeflectionInfo.Enable}")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetDeflection konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
-
-                Return False
-            End If
+            Return .TryGetValue("NewEnable", DeflectionInfo.Enable) And
+                       .TryGetValue("NewType", DeflectionInfo.Type) And
+                       .TryGetValue("NewNumber", DeflectionInfo.Number) And
+                       .TryGetValue("NewDeflectionToNumber", DeflectionInfo.DeflectionToNumber) And
+                       .TryGetValue("NewType", DeflectionInfo.DeflectionToNumber) And
+                       .TryGetValue("NewMode", DeflectionInfo.Outgoing) And
+                       .TryGetValue("NewPhonebookID", DeflectionInfo.PhonebookID)
         End With
 
     End Function
@@ -514,9 +241,7 @@ Friend Class X_contactSCPD
 
             If .ContainsKey("NewDeflectionList") Then
 
-                If Not XML.Deserialize(.Item("NewDeflectionList").ToString(), False, DeflectionList) Then
-                    PushStatus.Invoke(LogLevel.Warn, $"GetDeflections konnte für nicht deserialisiert werden.")
-                End If
+                XML.Deserialize(.Item("NewDeflectionList"), False, DeflectionList)
 
                 ' Wenn keine Umleitung angeschlossen wurden, gib eine leere Klasse zurück
                 If DeflectionList Is Nothing Then DeflectionList = New DeflectionList
@@ -524,7 +249,6 @@ Friend Class X_contactSCPD
                 Return True
 
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetDeflections konnte nicht aufgelöst werden. '{ .Item("Error")}'")
 
                 DeflectionList = Nothing
 
@@ -535,13 +259,7 @@ Friend Class X_contactSCPD
     End Function
 
     Public Function SetDeflectionEnable(DeflectionId As Integer, Enable As Boolean) As Boolean Implements IX_contactSCPD.SetDeflectionEnable
-
-        With TR064Start(ServiceFile, "SetDeflectionEnable", New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId}, {"NewEnable", Enable.ToString}})
-
-            Return Not .ContainsKey("Error")
-
-        End With
-
+        Return Not TR064Start(ServiceFile, "SetDeflectionEnable", New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId}, {"NewEnable", Enable}}).ContainsKey("Error")
     End Function
 #End Region
 End Class

@@ -1,14 +1,15 @@
 ﻿Imports System.Net
 Imports System.Text
 Friend Class TR064HttpBasics
+    Inherits LogBase
 
     Private Const DefaultHeaderKeepAlive As Boolean = False
     Private Const DefaultHeaderUserAgent As String = "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko"
     Private Const DefaultMinTimout As Integer = 100
     Private ReadOnly Property GlobalTimeout As Integer
-    Private ReadOnly Property PushStatus As Action(Of LogLevel, Exception, String)
+    Private ReadOnly Property PushStatus As Action(Of LogMessage)
 
-    Public Sub New(Status As Action(Of LogLevel, Exception, String), timeout As Integer)
+    Public Sub New(Status As Action(Of LogMessage), timeout As Integer)
         PushStatus = Status
         GlobalTimeout = Math.Max(timeout, DefaultMinTimout)
     End Sub
@@ -31,7 +32,7 @@ Friend Class TR064HttpBasics
             PingReply = PingSender.Send(IPAdresse, GlobalTimeout, buffer, Options)
 
         Catch ex As Exception
-            PushStatus.Invoke(LogLevel.Warn, ex, $"Ping zu {IPAdresse} nicht erfolgreich (timeout: {GlobalTimeout}).")
+            PushStatus?.Invoke(CreateLog(LogLevel.Warn, $"Ping zu {IPAdresse} nicht erfolgreich (timeout: {GlobalTimeout}).", ex))
         End Try
 
         Return PingReply IsNot Nothing AndAlso PingReply.Status = NetworkInformation.IPStatus.Success
@@ -70,29 +71,27 @@ Friend Class TR064HttpBasics
                         Try
                             Response = .DownloadString(UniformResourceIdentifier)
 
-                            PushStatus.Invoke(LogLevel.Trace, Nothing, Response)
+                            PushStatus?.Invoke(CreateLog(LogLevel.Trace, Response))
 
                             Return True
 
                         Catch ex As ArgumentNullException
-                            ' Der address-Parameter ist null.
-                            PushStatus.Invoke(LogLevel.Error, ex, "Der address-Parameter ist null.")
+                            PushStatus?.Invoke(CreateLog(LogLevel.Error, "Der address-Parameter ist null.", ex))
 
                         Catch ex As WebException
                             ' Der durch Kombinieren von BaseAddress und address gebildete URI ist ungültig.
                             ' - oder -
                             ' Fehler beim Herunterladen der Ressource.
-                            PushStatus.Invoke(LogLevel.Error, ex, $"Link: {UniformResourceIdentifier.AbsoluteUri} ")
+                            PushStatus?.Invoke(CreateLog(LogLevel.Error, $"Link: {UniformResourceIdentifier.AbsoluteUri} ", ex))
 
                         Catch ex As NotSupportedException
-                            ' Die Methode wurde gleichzeitig für mehrere Threads aufgerufen.
-                            PushStatus.Invoke(LogLevel.Error, ex, "Die Methode wurde gleichzeitig für mehrere Threads aufgerufen.")
+                            PushStatus?.Invoke(CreateLog(LogLevel.Error, "Die Methode wurde gleichzeitig für mehrere Threads aufgerufen.", ex))
 
                         End Try
                     End With
                 End Using
             Case Else
-                'NLogger.Warn($"Uri.Scheme: {UniformResourceIdentifier.Scheme}")
+                PushStatus?.Invoke(CreateLog(LogLevel.Warn, $"Unexpected Uri.Scheme: {UniformResourceIdentifier.AbsoluteUri}"))
 
         End Select
         Return False
@@ -132,14 +131,15 @@ Friend Class TR064HttpBasics
                     ' Der address-Parameter ist null.
                     ' - oder -
                     ' Der Data - Parameter ist null.
-                    PushStatus.Invoke(LogLevel.Error, ex, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Data: '{PostData}' ")
+                    PushStatus?.Invoke(CreateLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Data: '{PostData}' ", ex))
+
                     ' Rückgabewert festlegen
                     Response = ex.Message
                 Catch ex As WebException
                     ' Der durch Kombinieren von BaseAddress und address gebildete URI ist ungültig.
                     ' - oder -
                     ' Der Server, der Host dieser Ressource ist, hat nicht geantwortet.
-                    PushStatus.Invoke(LogLevel.Error, ex, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Data: '{PostData}' ")
+                    PushStatus?.Invoke(CreateLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Data: '{PostData}' ", ex))
                     ' Rückgabewert festlegen
                     Response = ex.Message
                 End Try

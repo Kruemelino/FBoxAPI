@@ -49,11 +49,30 @@ End Function
 ```
 
 Sobald eine neue `FBoxAPI.FritzBoxTR64`-Klasse erstellt wurde, kann auch auf das Event `Status` abgefragt werden. 
-Die FBoxAPI.LogMessage beinhaltet eine Eigenschaft für ein `LogLevel` (Enum) und eine Eigenschaft für eine `Message` (String).
+Die FBoxAPI.LogMessage beinhaltet diverse relevante Eigenschaften:
+
+* Level als Enum für das LogLevel (Trace bis Fatal)
+* Message (String)
+* Exception (String)
+* CallerMemberName (String)
+* CallerFilePath (String)
+* CallerClassName (String)
+* CallerLineNumber (String)
+
+Beispiel für [NLog](https://nlog-project.org/):
 ```vbnet
     Friend Sub FBoxAPIMessage(sender As Object, e As FBoxAPI.NotifyEventArgs(Of FBoxAPI.LogMessage))
-        ' Nlog:
-        NLogger.Log(LogLevel.FromOrdinal(e.Value.Level), e.Value.Message)
+
+        With e.Value
+            Dim LogEvent As New LogEventInfo(LogLevel.FromOrdinal(.Level),
+                                             .CallerClassName,
+                                             .Message)
+
+            LogEvent.SetCallerInfo(.CallerClassName, .CallerMemberName, .CallerFilePath, .CallerLineNumber)
+            
+            NLogger.Log(LogEvent)
+        End With
+
     End Sub
 ```
 ### Umsetzung

@@ -7,38 +7,24 @@ Friend Class X_homeautoSCPD
     Implements IX_homeautoSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_homeautoSCPD.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IX_homeautoSCPD.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_homeautoSCPD.Servicefile
+    Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_homeautoSCPD Implements IX_homeautoSCPD.Servicefile
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String))
-
-        ServiceFile = SCPDFiles.x_homeautoSCPD
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
 
         TR064Start = Start
 
-        PushStatus = Status
     End Sub
 
     Public Function GetInfo(ByRef AllowedCharsAIN As String, ByRef MaxCharsAIN As Integer, ByRef MinCharsAIN As Integer, ByRef MaxCharsDeviceName As Integer, ByRef MinCharsDeviceName As Integer) As Boolean Implements IX_homeautoSCPD.GetInfo
 
         With TR064Start(ServiceFile, "GetMessageList", Nothing)
-            If .ContainsKey("NewAllowedCharsAIN") Then
 
-                AllowedCharsAIN = .Item("NewAllowedCharsAIN").ToString
-                MaxCharsAIN = .Item("MaxCharsAIN").ToString
-                MinCharsAIN = .Item("MinCharsAIN").ToString
-                MaxCharsDeviceName = .Item("MaxCharsDeviceName").ToString
-                MinCharsDeviceName = .Item("MinCharsDeviceName").ToString
+            Return .TryGetValue("NewAllowedCharsAIN", AllowedCharsAIN) And
+                   .TryGetValue("MaxCharsAIN", MaxCharsAIN) And
+                   .TryGetValue("MinCharsAIN", MinCharsAIN) And
+                   .TryGetValue("MaxCharsDeviceName", MaxCharsDeviceName) And
+                   .TryGetValue("MinCharsDeviceName", MinCharsDeviceName)
 
-                PushStatus.Invoke(LogLevel.Debug, $"GetInfo (HomeAuto) erfolgreich")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetInfo (HomeAuto) konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
-
-                Return False
-            End If
         End With
 
     End Function
@@ -49,46 +35,37 @@ Friend Class X_homeautoSCPD
 
         With TR064Start(ServiceFile, "GetGenericDeviceInfos", New Dictionary(Of String, String) From {{"NewIndex", Index}})
 
-            If .ContainsKey("NewAIN") Then
+            Return .TryGetValue("NewAIN", DeviceInfo.AIN) And
+                   .TryGetValue("NewDeviceId", DeviceInfo.DeviceId) And
+                   .TryGetValue("NewFunctionBitMask", DeviceInfo.FunctionBitMask) And
+                   .TryGetValue("NewFirmwareVersion", DeviceInfo.FirmwareVersion) And
+                   .TryGetValue("NewManufacturer", DeviceInfo.Manufacturer) And
+                   .TryGetValue("NewProductName", DeviceInfo.ProductName) And
+                   .TryGetValue("NewDeviceName", DeviceInfo.DeviceName) And
+                   .TryGetValue("NewPresent", DeviceInfo.Present) And
+                   .TryGetValue("NewMultimeterIsEnabled", DeviceInfo.MultimeterIsEnabled) And
+                   .TryGetValue("NewMultimeterIsValid", DeviceInfo.MultimeterIsValid) And
+                   .TryGetValue("NewMultimeterPower", DeviceInfo.MultimeterPower) And
+                   .TryGetValue("NewMultimeterEnergy", DeviceInfo.MultimeterEnergy) And
+                   .TryGetValue("NewTemperatureIsEnabled", DeviceInfo.TemperatureIsEnabled) And
+                   .TryGetValue("NewTemperatureIsValid", DeviceInfo.TemperatureIsValid) And
+                   .TryGetValue("NewTemperatureCelsius", DeviceInfo.TemperatureCelsius) And
+                   .TryGetValue("NewTemperatureOffset", DeviceInfo.TemperatureOffset) And
+                   .TryGetValue("NewSwitchIsEnabled", DeviceInfo.SwitchIsEnabled) And
+                   .TryGetValue("NewSwitchIsValid", DeviceInfo.SwitchIsValid) And
+                   .TryGetValue("NewSwitchState", DeviceInfo.SwitchState) And
+                   .TryGetValue("NewSwitchMode", DeviceInfo.SwitchMode) And
+                   .TryGetValue("NewSwitchLock", DeviceInfo.SwitchLock) And
+                   .TryGetValue("NewHkrIsEnabled", DeviceInfo.HkrIsEnabled) And
+                   .TryGetValue("NewHkrIsValid", DeviceInfo.HkrIsValid) And
+                   .TryGetValue("NewHkrIsTemperature", DeviceInfo.HkrIsTemperature) And
+                   .TryGetValue("NewHkrSetVentilStatus", DeviceInfo.HkrSetVentilStatus) And
+                   .TryGetValue("NewHkrSetTemperature", DeviceInfo.HkrSetTemperature) And
+                   .TryGetValue("NewHkrReduceVentilStatus", DeviceInfo.HkrReduceVentilStatus) And
+                   .TryGetValue("NewHkrReduceTemperature", DeviceInfo.HkrReduceTemperature) And
+                   .TryGetValue("NewHkrComfortVentilStatus", DeviceInfo.HkrComfortVentilStatus) And
+                   .TryGetValue("NewHkrComfortTemperature", DeviceInfo.HkrComfortTemperature)
 
-                DeviceInfo.AIN = .Item("NewAIN").ToString
-                DeviceInfo.DeviceId = CInt(.Item("NewDeviceId"))
-                DeviceInfo.FunctionBitMask = CInt(.Item("NewFunctionBitMask"))
-                DeviceInfo.FirmwareVersion = .Item("NewFirmwareVersion").ToString
-                DeviceInfo.Manufacturer = .Item("NewManufacturer").ToString
-                DeviceInfo.ProductName = .Item("NewProductName").ToString
-                DeviceInfo.DeviceName = .Item("NewDeviceName").ToString
-                DeviceInfo.Present = CType(.Item("NewPresent"), PresentEnum)
-                DeviceInfo.MultimeterIsEnabled = CType(.Item("NewMultimeterIsEnabled"), EnabledEnum)
-                DeviceInfo.MultimeterIsValid = CType(.Item("NewMultimeterIsValid"), ValidEnum)
-                DeviceInfo.MultimeterPower = CInt(.Item("NewMultimeterPower"))
-                DeviceInfo.MultimeterEnergy = CInt(.Item("NewMultimeterEnergy"))
-                DeviceInfo.TemperatureIsEnabled = CType(.Item("NewTemperatureIsEnabled"), EnabledEnum)
-                DeviceInfo.TemperatureIsValid = CType(.Item("NewTemperatureIsValid"), ValidEnum)
-                DeviceInfo.TemperatureCelsius = CInt(.Item("NewTemperatureCelsius"))
-                DeviceInfo.TemperatureOffset = CInt(.Item("NewTemperatureOffset"))
-                DeviceInfo.SwitchIsEnabled = CType(.Item("NewSwitchIsEnabled"), EnabledEnum)
-                DeviceInfo.SwitchIsValid = CType(.Item("NewSwitchIsValid"), ValidEnum)
-                DeviceInfo.SwitchState = CType(.Item("NewSwitchState"), SwStateEnum)
-                DeviceInfo.SwitchMode = CType(.Item("NewSwitchMode"), SwModeEnum)
-                DeviceInfo.SwitchLock = CBool(.Item("NewSwitchLock"))
-                DeviceInfo.HkrIsEnabled = CType(.Item("NewHkrIsEnabled"), EnabledEnum)
-                DeviceInfo.HkrIsValid = CType(.Item("NewHkrIsValid"), ValidEnum)
-                DeviceInfo.HkrIsTemperature = CInt(.Item("NewHkrIsTemperature"))
-                DeviceInfo.HkrSetVentilStatus = CType(.Item("NewHkrSetVentilStatus"), VentilEnum)
-                DeviceInfo.HkrSetTemperature = CInt(.Item("NewHkrSetTemperature"))
-                DeviceInfo.HkrReduceVentilStatus = CType(.Item("NewHkrReduceVentilStatus"), VentilEnum)
-                DeviceInfo.HkrReduceTemperature = CInt(.Item("NewHkrReduceTemperature"))
-                DeviceInfo.HkrComfortVentilStatus = CType(.Item("NewHkrComfortVentilStatus"), VentilEnum)
-                DeviceInfo.HkrComfortTemperature = CInt(.Item("NewHkrComfortTemperature"))
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetGenericDeviceInfos konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
-
-                Return False
-            End If
         End With
 
     End Function
@@ -99,58 +76,47 @@ Friend Class X_homeautoSCPD
 
         With TR064Start(ServiceFile, "GetSpecificDeviceInfos", New Dictionary(Of String, String) From {{"NewAIN", AIN}})
 
-            If .ContainsKey("NewDeviceId") Then
+            DeviceInfo.AIN = AIN
 
-                DeviceInfo.AIN = AIN
-                DeviceInfo.DeviceId = CInt(.Item("NewDeviceId"))
-                DeviceInfo.FunctionBitMask = CInt(.Item("NewFunctionBitMask"))
-                DeviceInfo.FirmwareVersion = .Item("NewFirmwareVersion").ToString
-                DeviceInfo.Manufacturer = .Item("NewManufacturer").ToString
-                DeviceInfo.ProductName = .Item("NewProductName").ToString
-                DeviceInfo.DeviceName = .Item("NewDeviceName").ToString
-                DeviceInfo.Present = CType(.Item("NewPresent"), PresentEnum)
-                DeviceInfo.MultimeterIsEnabled = CType(.Item("NewMultimeterIsEnabled"), EnabledEnum)
-                DeviceInfo.MultimeterIsValid = CType(.Item("NewMultimeterIsValid"), ValidEnum)
-                DeviceInfo.MultimeterPower = CInt(.Item("NewMultimeterPower"))
-                DeviceInfo.MultimeterEnergy = CInt(.Item("NewMultimeterEnergy"))
-                DeviceInfo.TemperatureIsEnabled = CType(.Item("NewTemperatureIsEnabled"), EnabledEnum)
-                DeviceInfo.TemperatureIsValid = CType(.Item("NewTemperatureIsValid"), ValidEnum)
-                DeviceInfo.TemperatureCelsius = CInt(.Item("NewTemperatureCelsius"))
-                DeviceInfo.TemperatureOffset = CInt(.Item("NewTemperatureOffset"))
-                DeviceInfo.SwitchIsEnabled = CType(.Item("NewSwitchIsEnabled"), EnabledEnum)
-                DeviceInfo.SwitchIsValid = CType(.Item("NewSwitchIsValid"), ValidEnum)
-                DeviceInfo.SwitchState = CType(.Item("NewSwitchState"), SwStateEnum)
-                DeviceInfo.SwitchMode = CType(.Item("NewSwitchMode"), SwModeEnum)
-                DeviceInfo.SwitchLock = CBool(.Item("NewSwitchLock"))
-                DeviceInfo.HkrIsEnabled = CType(.Item("NewHkrIsEnabled"), EnabledEnum)
-                DeviceInfo.HkrIsValid = CType(.Item("NewHkrIsValid"), ValidEnum)
-                DeviceInfo.HkrIsTemperature = CInt(.Item("NewHkrIsTemperature"))
-                DeviceInfo.HkrSetVentilStatus = CType(.Item("NewHkrSetVentilStatus"), VentilEnum)
-                DeviceInfo.HkrSetTemperature = CInt(.Item("NewHkrSetTemperature"))
-                DeviceInfo.HkrReduceVentilStatus = CType(.Item("NewHkrReduceVentilStatus"), VentilEnum)
-                DeviceInfo.HkrReduceTemperature = CInt(.Item("NewHkrReduceTemperature"))
-                DeviceInfo.HkrComfortVentilStatus = CType(.Item("NewHkrComfortVentilStatus"), VentilEnum)
-                DeviceInfo.HkrComfortTemperature = CInt(.Item("NewHkrComfortTemperature"))
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetSpecificDeviceInfos konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
-
-                Return False
-            End If
+            Return .TryGetValue("NewDeviceId", DeviceInfo.DeviceId) And
+                   .TryGetValue("NewFunctionBitMask", DeviceInfo.FunctionBitMask) And
+                   .TryGetValue("NewFirmwareVersion", DeviceInfo.FirmwareVersion) And
+                   .TryGetValue("NewManufacturer", DeviceInfo.Manufacturer) And
+                   .TryGetValue("NewProductName", DeviceInfo.ProductName) And
+                   .TryGetValue("NewDeviceName", DeviceInfo.DeviceName) And
+                   .TryGetValue("NewPresent", DeviceInfo.Present) And
+                   .TryGetValue("NewMultimeterIsEnabled", DeviceInfo.MultimeterIsEnabled) And
+                   .TryGetValue("NewMultimeterIsValid", DeviceInfo.MultimeterIsValid) And
+                   .TryGetValue("NewMultimeterPower", DeviceInfo.MultimeterPower) And
+                   .TryGetValue("NewMultimeterEnergy", DeviceInfo.MultimeterEnergy) And
+                   .TryGetValue("NewTemperatureIsEnabled", DeviceInfo.TemperatureIsEnabled) And
+                   .TryGetValue("NewTemperatureIsValid", DeviceInfo.TemperatureIsValid) And
+                   .TryGetValue("NewTemperatureCelsius", DeviceInfo.TemperatureCelsius) And
+                   .TryGetValue("NewTemperatureOffset", DeviceInfo.TemperatureOffset) And
+                   .TryGetValue("NewSwitchIsEnabled", DeviceInfo.SwitchIsEnabled) And
+                   .TryGetValue("NewSwitchIsValid", DeviceInfo.SwitchIsValid) And
+                   .TryGetValue("NewSwitchState", DeviceInfo.SwitchState) And
+                   .TryGetValue("NewSwitchMode", DeviceInfo.SwitchMode) And
+                   .TryGetValue("NewSwitchLock", DeviceInfo.SwitchLock) And
+                   .TryGetValue("NewHkrIsEnabled", DeviceInfo.HkrIsEnabled) And
+                   .TryGetValue("NewHkrIsValid", DeviceInfo.HkrIsValid) And
+                   .TryGetValue("NewHkrIsTemperature", DeviceInfo.HkrIsTemperature) And
+                   .TryGetValue("NewHkrSetVentilStatus", DeviceInfo.HkrSetVentilStatus) And
+                   .TryGetValue("NewHkrSetTemperature", DeviceInfo.HkrSetTemperature) And
+                   .TryGetValue("NewHkrReduceVentilStatus", DeviceInfo.HkrReduceVentilStatus) And
+                   .TryGetValue("NewHkrReduceTemperature", DeviceInfo.HkrReduceTemperature) And
+                   .TryGetValue("NewHkrComfortVentilStatus", DeviceInfo.HkrComfortVentilStatus) And
+                   .TryGetValue("NewHkrComfortTemperature", DeviceInfo.HkrComfortTemperature)
         End With
     End Function
 
     Public Function SetDeviceName(AIN As String, DeviceName As String) As Boolean Implements IX_homeautoSCPD.SetDeviceName
-        With TR064Start(ServiceFile, "SetDeviceName", New Dictionary(Of String, String) From {{"NewAIN", AIN}, {"NewDeviceName", DeviceName}})
-            Return Not .ContainsKey("Error")
-        End With
+        Return Not TR064Start(ServiceFile, "SetDeviceName", New Dictionary(Of String, String) From {{"NewAIN", AIN},
+                                                                                                    {"NewDeviceName", DeviceName}}).ContainsKey("Error")
     End Function
 
     Public Function SetSwitch(AIN As String, SwitchState As SwStateEnum) As Boolean Implements IX_homeautoSCPD.SetSwitch
-        With TR064Start(ServiceFile, "SetSwitch", New Dictionary(Of String, String) From {{"NewAIN", AIN}, {"NewSwitchState", SwitchState.ToString}})
-            Return Not .ContainsKey("Error")
-        End With
+        Return Not TR064Start(ServiceFile, "SetSwitch", New Dictionary(Of String, String) From {{"NewAIN", AIN},
+                                                                                                {"NewSwitchState", SwitchState}}).ContainsKey("Error")
     End Function
 End Class

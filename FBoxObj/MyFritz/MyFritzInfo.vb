@@ -1,5 +1,5 @@
 ﻿Public Class MyFritzInfo
-    Public Property NumberOfServices As Integer
+    Public Property Index As Integer
     Public Property Enabled As String
     Public Property Name As String
 

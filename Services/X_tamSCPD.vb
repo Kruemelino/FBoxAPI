@@ -7,19 +7,15 @@ Friend Class X_tamSCPD
     Implements IX_tamSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_tamSCPD.TR064Start
-    Private Property PushStatus As Action(Of LogLevel, String) Implements IX_tamSCPD.PushStatus
-    Private ReadOnly Property ServiceFile As SCPDFiles Implements IX_tamSCPD.Servicefile
+    Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_tamSCPD Implements IX_tamSCPD.Servicefile
     Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), Status As Action(Of LogLevel, String), XMLSerializer As Serializer)
-
-        ServiceFile = SCPDFiles.x_tamSCPD
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), XMLSerializer As Serializer)
 
         TR064Start = Start
 
-        PushStatus = Status
-
         XML = XMLSerializer
+
     End Sub
 
     Public Function GetTAMInfo(ByRef TAMInfo As TAMInfo, i As Integer) As Boolean Implements IX_tamSCPD.GetTAMInfo
@@ -28,25 +24,19 @@ Friend Class X_tamSCPD
 
         With TR064Start(ServiceFile, "GetInfo", New Dictionary(Of String, String) From {{"NewIndex", i}})
 
-            If .ContainsKey("NewEnable") And .ContainsKey("NewPhoneNumbers") Then
+            If .ContainsKey("NewPhoneNumbers") Then
 
-                TAMInfo.Enable = CBool(.Item("NewEnable"))
-                TAMInfo.Name = .Item("NewName").ToString
-                TAMInfo.TAMRunning = CBool(.Item("NewTAMRunning"))
-                TAMInfo.Stick = CUShort(.Item("NewStick"))
-                TAMInfo.Status = CUShort(.Item("NewStatus"))
-                TAMInfo.Capacity = CULng(.Item("NewCapacity"))
-                TAMInfo.Mode = .Item("NewMode").ToString
-                TAMInfo.RingSeconds = CUShort(.Item("NewRingSeconds"))
-                TAMInfo.PhoneNumbers = .Item("NewPhoneNumbers").ToString.Split(",")
+                TAMInfo.PhoneNumbers = .Item("NewPhoneNumbers").Split(",")
 
-                PushStatus.Invoke(LogLevel.Debug, $"GetTAMInfo ({i}): {TAMInfo.Name}; {TAMInfo.Enable}")
-
-                Return True
-
+                Return .TryGetValue("NewEnable", TAMInfo.Enable) And
+                       .TryGetValue("NewName", TAMInfo.Name) And
+                       .TryGetValue("NewTAMRunning", TAMInfo.TAMRunning) And
+                       .TryGetValue("NewStick", TAMInfo.Stick) And
+                       .TryGetValue("NewStatus", TAMInfo.Status) And
+                       .TryGetValue("NewCapacity", TAMInfo.Capacity) And
+                       .TryGetValue("NewMode", TAMInfo.Mode) And
+                       .TryGetValue("NewRingSeconds", TAMInfo.RingSeconds)
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetTAMInfo konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
-
                 Return False
             End If
         End With
@@ -54,56 +44,25 @@ Friend Class X_tamSCPD
     End Function
 
     Public Function SetEnable(Index As Integer, Enable As Boolean) As Boolean Implements IX_tamSCPD.SetEnable
-
-        With TR064Start(ServiceFile, "SetEnable", New Dictionary(Of String, String) From {{"NewIndex", Index}, {"NewEnable", Enable.ToInt}})
-            Return Not .ContainsKey("Error")
-        End With
-
+        Return Not TR064Start(ServiceFile, "SetEnable", New Dictionary(Of String, String) From {{"NewIndex", Index},
+                                                                                                {"NewEnable", Enable.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetMessageList(ByRef GetMessageListURL As String, i As Integer) As Boolean Implements IX_tamSCPD.GetMessageList
-        With TR064Start(ServiceFile, "GetMessageList", New Dictionary(Of String, String) From {{"NewIndex", i}})
-            If .ContainsKey("NewURL") Then
-
-                GetMessageListURL = .Item("NewURL").ToString
-
-                PushStatus.Invoke(LogLevel.Debug, $"GetMessageListURL: {GetMessageListURL} ")
-
-                Return True
-
-            Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetMessageList konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
-
-                Return False
-            End If
-        End With
-
+        Return TR064Start(ServiceFile, "GetMessageList",
+                          New Dictionary(Of String, String) From {{"NewIndex", i}}).
+                          TryGetValue("NewURL", GetMessageListURL)
     End Function
 
     Public Function MarkMessage(Index As Integer, MessageIndex As Integer, MarkedAsRead As Boolean) As Boolean Implements IX_tamSCPD.MarkMessage
-
-        With TR064Start(ServiceFile, "MarkMessage", New Dictionary(Of String, String) From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}, {"NewMarkedAsRead", MarkedAsRead.ToInt}})
-            Return Not .ContainsKey("Error")
-        End With
+        Return Not TR064Start(ServiceFile, "MarkMessage", New Dictionary(Of String, String) From {{"NewIndex", Index},
+                                                                                                  {"NewMessageIndex", MessageIndex},
+                                                                                                  {"NewMarkedAsRead", MarkedAsRead.ToBoolStr}}).ContainsKey("Error")
 
     End Function
 
     Public Function DeleteMessage(Index As Integer, MessageIndex As Integer) As Boolean Implements IX_tamSCPD.DeleteMessage
-
-        With TR064Start(ServiceFile, "DeleteMessage", New Dictionary(Of String, String) From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}})
-
-
-            If Not .ContainsKey("Error") Then
-
-                PushStatus.Invoke(LogLevel.Info, $"Nachricht auf Anrufbeantworter {Index} mit ID {MessageIndex} gelöscht, '{ .Item("Error")}'")
-                Return True
-            Else
-
-                PushStatus.Invoke(LogLevel.Warn, $"Nachricht auf Anrufbeantworter {Index} mit ID {MessageIndex} nicht gelöscht, '{ .Item("Error")}'")
-                Return False
-            End If
-        End With
-
+        Return Not TR064Start(ServiceFile, "DeleteMessage", New Dictionary(Of String, String) From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}}).ContainsKey("Error")
     End Function
 
     Public Function GetList(ByRef List As TAMList) As Boolean Implements IX_tamSCPD.GetList
@@ -112,19 +71,12 @@ Friend Class X_tamSCPD
 
             If .ContainsKey("NewTAMList") Then
 
-                If Not XML.Deserialize(.Item("NewTAMList").ToString(), False, List) Then
-                    PushStatus.Invoke(LogLevel.Warn, $"GetTAMList konnte für nicht deserialisiert werden.")
-                End If
-
+                XML.Deserialize(.Item("NewTAMList"), False, List)
                 ' Wenn keine TAM angeschlossen wurden, gib eine leere Klasse zurück
                 If List Is Nothing Then List = New TAMList
 
-                PushStatus.Invoke(LogLevel.Debug, $"GetList: {List.Items.Count} Anrufbeantworter ermittelt.")
-
                 Return True
-
             Else
-                PushStatus.Invoke(LogLevel.Warn, $"GetTAMList konnte für nicht aufgelößt werden. '{ .Item("Error")}'")
                 List = Nothing
 
                 Return False
