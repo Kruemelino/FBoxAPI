@@ -17,7 +17,7 @@
     ''' <item>2 USB memory stick available but folder avm_tam missing</item>
     ''' </list>
     ''' </summary>
-    Public Property Stick As UShort
+    Public Property Stick As Integer
 
     '''  <summary>
     ''' <list type="bullet">
@@ -26,9 +26,9 @@
     ''' <item>Bit 15: Display in WebUI</item>
     ''' </list>
     ''' </summary>
-    Public Property Status As UShort
+    Public Property Status As Integer
 
-    Public Property Capacity As ULong
+    Public Property Capacity As Integer
 
     ''' <summary>
     ''' play_announcement, record_message, timeprofile 
@@ -39,7 +39,7 @@
     ''' 0…255 <br/>
     ''' 0 immediately, 255 automatic
     ''' </summary>
-    Public Property RingSeconds As UShort
+    Public Property RingSeconds As Integer
 
     ''' <summary>
     ''' Empty string represents all numbers. <br/>

@@ -136,7 +136,7 @@ Friend Class WANIPConnectionSCPD
                                                                               {"NewProtocol", .PortMappingProtocol},
                                                                               {"NewInternalPort", .InternalPort},
                                                                               {"NewInternalClient", .InternalClient},
-                                                                              {"NewEnabled", .PortMappingEnabled},
+                                                                              {"NewEnabled", .PortMappingEnabled.ToBoolStr},
                                                                               {"NewPortMappingDescription", .PortMappingDescription},
                                                                               {"NewLeaseDuration", .PortMappingLeaseDuration}}).
                                                                               ContainsKey("Error")

@@ -169,7 +169,7 @@ Friend Class WANPPPConnectionSCPD
                                                                               {"NewProtocol", .PortMappingProtocol},
                                                                               {"NewInternalPort", .InternalPort},
                                                                               {"NewInternalClient", .InternalClient},
-                                                                              {"NewEnabled", .PortMappingEnabled},
+                                                                              {"NewEnabled", .PortMappingEnabled.ToBoolStr},
                                                                               {"NewPortMappingDescription", .PortMappingDescription},
                                                                               {"NewLeaseDuration", .PortMappingLeaseDuration}}).
                                                                               ContainsKey("Error")
@@ -208,7 +208,7 @@ Friend Class WANPPPConnectionSCPD
 
     Public Function X_AVM_DE_SetAutoDisconnectTimeSpan(DisconnectPreventionEnable As Boolean, DisconnectPreventionHour As Integer) As Boolean Implements IWANPPPConnectionSCPD.X_AVM_DE_SetAutoDisconnectTimeSpan
         Return TR064Start(ServiceFile, "X_AVM_DE_SetAutoDisconnectTimeSpan",
-                New Dictionary(Of String, String) From {{"NewX_AVM-DE_DisconnectPreventionEnable", DisconnectPreventionEnable},
+                New Dictionary(Of String, String) From {{"NewX_AVM-DE_DisconnectPreventionEnable", DisconnectPreventionEnable.ToBoolStr},
                                                         {"NewX_AVM-DE_DisconnectPreventionHour", DisconnectPreventionHour}}).ContainsKey("Error")
 
     End Function

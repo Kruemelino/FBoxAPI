@@ -166,7 +166,7 @@ Imports System.Xml.Serialization
 
             End With ' XML-RootElement 
 
-            PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"Request: { .InnerXml}"))
+            PushStatus?.Invoke(CreateLog(LogLevel.Debug, $"Request: { .InnerXml}"))
 
         End With ' XML Document GetRequest
 

@@ -253,7 +253,7 @@ Friend Class X_contactSCPD
     End Function
 
     Public Function SetDeflectionEnable(DeflectionId As Integer, Enable As Boolean) As Boolean Implements IX_contactSCPD.SetDeflectionEnable
-        Return Not TR064Start(ServiceFile, "SetDeflectionEnable", New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId}, {"NewEnable", Enable}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetDeflectionEnable", New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId}, {"NewEnable", Enable.ToBoolStr}}).ContainsKey("Error")
     End Function
 #End Region
 End Class

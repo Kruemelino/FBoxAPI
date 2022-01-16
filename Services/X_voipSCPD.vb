@@ -28,7 +28,7 @@ Friend Class X_voipSCPD
     End Function
 
     Public Function SetConfig(T38FaxEnable As Boolean, VoiceCoding As VoiceCodingEnum) As Boolean Implements IX_voipSCPD.SetConfig
-        Return Not TR064Start(ServiceFile, "SetConfig", New Dictionary(Of String, String) From {{"NewT38FaxEnable", T38FaxEnable}, {"NewVoiceCoding", VoiceCoding}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetConfig", New Dictionary(Of String, String) From {{"NewT38FaxEnable", T38FaxEnable.ToBoolStr}, {"NewVoiceCoding", VoiceCoding}}).ContainsKey("Error")
     End Function
 
     Public Function GetInfoEx(ByRef InfoEx As VoIPInfoEx) As Boolean Implements IX_voipSCPD.GetInfoEx
@@ -96,7 +96,7 @@ Friend Class X_voipSCPD
 
     Public Function SetVoIPEnableAreaCode(VoIPEnableAreaCode As Boolean, VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.SetVoIPEnableAreaCode
         Return Not TR064Start(ServiceFile, "SetVoIPEnableAreaCode", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", VoIPAccountIndex},
-                                                                                                            {"NewVoIPEnableAreaCode", VoIPEnableAreaCode}}).ContainsKey("Error")
+                                                                                                            {"NewVoIPEnableAreaCode", VoIPEnableAreaCode.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetVoIPEnableCountryCode(ByRef VoIPEnableCountryCode As Boolean, VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.GetVoIPEnableCountryCode

@@ -31,7 +31,7 @@ Public Class WANDSLInterfaceConfigSCPD
     End Function
 
     Public Function SetEnable(Enable As Boolean) As Boolean Implements IWANDSLInterfaceConfigSCPD.SetEnable
-        Return Not TR064Start(ServiceFile, "SetEnable", New Dictionary(Of String, String) From {{"NewEnable", Enable}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetEnable", New Dictionary(Of String, String) From {{"NewEnable", Enable.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function SetDSLLinkType(LinkType As LinkTypeEnum) As Boolean Implements IWANDSLInterfaceConfigSCPD.SetDSLLinkType

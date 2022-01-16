@@ -141,7 +141,7 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function SetBeaconAdvertisement(BeaconAdvertisementEnabled As Boolean) As Boolean Implements IWlanconfigSCPD.SetBeaconAdvertisement
-        Return Not TR064Start(ServiceFile, "SetBeaconAdvertisement", New Dictionary(Of String, String) From {{"NewBeaconAdvertisementEnabled", BeaconAdvertisementEnabled}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetBeaconAdvertisement", New Dictionary(Of String, String) From {{"NewBeaconAdvertisementEnabled", BeaconAdvertisementEnabled.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetTotalAssociations(ByRef TotalAssociations As Integer) As Boolean Implements IWlanconfigSCPD.GetTotalAssociations
@@ -219,7 +219,7 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function SetStickSurfEnable(StickSurfEnable As Boolean) As Boolean Implements IWlanconfigSCPD.SetStickSurfEnable
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetStickSurfEnable", New Dictionary(Of String, String) From {{"NewStickSurfEnable", StickSurfEnable}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetStickSurfEnable", New Dictionary(Of String, String) From {{"NewStickSurfEnable", StickSurfEnable.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetIPTVOptimized(ByRef IPTVoptimize As Boolean) As Boolean Implements IWlanconfigSCPD.GetIPTVOptimized
