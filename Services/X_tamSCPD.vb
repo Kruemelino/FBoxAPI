@@ -65,24 +65,19 @@ Friend Class X_tamSCPD
         Return Not TR064Start(ServiceFile, "DeleteMessage", New Dictionary(Of String, String) From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}}).ContainsKey("Error")
     End Function
 
+    Public Function GetList(ByRef List As String) As Boolean Implements IX_tamSCPD.GetList
+        Return TR064Start(ServiceFile, "GetList", Nothing).TryGetValue("NewTAMList", List)
+    End Function
+
     Public Function GetList(ByRef List As TAMList) As Boolean Implements IX_tamSCPD.GetList
-
-        With TR064Start(ServiceFile, "GetList", Nothing)
-
-            If .ContainsKey("NewTAMList") Then
-
-                XML.Deserialize(.Item("NewTAMList"), False, List)
-                ' Wenn keine TAM angeschlossen wurden, gib eine leere Klasse zurück
-                If List Is Nothing Then List = New TAMList
-
-                Return True
-            Else
-                List = Nothing
-
-                Return False
-            End If
-        End With
-
+        Dim XMLList As String = String.Empty
+        If GetList(XMLList) Then
+            XML.Deserialize(XMLList, False, List)
+            Return True
+        Else
+            List = New TAMList
+            Return False
+        End If
     End Function
 
 End Class

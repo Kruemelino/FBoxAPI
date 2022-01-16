@@ -243,6 +243,11 @@ Public Interface IX_contactSCPD
     ''' Returns a list of deflections.
     ''' </summary>
     ''' <param name="DeflectionList">List of deflections</param>
+    Function GetDeflections(ByRef DeflectionList As String) As Boolean
+
+    ''' <summary>
+    ''' Inoffizielle Action: GetDeflections wird als <see cref="DeflectionList"/> deserialisiert zurückgegeben.
+    ''' </summary>
     Function GetDeflections(ByRef DeflectionList As DeflectionList) As Boolean
 
     ''' <summary>

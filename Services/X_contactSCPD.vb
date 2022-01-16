@@ -225,36 +225,30 @@ Friend Class X_contactSCPD
         With TR064Start(ServiceFile, "GetInfo", New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId}})
 
             Return .TryGetValue("NewEnable", DeflectionInfo.Enable) And
-                       .TryGetValue("NewType", DeflectionInfo.Type) And
-                       .TryGetValue("NewNumber", DeflectionInfo.Number) And
-                       .TryGetValue("NewDeflectionToNumber", DeflectionInfo.DeflectionToNumber) And
-                       .TryGetValue("NewType", DeflectionInfo.DeflectionToNumber) And
-                       .TryGetValue("NewMode", DeflectionInfo.Outgoing) And
-                       .TryGetValue("NewPhonebookID", DeflectionInfo.PhonebookID)
+                   .TryGetValue("NewType", DeflectionInfo.Type) And
+                   .TryGetValue("NewNumber", DeflectionInfo.Number) And
+                   .TryGetValue("NewDeflectionToNumber", DeflectionInfo.DeflectionToNumber) And
+                   .TryGetValue("NewType", DeflectionInfo.DeflectionToNumber) And
+                   .TryGetValue("NewMode", DeflectionInfo.Outgoing) And
+                   .TryGetValue("NewPhonebookID", DeflectionInfo.PhonebookID)
         End With
 
     End Function
 
+    Public Function GetDeflections(ByRef DeflectionList As String) As Boolean Implements IX_contactSCPD.GetDeflections
+        Return TR064Start(ServiceFile, "GetDeflections", Nothing).TryGetValue("NewDeflectionList", DeflectionList)
+    End Function
+
     Public Function GetDeflections(ByRef DeflectionList As DeflectionList) As Boolean Implements IX_contactSCPD.GetDeflections
 
-        With TR064Start(ServiceFile, "GetDeflections", Nothing)
-
-            If .ContainsKey("NewDeflectionList") Then
-
-                XML.Deserialize(.Item("NewDeflectionList"), False, DeflectionList)
-
-                ' Wenn keine Umleitung angeschlossen wurden, gib eine leere Klasse zurück
-                If DeflectionList Is Nothing Then DeflectionList = New DeflectionList
-
-                Return True
-
-            Else
-
-                DeflectionList = Nothing
-
-                Return False
-            End If
-        End With
+        Dim Deflections As String = String.Empty
+        If GetDeflections(DeflectionList) Then
+            XML.Deserialize(Deflections, False, DeflectionList)
+            Return True
+        Else
+            DeflectionList = New DeflectionList
+            Return False
+        End If
 
     End Function
 

@@ -59,5 +59,10 @@ Public Interface IX_tamSCPD
     ''' Returns the global information and the specific answering machine information as xml list.
     ''' </summary>
     ''' <param name="List">Represents the list of all tam.</param>
+    Function GetList(ByRef List As String) As Boolean
+
+    ''' <summary>
+    ''' Inoffizielle Action: GetList wird als <see cref="TAMList"/> deserialisiert zurückgegeben.
+    ''' </summary>
     Function GetList(ByRef List As TAMList) As Boolean
 End Interface
