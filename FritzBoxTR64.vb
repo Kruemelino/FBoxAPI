@@ -19,6 +19,13 @@ Public Class FritzBoxTR64
     Public Property Hosts As IHostsSCPD
     Public Property LANConfigSecurity As ILANConfigSecuritySCPD
     Public Property UserInterface As IUserInterfaceSCPD
+    Public Property WANCommonInterfaceConfig As IWANCommonInterfaceConfigSCPD
+    Public Property WANDSLInterfaceConfig As IWANDSLInterfaceConfigSCPD
+    Public Property WANDSLLinkConfig As IWANDSLLinkConfigSCPD
+    Public Property WANEthernetLinkConfig As IWANEthernetLinkConfigSCPD
+    Public Property WANIPConnection As IWANIPConnectionSCPD
+    Public Property WANPPPConnection As IWANPPPConnectionSCPD
+    Public Property Wlanconfig As IWlanconfigSCPD
     Public Property X_contact As IX_contactSCPD
     Public Property X_filelinks As IX_filelinksSCPD
     Public Property X_HomeAuto As IX_homeautoSCPD
@@ -28,10 +35,8 @@ Public Class FritzBoxTR64
     Public Property X_Speedtest As IX_speedtestSCPD
     Public Property X_tam As IX_tamSCPD
     Public Property X_voip As IX_voipSCPD
-    Public Property UserMode As UserModeSCPD
-    Public Property WANCommonInterfaceConfig As IWANCommonInterfaceConfigSCPD
-    Public Property Wlanconfig As IWlanconfigSCPD
 
+    Public Property UserMode As UserModeSCPD
 #End Region
 
 #Region "Kontruktor"
@@ -136,6 +141,11 @@ Public Class FritzBoxTR64
         LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start)
         UserInterface = New UserInterfaceSCPD(AddressOf TR064Start)
         WANCommonInterfaceConfig = New WANCommonInterfaceConfigSCPD(AddressOf TR064Start)
+        WANDSLInterfaceConfig = New WANDSLInterfaceConfigSCPD(AddressOf TR064Start)
+        WANDSLLinkConfig = New WANDSLLinkConfigSCPD(AddressOf TR064Start)
+        WANEthernetLinkConfig = New WANEthernetLinkConfigSCPD(AddressOf TR064Start)
+        WANIPConnection = New WANIPConnectionSCPD(AddressOf TR064Start)
+        WANPPPConnection = New WANPPPConnectionSCPD(AddressOf TR064Start)
         Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, XML)
         X_contact = New X_contactSCPD(AddressOf TR064Start, XML)
         X_filelinks = New X_filelinksSCPD(AddressOf TR064Start, XML)

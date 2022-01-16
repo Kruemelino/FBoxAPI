@@ -443,4 +443,80 @@ Public Enum AutoUpdateModeEnum
     check
 End Enum
 
+#Region "WAN"
+Public Enum ConnectionStatusEnum
+    Unconfigured
+    Connecting
+    Authenticating
+    PendingDisconnect
+    Disconnecting
+    Disconnected
+    Connected
+End Enum
 
+Public Enum ConnectionTypeEnum
+    Unconfigured
+    IP_Routed
+    IP_Bridged
+End Enum
+Public Enum PortMappingProtocolEnum
+    UDP
+    TCP
+End Enum
+
+Public Enum LastConnectionErrorEnum
+    ERROR_NONE
+    ERROR_ISP_TIME_OUT
+    ERROR_COMMAND_ABORTED
+    ERROR_NOT_ENABLED_FOR_INTERNET
+    ERROR_BAD_PHONE_NUMBER
+    ERROR_USER_DISCONNECT
+    ERROR_ISP_DISCONNECT
+    ERROR_IDLE_DISCONNECT
+    ERROR_FORCED_DISCONNECT
+    ERROR_SERVER_OUT_OF_RESOURCES
+    ERROR_RESTRICTED_LOGON_HOURS
+    ERROR_ACCOUNT_DISABLED
+    ERROR_ACCOUNT_EXPIRED
+    ERROR_PASSWORD_EXPIRED
+    ERROR_AUTHENTICATION_FAILURE
+    ERROR_NO_DIALTONE
+    ERROR_NO_CARRIER
+    ERROR_NO_ANSWER
+    ERROR_LINE_BUSY
+    ERROR_UNSUPPORTED_BITSPERSECOND
+    ERROR_TOO_MANY_LINE_ERRORS
+    ERROR_IP_CONFIGURATION
+    ERROR_UNKNOWN
+End Enum
+
+Public Enum EthernetLinkStatusEnum
+    Up
+    Down
+    Unavailable
+End Enum
+
+Public Enum LinkTypeEnum
+    EoA
+    PPPoA
+    PPPoE
+    Unconfigured
+End Enum
+
+Public Enum LinkStatusEnum
+    Up
+    Down
+    Initializing
+    Unavailable
+End Enum
+
+Public Enum DigagnoseStateEnum
+    NONE
+    NO_CALIB
+    RUNNING
+    DONE
+    DONE_CABLE_NOK
+    DONE_CABLE_OK
+End Enum
+
+#End Region
