@@ -17,22 +17,22 @@ Friend Class LANConfigSecuritySCPD
     Public Function GetInfo(ByRef MaxCharsPassword As Integer, ByRef MinCharsPassword As Integer, ByRef AllowedCharsPassword As String) As Boolean Implements ILANConfigSecuritySCPD.GetInfo
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
-            Return .TryGetValue("MaxCharsPassword", MaxCharsPassword) And
-                   .TryGetValue("MinCharsPassword", MinCharsPassword) And
-                   .TryGetValue("AllowedCharsPassword", AllowedCharsPassword)
+            Return .TryGetValueEx("MaxCharsPassword", MaxCharsPassword) And
+                   .TryGetValueEx("MinCharsPassword", MinCharsPassword) And
+                   .TryGetValueEx("AllowedCharsPassword", AllowedCharsPassword)
 
         End With
     End Function
 
     Public Function GetAnonymousLogin(ByRef AnonymousLoginEnabled As Boolean) As Boolean Implements ILANConfigSecuritySCPD.GetAnonymousLogin
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetAnonymousLogin", Nothing).TryGetValue("NewX_AVM-DE_AnonymousLoginEnabled", AnonymousLoginEnabled)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetAnonymousLogin", Nothing).TryGetValueEx("NewX_AVM-DE_AnonymousLoginEnabled", AnonymousLoginEnabled)
     End Function
 
     Public Function GetCurrentUser(ByRef CurrentUsername As String, ByRef CurrentUserRights As String) As Boolean Implements ILANConfigSecuritySCPD.GetCurrentUser
         With TR064Start(ServiceFile, "X_AVM-DE_GetCurrentUser", Nothing)
 
-            Return .TryGetValue("NewX_AVM-DE_CurrentUsername", CurrentUsername) And
-                   .TryGetValue("NewX_AVM-DE_CurrentUserRights", CurrentUserRights)
+            Return .TryGetValueEx("NewX_AVM-DE_CurrentUsername", CurrentUsername) And
+                   .TryGetValueEx("NewX_AVM-DE_CurrentUserRights", CurrentUserRights)
 
         End With
     End Function
@@ -42,7 +42,7 @@ Friend Class LANConfigSecuritySCPD
     End Function
 
     Public Function GetUserList(ByRef UserList As String) As Boolean Implements ILANConfigSecuritySCPD.GetUserList
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetUserList", Nothing).TryGetValue("NewX_AVM-DE_UserList", UserList)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetUserList", Nothing).TryGetValueEx("NewX_AVM-DE_UserList", UserList)
     End Function
 
 End Class

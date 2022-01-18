@@ -63,7 +63,7 @@ Public Module Extensions
     ''' </summary>
     ''' <param name="EnumConstant">The Enumeration Item extended by the function.</param>
     <Extension()>
-    Public Function Description(EnumConstant As [Enum]) As String
+    Friend Function Description(EnumConstant As [Enum]) As String
         Dim fi As Reflection.FieldInfo = EnumConstant.GetType().GetField(EnumConstant.ToString())
         Dim aattr() As DescriptionAttribute = DirectCast(fi.GetCustomAttributes(GetType(DescriptionAttribute), False), DescriptionAttribute())
         If aattr.Length = 0 OrElse aattr(0).Description.IsStringNothingOrEmpty Then
@@ -74,8 +74,32 @@ Public Module Extensions
     End Function
 
     <Extension()>
-    Public Function SerializeDictionary(dictionary As Dictionary(Of String, String), Name As String) As String
+    Friend Function SerializeDictionary(dictionary As Dictionary(Of String, String), Name As String) As String
         Return $"{{ ""{Name}"" : {{ {String.Join(", ", dictionary.Select(Function(kvp) $"""{kvp.Key}"" : ""{kvp.Value}"""))} }}"
+    End Function
+
+    ''' <summary>
+    ''' Eigene Funktion, die das GetKeyValue zumindest etwas typsicherer macht. Der Standardwert ist bei einem <see cref="Dictionary(Of String, String)"/> "". Dies kann jedoch nicht in Boolean umgewandelt werden.
+    ''' </summary>
+    <Extension()>
+    Public Function TryGetValueEx(Of T)(dictionary As Dictionary(Of String, String), key As String, ByRef value As T) As Boolean
+        ' Setze den Standardwert
+        value = Nothing
+
+        With dictionary
+            ' prüfe, der Key vorhanden ist.
+            If .ContainsKey(key) Then
+                Try
+                    ' Typeumwandlung
+                    value = Convert.ChangeType(.Item(key), GetType(T))
+                    ' Erfolg
+                    Return True
+                Catch ex As Exception
+                    ' ToDo Log?
+                End Try
+            End If
+        End With
+        Return False
     End Function
 
 End Module

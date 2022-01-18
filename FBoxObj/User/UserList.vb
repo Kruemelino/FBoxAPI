@@ -7,4 +7,8 @@
             Return UserListe.Find(Function(User) User.LastUser.IsNotZero)
         End Get
     End Property
+
+    Public Sub New()
+        UserListe = New List(Of User)
+    End Sub
 End Class

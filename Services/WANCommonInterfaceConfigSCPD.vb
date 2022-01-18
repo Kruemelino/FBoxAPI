@@ -21,29 +21,29 @@ Friend Class WANCommonInterfaceConfigSCPD
 
         With TR064Start(ServiceFile, "GetCommonLinkProperties", Nothing)
 
-            Return .TryGetValue("NewWANAccessType", WANAccessType) And
-                   .TryGetValue("NewLayer1UpstreamMaxBitRate", Layer1UpstreamMaxBitRate) And
-                   .TryGetValue("NewLayer1DownstreamMaxBitRate", Layer1DownstreamMaxBitRate) And
-                   .TryGetValue("NewPhysicalLinkStatus", PhysicalLinkStatus)
+            Return .TryGetValueEx("NewWANAccessType", WANAccessType) And
+                   .TryGetValueEx("NewLayer1UpstreamMaxBitRate", Layer1UpstreamMaxBitRate) And
+                   .TryGetValueEx("NewLayer1DownstreamMaxBitRate", Layer1DownstreamMaxBitRate) And
+                   .TryGetValueEx("NewPhysicalLinkStatus", PhysicalLinkStatus)
 
         End With
 
     End Function
 
     Public Function GetTotalBytesSent(ByRef TotalBytesSent As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetTotalPacketsSent
-        Return TR064Start(ServiceFile, "GetTotalBytesSent", Nothing).TryGetValue("NewTotalBytesSent", TotalBytesSent)
+        Return TR064Start(ServiceFile, "GetTotalBytesSent", Nothing).TryGetValueEx("NewTotalBytesSent", TotalBytesSent)
     End Function
 
     Public Function GetTotalBytesReceived(ByRef TotalBytesReceived As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetTotalBytesReceived
-        Return TR064Start(ServiceFile, "GetTotalBytesReceived", Nothing).TryGetValue("NewTotalBytesReceived", TotalBytesReceived)
+        Return TR064Start(ServiceFile, "GetTotalBytesReceived", Nothing).TryGetValueEx("NewTotalBytesReceived", TotalBytesReceived)
     End Function
 
     Public Function GetTotalPacketsSent(ByRef TotalPacketsSent As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetTotalBytesSent
-        Return TR064Start(ServiceFile, "GetTotalPacketsSent", Nothing).TryGetValue("NewTotalPacketsSent", TotalPacketsSent)
+        Return TR064Start(ServiceFile, "GetTotalPacketsSent", Nothing).TryGetValueEx("NewTotalPacketsSent", TotalPacketsSent)
     End Function
 
     Public Function GetTotalPacketsReceived(ByRef TotalPacketsReceived As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetTotalPacketsReceived
-        Return TR064Start(ServiceFile, "GetTotalPacketsReceived", Nothing).TryGetValue("NewTotalPacketsReceived", TotalPacketsReceived)
+        Return TR064Start(ServiceFile, "GetTotalPacketsReceived", Nothing).TryGetValueEx("NewTotalPacketsReceived", TotalPacketsReceived)
     End Function
 
     Public Function SetWANAccessType(AccessType As AccessTypeEnum) As Boolean Implements IWANCommonInterfaceConfigSCPD.SetWANAccessType
@@ -57,18 +57,18 @@ Friend Class WANCommonInterfaceConfigSCPD
 
             OnlineMonitor.SyncGroupIndex = SyncGroupIndex
 
-            Return .TryGetValue("NewTotalNumberSyncGroups", OnlineMonitor.TotalNumberSyncGroups) And
-                   .TryGetValue("NewSyncGroupName", OnlineMonitor.SyncGroupName) And
-                   .TryGetValue("NewSyncGroupMode", OnlineMonitor.SyncGroupMode) And
-                   .TryGetValue("Newmax_ds", OnlineMonitor.Max_ds) And
-                   .TryGetValue("Newmax_us", OnlineMonitor.Max_us) And
-                   .TryGetValue("Newds_current_bps", OnlineMonitor.Ds_current_bps) And
-                   .TryGetValue("Newmc_current_bps", OnlineMonitor.Mc_current_bps) And
-                   .TryGetValue("Newus_current_bps", OnlineMonitor.Us_current_bps) And
-                   .TryGetValue("Newprio_realtime_bps", OnlineMonitor.Prio_realtime_bps) And
-                   .TryGetValue("Newprio_high_bps", OnlineMonitor.Prio_high_bps) And
-                   .TryGetValue("Newprio_default_bps", OnlineMonitor.Prio_default_bps) And
-                   .TryGetValue("Newprio_low_bps", OnlineMonitor.Prio_low_bps)
+            Return .TryGetValueEx("NewTotalNumberSyncGroups", OnlineMonitor.TotalNumberSyncGroups) And
+                   .TryGetValueEx("NewSyncGroupName", OnlineMonitor.SyncGroupName) And
+                   .TryGetValueEx("NewSyncGroupMode", OnlineMonitor.SyncGroupMode) And
+                   .TryGetValueEx("Newmax_ds", OnlineMonitor.Max_ds) And
+                   .TryGetValueEx("Newmax_us", OnlineMonitor.Max_us) And
+                   .TryGetValueEx("Newds_current_bps", OnlineMonitor.Ds_current_bps) And
+                   .TryGetValueEx("Newmc_current_bps", OnlineMonitor.Mc_current_bps) And
+                   .TryGetValueEx("Newus_current_bps", OnlineMonitor.Us_current_bps) And
+                   .TryGetValueEx("Newprio_realtime_bps", OnlineMonitor.Prio_realtime_bps) And
+                   .TryGetValueEx("Newprio_high_bps", OnlineMonitor.Prio_high_bps) And
+                   .TryGetValueEx("Newprio_default_bps", OnlineMonitor.Prio_default_bps) And
+                   .TryGetValueEx("Newprio_low_bps", OnlineMonitor.Prio_low_bps)
         End With
     End Function
 End Class

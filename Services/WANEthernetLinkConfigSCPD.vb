@@ -14,6 +14,6 @@ Friend Class WANEthernetLinkConfigSCPD
     End Sub
 
     Public Function GetEthernetLinkStatus(ByRef EthernetLinkStatus As EthernetLinkStatusEnum) As Object Implements IWANEthernetLinkConfigSCPD.GetEthernetLinkStatus
-        Return TR064Start(ServiceFile, "GetEthernetLinkStatus", Nothing).TryGetValue("NewEthernetLinkStatus", EthernetLinkStatus)
+        Return TR064Start(ServiceFile, "GetEthernetLinkStatus", Nothing).TryGetValueEx("NewEthernetLinkStatus", EthernetLinkStatus)
     End Function
 End Class

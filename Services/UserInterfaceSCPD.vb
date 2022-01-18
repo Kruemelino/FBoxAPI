@@ -19,15 +19,15 @@ Public Class UserInterfaceSCPD
 
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
-            Return .TryGetValue("NewUpgradeAvailable", Info.UpgradeAvailable) And
-                   .TryGetValue("NewPasswordRequired", Info.PasswordRequired) And
-                   .TryGetValue("NewPasswordUserSelectable", Info.PasswordUserSelectable) And
-                   .TryGetValue("NewWarrantyDate", Info.WarrantyDate) And
-                   .TryGetValue("NewX_AVM-DE_Version", Info.Version) And
-                   .TryGetValue("NewX_AVM-DE_DownloadURL", Info.DownloadURL) And
-                   .TryGetValue("NewX_AVM-DE_InfoURL", Info.InfoURL) And
-                   .TryGetValue("NewX_AVM-DE_UpdateState", Info.UpdateState) And
-                   .TryGetValue("NewX_AVM-DE_LaborVersion", Info.LaborVersion)
+            Return .TryGetValueEx("NewUpgradeAvailable", Info.UpgradeAvailable) And
+                   .TryGetValueEx("NewPasswordRequired", Info.PasswordRequired) And
+                   .TryGetValueEx("NewPasswordUserSelectable", Info.PasswordUserSelectable) And
+                   .TryGetValueEx("NewWarrantyDate", Info.WarrantyDate) And
+                   .TryGetValueEx("NewX_AVM-DE_Version", Info.Version) And
+                   .TryGetValueEx("NewX_AVM-DE_DownloadURL", Info.DownloadURL) And
+                   .TryGetValueEx("NewX_AVM-DE_InfoURL", Info.InfoURL) And
+                   .TryGetValueEx("NewX_AVM-DE_UpdateState", Info.UpdateState) And
+                   .TryGetValueEx("NewX_AVM-DE_LaborVersion", Info.LaborVersion)
 
         End With
     End Function
@@ -39,8 +39,8 @@ Public Class UserInterfaceSCPD
     Public Function DoPrepareCGI(ByRef CGI As String, ByRef SessionID As String) As Boolean Implements IUserInterfaceSCPD.DoPrepareCGI
         With TR064Start(ServiceFile, "X_AVM-DE_DoPrepareCGI", Nothing)
 
-            Return .TryGetValue("NewX_AVM-DE_CGI", CGI) And
-                   .TryGetValue("NewX_AVM-DE_SesssionID", SessionID)
+            Return .TryGetValueEx("NewX_AVM-DE_CGI", CGI) And
+                   .TryGetValueEx("NewX_AVM-DE_SesssionID", SessionID)
 
         End With
     End Function
@@ -48,8 +48,8 @@ Public Class UserInterfaceSCPD
     Public Function DoUpdate(ByRef UpgradeAvailable As Boolean, ByRef UpdateState As UpdateStateEnum) As Boolean Implements IUserInterfaceSCPD.DoUpdate
         With TR064Start(ServiceFile, "X_AVM-DE_DoUpdate", Nothing)
 
-            Return .TryGetValue("NewUpgradeAvailable", UpgradeAvailable) And
-                   .TryGetValue("NewX_AVM-DE_UpdateState", UpdateState)
+            Return .TryGetValueEx("NewUpgradeAvailable", UpgradeAvailable) And
+                   .TryGetValueEx("NewX_AVM-DE_UpdateState", UpdateState)
 
         End With
     End Function
@@ -64,12 +64,12 @@ Public Class UserInterfaceSCPD
 
             With TR064Start(ServiceFile, "GetInfo", Nothing)
 
-                Return .TryGetValue("NewX_AVM-DE_Language", Language) And
-                       .TryGetValue("NewX_AVM-DE_Country", Country) And
-                       .TryGetValue("NewX_AVM-DE_Annex", Annex) And
-                       .TryGetValue("NewX_AVM-DE_LanguageList", LanguageList) And
-                       .TryGetValue("NewX_AVM-DE_CountryList", CountryList) And
-                       .TryGetValue("NewX_AVM-DE_AnnexList", AnnexList)
+                Return .TryGetValueEx("NewX_AVM-DE_Language", Language) And
+                       .TryGetValueEx("NewX_AVM-DE_Country", Country) And
+                       .TryGetValueEx("NewX_AVM-DE_Annex", Annex) And
+                       .TryGetValueEx("NewX_AVM-DE_LanguageList", LanguageList) And
+                       .TryGetValueEx("NewX_AVM-DE_CountryList", CountryList) And
+                       .TryGetValueEx("NewX_AVM-DE_AnnexList", AnnexList)
             End With
 
         End With
@@ -88,12 +88,12 @@ Public Class UserInterfaceSCPD
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetInfo", Nothing)
 
-            Return .TryGetValue("NewX_AVM-DE_AutoUpdateMode", Info.AutoUpdateMode) And
-                   .TryGetValue("NewX_AVM-DE_UpdateTime", Info.UpdateTime) And
-                   .TryGetValue("NewX_AVM-DE_LastFwVersion", Info.LastFwVersion) And
-                   .TryGetValue("NewX_AVM-DE_LastInfoUrl", Info.LastInfoUrl) And
-                   .TryGetValue("NewX_AVM-DE_CurrentFwVersion", Info.CurrentFwVersion) And
-                   .TryGetValue("NewX_AVM-DE_UpdateSuccessful", Info.UpdateSuccessful)
+            Return .TryGetValueEx("NewX_AVM-DE_AutoUpdateMode", Info.AutoUpdateMode) And
+                   .TryGetValueEx("NewX_AVM-DE_UpdateTime", Info.UpdateTime) And
+                   .TryGetValueEx("NewX_AVM-DE_LastFwVersion", Info.LastFwVersion) And
+                   .TryGetValueEx("NewX_AVM-DE_LastInfoUrl", Info.LastInfoUrl) And
+                   .TryGetValueEx("NewX_AVM-DE_CurrentFwVersion", Info.CurrentFwVersion) And
+                   .TryGetValueEx("NewX_AVM-DE_UpdateSuccessful", Info.UpdateSuccessful)
 
         End With
     End Function

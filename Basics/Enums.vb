@@ -520,3 +520,58 @@ Public Enum DigagnoseStateEnum
 End Enum
 
 #End Region
+
+Public Enum EnableEnum
+    Enable
+    Disable
+    [Error]
+End Enum
+
+#Region "Remote"
+Public Enum RemoteModeEnum
+    ''' <summary>
+    ''' Update only IPv4 address 
+    ''' </summary>
+    ddns_v4
+
+    ''' <summary>
+    ''' Update only IPv6 address
+    ''' </summary>
+    ddns_v6
+
+    ''' <summary>
+    ''' Update IPv4 and IPv6 address with separate HTTP requests 
+    ''' </summary>
+    ddns_both
+
+    ''' <summary>
+    ''' Update IPv4 and IPv6 address with one request 
+    ''' </summary>
+    ddns_both_together
+End Enum
+
+#End Region
+
+#Region "AppSetup"
+Public Enum RightEnum
+    ''' <summary>
+    ''' Read and write access 
+    ''' </summary>
+    RW
+
+    ''' <summary>
+    ''' Read only access 
+    ''' </summary>
+    RO
+
+    ''' <summary>
+    ''' No access allowed 
+    ''' </summary>
+    NO
+
+    ''' <summary>
+    ''' No specific right defined. 
+    ''' </summary>
+    UNDEFINED
+End Enum
+#End Region

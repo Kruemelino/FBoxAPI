@@ -21,8 +21,8 @@ Friend Class X_voipSCPD
     Public Function GetInfo(ByRef FaxT38Enable As Boolean, ByRef VoiceCoding As VoiceCodingEnum) As Boolean Implements IX_voipSCPD.GetInfo
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
-            Return .TryGetValue("NewFaxT38Enable", FaxT38Enable) And
-                   .TryGetValue("NewVoiceCoding", VoiceCoding)
+            Return .TryGetValueEx("NewFaxT38Enable", FaxT38Enable) And
+                   .TryGetValueEx("NewVoiceCoding", VoiceCoding)
 
         End With
     End Function
@@ -79,11 +79,11 @@ Friend Class X_voipSCPD
 
 #Region "VoIPNumbers"
     Public Function GetExistingVoIPNumbers(ByRef ExistingVoIPNumbers As Integer) As Boolean Implements IX_voipSCPD.GetExistingVoIPNumbers
-        Return TR064Start(ServiceFile, "GetExistingVoIPNumbers", Nothing).TryGetValue("NewExistingVoIPNumbers", ExistingVoIPNumbers)
+        Return TR064Start(ServiceFile, "GetExistingVoIPNumbers", Nothing).TryGetValueEx("NewExistingVoIPNumbers", ExistingVoIPNumbers)
     End Function
 
     Public Function GetMaxVoIPNumbers(ByRef MaxVoIPNumbers As Integer) As Boolean Implements IX_voipSCPD.GetMaxVoIPNumbers
-        Return TR064Start(ServiceFile, "GetMaxVoIPNumbers", Nothing).TryGetValue("NewMaxVoIPNumbers", MaxVoIPNumbers)
+        Return TR064Start(ServiceFile, "GetMaxVoIPNumbers", Nothing).TryGetValueEx("NewMaxVoIPNumbers", MaxVoIPNumbers)
     End Function
 #End Region
 
@@ -91,7 +91,7 @@ Friend Class X_voipSCPD
     Public Function GetVoIPEnableAreaCode(ByRef VoIPEnableAreaCode As Boolean, VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.GetVoIPEnableAreaCode
         Return TR064Start(ServiceFile, "GetVoIPEnableAreaCode",
                           New Dictionary(Of String, String) From {{"NewVoIPEnableAreaCode", VoIPAccountIndex}}).
-                          TryGetValue("NewVoIPEnableAreaCode", VoIPEnableAreaCode)
+                          TryGetValueEx("NewVoIPEnableAreaCode", VoIPEnableAreaCode)
     End Function
 
     Public Function SetVoIPEnableAreaCode(VoIPEnableAreaCode As Boolean, VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.SetVoIPEnableAreaCode
@@ -102,7 +102,7 @@ Friend Class X_voipSCPD
     Public Function GetVoIPEnableCountryCode(ByRef VoIPEnableCountryCode As Boolean, VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.GetVoIPEnableCountryCode
         Return TR064Start(ServiceFile, "GetVoIPEnableCountryCode",
                           New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", VoIPAccountIndex}}).
-                          TryGetValue("NewVoIPEnableCountryCode", VoIPEnableCountryCode)
+                          TryGetValueEx("NewVoIPEnableCountryCode", VoIPEnableCountryCode)
     End Function
 
     Public Function SetVoIPCommonCountryCode(LKZ As String, LKZPrefix As String) As Boolean Implements IX_voipSCPD.SetVoIPCommonCountryCode
@@ -114,8 +114,8 @@ Friend Class X_voipSCPD
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetVoIPCommonCountryCode", Nothing)
 
-            Return .TryGetValue("NewX_AVM-DE_LKZ", LKZ) And
-                   .TryGetValue("NewX_AVM-DE_LKZPrefix", LKZPrefix)
+            Return .TryGetValueEx("NewX_AVM-DE_LKZ", LKZ) And
+                   .TryGetValueEx("NewX_AVM-DE_LKZPrefix", LKZPrefix)
         End With
 
     End Function
@@ -129,8 +129,8 @@ Friend Class X_voipSCPD
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetVoIPCommonAreaCode", Nothing)
 
-            Return .TryGetValue("NewX_AVM-DE_OKZ", OKZ) And
-                   .TryGetValue("NewX_AVM-DE_OKZPrefix", OKZPrefix)
+            Return .TryGetValueEx("NewX_AVM-DE_OKZ", OKZ) And
+                   .TryGetValueEx("NewX_AVM-DE_OKZPrefix", OKZPrefix)
 
         End With
 
@@ -167,11 +167,11 @@ Friend Class X_voipSCPD
 
             Account.VoIPAccountIndex = AccountIndex
 
-            Return .TryGetValue("NewVoIPRegistrar", Account.VoIPRegistrar) And
-                   .TryGetValue("NewVoIPNumber", Account.VoIPNumber) And
-                   .TryGetValue("NewVoIPUsername", Account.VoIPUsername) And
-                   .TryGetValue("NewVoIPOutboundProxy", Account.VoIPOutboundProxy) And
-                   .TryGetValue("NewVoIPOutboundProxy", Account.VoIPSTUNServer)
+            Return .TryGetValueEx("NewVoIPRegistrar", Account.VoIPRegistrar) And
+                   .TryGetValueEx("NewVoIPNumber", Account.VoIPNumber) And
+                   .TryGetValueEx("NewVoIPUsername", Account.VoIPUsername) And
+                   .TryGetValueEx("NewVoIPOutboundProxy", Account.VoIPOutboundProxy) And
+                   .TryGetValueEx("NewVoIPOutboundProxy", Account.VoIPSTUNServer)
 
         End With
     End Function
@@ -183,7 +183,7 @@ Friend Class X_voipSCPD
     End Function
 
     Public Function GetNumberOfClients(ByRef NumberOfClients As Integer) As Boolean Implements IX_voipSCPD.GetNumberOfClients
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetNumberOfClients", Nothing).TryGetValue("NewX_AVM-DE_NumberOfClients", NumberOfClients)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetNumberOfClients", Nothing).TryGetValueEx("NewX_AVM-DE_NumberOfClients", NumberOfClients)
     End Function
 
     Public Function GetClient2(ByRef Client As SIPClient, ClientIndex As Integer) As Boolean Implements IX_voipSCPD.GetClient2
@@ -193,13 +193,13 @@ Friend Class X_voipSCPD
 
             Client.ClientIndex = ClientIndex
 
-            Return .TryGetValue("NewX_AVM-DE_ClientUsername", Client.ClientUsername) And
-                   .TryGetValue("NewX_AVM-DE_ClientRegistrar", Client.ClientRegistrar) And
-                   .TryGetValue("NewX_AVM-DE_ClientRegistrarPort", Client.ClientRegistrarPort) And
-                   .TryGetValue("NewX_AVM-DE_PhoneName", Client.PhoneName) And
-                   .TryGetValue("NewX_AVM-DE_ClientId", Client.ClientId) And
-                   .TryGetValue("NewX_AVM-DE_OutGoingNumber", Client.OutGoingNumber) And
-                   .TryGetValue("NewX_AVM-DE_InternalNumber", Client.InternalNumber)
+            Return .TryGetValueEx("NewX_AVM-DE_ClientUsername", Client.ClientUsername) And
+                   .TryGetValueEx("NewX_AVM-DE_ClientRegistrar", Client.ClientRegistrar) And
+                   .TryGetValueEx("NewX_AVM-DE_ClientRegistrarPort", Client.ClientRegistrarPort) And
+                   .TryGetValueEx("NewX_AVM-DE_PhoneName", Client.PhoneName) And
+                   .TryGetValueEx("NewX_AVM-DE_ClientId", Client.ClientId) And
+                   .TryGetValueEx("NewX_AVM-DE_OutGoingNumber", Client.OutGoingNumber) And
+                   .TryGetValueEx("NewX_AVM-DE_InternalNumber", Client.InternalNumber)
 
         End With
     End Function
@@ -211,15 +211,15 @@ Friend Class X_voipSCPD
 
             Client.ClientIndex = ClientIndex
 
-            Return .TryGetValue("NewX_AVM-DE_ClientUsername", Client.ClientUsername) And
-                   .TryGetValue("NewX_AVM-DE_ClientRegistrar", Client.ClientRegistrar) And
-                   .TryGetValue("NewX_AVM-DE_ClientRegistrarPort", Client.ClientRegistrarPort) And
-                   .TryGetValue("NewX_AVM-DE_PhoneName", Client.PhoneName) And
-                   .TryGetValue("NewX_AVM-DE_ClientId", Client.ClientId) And
-                   .TryGetValue("NewX_AVM-DE_OutGoingNumber", Client.OutGoingNumber) And
-                   .TryGetValue("NewX_AVM-DE_ExternalRegistration", Client.ExternalRegistration) And
-                   .TryGetValue("NewX_AVM-DE_InternalNumber", Client.InternalNumber) And
-                   .TryGetValue("NewX_AVM-DE_DelayedCallNotification", Client.DelayedCallNotification) And
+            Return .TryGetValueEx("NewX_AVM-DE_ClientUsername", Client.ClientUsername) And
+                   .TryGetValueEx("NewX_AVM-DE_ClientRegistrar", Client.ClientRegistrar) And
+                   .TryGetValueEx("NewX_AVM-DE_ClientRegistrarPort", Client.ClientRegistrarPort) And
+                   .TryGetValueEx("NewX_AVM-DE_PhoneName", Client.PhoneName) And
+                   .TryGetValueEx("NewX_AVM-DE_ClientId", Client.ClientId) And
+                   .TryGetValueEx("NewX_AVM-DE_OutGoingNumber", Client.OutGoingNumber) And
+                   .TryGetValueEx("NewX_AVM-DE_ExternalRegistration", Client.ExternalRegistration) And
+                   .TryGetValueEx("NewX_AVM-DE_InternalNumber", Client.InternalNumber) And
+                   .TryGetValueEx("NewX_AVM-DE_DelayedCallNotification", Client.DelayedCallNotification) And
                    XML.Deserialize(.Item("NewX_AVM-DE_InComingNumbers"), False, Client.InComingNumbers)
 
         End With
@@ -230,16 +230,16 @@ Friend Class X_voipSCPD
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetClientByClientId", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientId", ClientId}})
 
-            Return .TryGetValue("NewX_AVM-DE_ClientIndex", Client.ClientIndex) And
-                   .TryGetValue("NewX_AVM-DE_ClientUsername", Client.ClientUsername) And
-                   .TryGetValue("NewX_AVM-DE_ClientRegistrar", Client.ClientRegistrar) And
-                   .TryGetValue("NewX_AVM-DE_ClientRegistrarPort", Client.ClientRegistrarPort) And
-                   .TryGetValue("NewX_AVM-DE_PhoneName", Client.PhoneName) And
-                   .TryGetValue("NewX_AVM-DE_ClientId", Client.ClientId) And
-                   .TryGetValue("NewX_AVM-DE_OutGoingNumber", Client.OutGoingNumber) And
-                   .TryGetValue("NewX_AVM-DE_ExternalRegistration", Client.ExternalRegistration) And
-                   .TryGetValue("NewX_AVM-DE_InternalNumber", Client.InternalNumber) And
-                   .TryGetValue("NewX_AVM-DE_DelayedCallNotification", Client.DelayedCallNotification) And
+            Return .TryGetValueEx("NewX_AVM-DE_ClientIndex", Client.ClientIndex) And
+                   .TryGetValueEx("NewX_AVM-DE_ClientUsername", Client.ClientUsername) And
+                   .TryGetValueEx("NewX_AVM-DE_ClientRegistrar", Client.ClientRegistrar) And
+                   .TryGetValueEx("NewX_AVM-DE_ClientRegistrarPort", Client.ClientRegistrarPort) And
+                   .TryGetValueEx("NewX_AVM-DE_PhoneName", Client.PhoneName) And
+                   .TryGetValueEx("NewX_AVM-DE_ClientId", Client.ClientId) And
+                   .TryGetValueEx("NewX_AVM-DE_OutGoingNumber", Client.OutGoingNumber) And
+                   .TryGetValueEx("NewX_AVM-DE_ExternalRegistration", Client.ExternalRegistration) And
+                   .TryGetValueEx("NewX_AVM-DE_InternalNumber", Client.InternalNumber) And
+                   .TryGetValueEx("NewX_AVM-DE_DelayedCallNotification", Client.DelayedCallNotification) And
                    XML.Deserialize(.Item("NewX_AVM-DE_InComingNumbers"), False, Client.InComingNumbers)
 
         End With
@@ -356,7 +356,7 @@ Friend Class X_voipSCPD
 
 #Region "Numbers"
     Public Function GetNumberOfNumbers(ByRef NumberOfNumbers As Integer) As Boolean Implements IX_voipSCPD.GetNumberOfNumbers
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetNumberOfNumbers", Nothing).TryGetValue("NewNumberOfNumbers", NumberOfNumbers)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetNumberOfNumbers", Nothing).TryGetValueEx("NewNumberOfNumbers", NumberOfNumbers)
     End Function
 
     Public Function GetNumbers(ByRef NumberList As SIPTelNrList) As Boolean Implements IX_voipSCPD.GetNumbers
@@ -384,11 +384,11 @@ Friend Class X_voipSCPD
 
 #Region "Dialing"
     Public Function GetPhonePort(ByRef PhoneName As String, i As Integer) As Boolean Implements IX_voipSCPD.GetPhonePort
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetPhonePort", New Dictionary(Of String, String) From {{"NewIndex", i}}).TryGetValue("NewX_AVM-DE_PhoneName", PhoneName)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetPhonePort", New Dictionary(Of String, String) From {{"NewIndex", i}}).TryGetValueEx("NewX_AVM-DE_PhoneName", PhoneName)
     End Function
 
     Public Function DialGetConfig(ByRef PhoneName As String) As Boolean Implements IX_voipSCPD.DialGetConfig
-        Return TR064Start(ServiceFile, "X_AVM-DE_DialGetConfig", Nothing).TryGetValue("NewX_AVM-DE_PhoneName", PhoneName)
+        Return TR064Start(ServiceFile, "X_AVM-DE_DialGetConfig", Nothing).TryGetValueEx("NewX_AVM-DE_PhoneName", PhoneName)
     End Function
 
     Public Function DialHangup() As Boolean Implements IX_voipSCPD.DialHangup
@@ -414,20 +414,18 @@ Friend Class X_voipSCPD
 
                 AlarmClock.AlarmClockWeekdays = .Item("NewX_AVM-DE_AlarmClockWeekdays").Split(",")
 
-                Return .TryGetValue("NewX_AVM-DE_AlarmClockEnable", AlarmClock.AlarmClockEnable) And
-                       .TryGetValue("NewX_AVM-DE_AlarmClockName", AlarmClock.AlarmClockName) And
-                       .TryGetValue("NewX_AVM-DE_AlarmClockTime", AlarmClock.AlarmClockTime) And
-                       .TryGetValue("NewX_AVM-DE_AlarmClockPhoneName", AlarmClock.AlarmClockPhoneName)
-
+                Return .TryGetValueEx("NewX_AVM-DE_AlarmClockEnable", AlarmClock.AlarmClockEnable) And
+                       .TryGetValueEx("NewX_AVM-DE_AlarmClockName", AlarmClock.AlarmClockName) And
+                       .TryGetValueEx("NewX_AVM-DE_AlarmClockTime", AlarmClock.AlarmClockTime) And
+                       .TryGetValueEx("NewX_AVM-DE_AlarmClockPhoneName", AlarmClock.AlarmClockPhoneName)
             Else
-
                 Return False
             End If
         End With
     End Function
 
     Public Function GetNumberOfAlarmClocks(ByRef NumberOfAlarmClocks As Integer) As Boolean Implements IX_voipSCPD.GetNumberOfAlarmClocks
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetNumberOfAlarmClocks", Nothing).TryGetValue("NewX_AVM-DE_NumberOfAlarmClocks", NumberOfAlarmClocks)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetNumberOfAlarmClocks", Nothing).TryGetValueEx("NewX_AVM-DE_NumberOfAlarmClocks", NumberOfAlarmClocks)
     End Function
 
     Public Function SetAlarmClockEnable(Index As Integer, AlarmClockEnable As Boolean) As Boolean Implements IX_voipSCPD.SetAlarmClockEnable

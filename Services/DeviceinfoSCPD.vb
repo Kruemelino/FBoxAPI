@@ -23,18 +23,18 @@ Friend Class DeviceinfoSCPD
 
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
-            Return .TryGetValue("NewManufacturerName", Info.ManufacturerName) And
-                   .TryGetValue("NewManufacturerOUI", Info.ManufacturerOUI) And
-                   .TryGetValue("NewModelName", Info.ModelName) And
-                   .TryGetValue("NewDescription", Info.Description) And
-                   .TryGetValue("NewProductClass", Info.ProductClass) And
-                   .TryGetValue("NewSerialNumber", Info.SerialNumber) And
-                   .TryGetValue("NewSoftwareVersion", Info.SoftwareVersion) And
-                   .TryGetValue("NewHardwareVersion", Info.HardwareVersion) And
-                   .TryGetValue("NewSpecVersion", Info.SpecVersion) And
-                   .TryGetValue("NewProvisioningCode", Info.ProvisioningCode) And
-                   .TryGetValue("NewUpTime", Info.UpTime) And
-                   .TryGetValue("NewDeviceLog", Info.DeviceLog)
+            Return .TryGetValueEx("NewManufacturerName", Info.ManufacturerName) And
+                   .TryGetValueEx("NewManufacturerOUI", Info.ManufacturerOUI) And
+                   .TryGetValueEx("NewModelName", Info.ModelName) And
+                   .TryGetValueEx("NewDescription", Info.Description) And
+                   .TryGetValueEx("NewProductClass", Info.ProductClass) And
+                   .TryGetValueEx("NewSerialNumber", Info.SerialNumber) And
+                   .TryGetValueEx("NewSoftwareVersion", Info.SoftwareVersion) And
+                   .TryGetValueEx("NewHardwareVersion", Info.HardwareVersion) And
+                   .TryGetValueEx("NewSpecVersion", Info.SpecVersion) And
+                   .TryGetValueEx("NewProvisioningCode", Info.ProvisioningCode) And
+                   .TryGetValueEx("NewUpTime", Info.UpTime) And
+                   .TryGetValueEx("NewDeviceLog", Info.DeviceLog)
 
         End With
     End Function
@@ -45,11 +45,11 @@ Friend Class DeviceinfoSCPD
     End Function
 
     Public Function GetDeviceLog(ByRef DeviceLog As String) As Boolean Implements IDeviceinfoSCPD.GetDeviceLog
-        Return TR064Start(ServiceFile, "GetDeviceLog", Nothing).TryGetValue("NewDeviceLog", DeviceLog)
+        Return TR064Start(ServiceFile, "GetDeviceLog", Nothing).TryGetValueEx("NewDeviceLog", DeviceLog)
     End Function
 
     Public Function GetSecurityPort(ByRef SecurityPort As Integer) As Boolean Implements IDeviceinfoSCPD.GetSecurityPort
-        Return TR064Start(ServiceFile, "GetSecurityPort", Nothing).TryGetValue("NewSecurityPort", SecurityPort)
+        Return TR064Start(ServiceFile, "GetSecurityPort", Nothing).TryGetValueEx("NewSecurityPort", SecurityPort)
     End Function
 #End Region
 

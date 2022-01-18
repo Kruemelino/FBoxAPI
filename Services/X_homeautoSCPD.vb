@@ -19,11 +19,11 @@ Friend Class X_homeautoSCPD
 
         With TR064Start(ServiceFile, "GetMessageList", Nothing)
 
-            Return .TryGetValue("NewAllowedCharsAIN", AllowedCharsAIN) And
-                   .TryGetValue("MaxCharsAIN", MaxCharsAIN) And
-                   .TryGetValue("MinCharsAIN", MinCharsAIN) And
-                   .TryGetValue("MaxCharsDeviceName", MaxCharsDeviceName) And
-                   .TryGetValue("MinCharsDeviceName", MinCharsDeviceName)
+            Return .TryGetValueEx("NewAllowedCharsAIN", AllowedCharsAIN) And
+                   .TryGetValueEx("MaxCharsAIN", MaxCharsAIN) And
+                   .TryGetValueEx("MinCharsAIN", MinCharsAIN) And
+                   .TryGetValueEx("MaxCharsDeviceName", MaxCharsDeviceName) And
+                   .TryGetValueEx("MinCharsDeviceName", MinCharsDeviceName)
 
         End With
 
@@ -35,36 +35,36 @@ Friend Class X_homeautoSCPD
 
         With TR064Start(ServiceFile, "GetGenericDeviceInfos", New Dictionary(Of String, String) From {{"NewIndex", Index}})
 
-            Return .TryGetValue("NewAIN", DeviceInfo.AIN) And
-                   .TryGetValue("NewDeviceId", DeviceInfo.DeviceId) And
-                   .TryGetValue("NewFunctionBitMask", DeviceInfo.FunctionBitMask) And
-                   .TryGetValue("NewFirmwareVersion", DeviceInfo.FirmwareVersion) And
-                   .TryGetValue("NewManufacturer", DeviceInfo.Manufacturer) And
-                   .TryGetValue("NewProductName", DeviceInfo.ProductName) And
-                   .TryGetValue("NewDeviceName", DeviceInfo.DeviceName) And
-                   .TryGetValue("NewPresent", DeviceInfo.Present) And
-                   .TryGetValue("NewMultimeterIsEnabled", DeviceInfo.MultimeterIsEnabled) And
-                   .TryGetValue("NewMultimeterIsValid", DeviceInfo.MultimeterIsValid) And
-                   .TryGetValue("NewMultimeterPower", DeviceInfo.MultimeterPower) And
-                   .TryGetValue("NewMultimeterEnergy", DeviceInfo.MultimeterEnergy) And
-                   .TryGetValue("NewTemperatureIsEnabled", DeviceInfo.TemperatureIsEnabled) And
-                   .TryGetValue("NewTemperatureIsValid", DeviceInfo.TemperatureIsValid) And
-                   .TryGetValue("NewTemperatureCelsius", DeviceInfo.TemperatureCelsius) And
-                   .TryGetValue("NewTemperatureOffset", DeviceInfo.TemperatureOffset) And
-                   .TryGetValue("NewSwitchIsEnabled", DeviceInfo.SwitchIsEnabled) And
-                   .TryGetValue("NewSwitchIsValid", DeviceInfo.SwitchIsValid) And
-                   .TryGetValue("NewSwitchState", DeviceInfo.SwitchState) And
-                   .TryGetValue("NewSwitchMode", DeviceInfo.SwitchMode) And
-                   .TryGetValue("NewSwitchLock", DeviceInfo.SwitchLock) And
-                   .TryGetValue("NewHkrIsEnabled", DeviceInfo.HkrIsEnabled) And
-                   .TryGetValue("NewHkrIsValid", DeviceInfo.HkrIsValid) And
-                   .TryGetValue("NewHkrIsTemperature", DeviceInfo.HkrIsTemperature) And
-                   .TryGetValue("NewHkrSetVentilStatus", DeviceInfo.HkrSetVentilStatus) And
-                   .TryGetValue("NewHkrSetTemperature", DeviceInfo.HkrSetTemperature) And
-                   .TryGetValue("NewHkrReduceVentilStatus", DeviceInfo.HkrReduceVentilStatus) And
-                   .TryGetValue("NewHkrReduceTemperature", DeviceInfo.HkrReduceTemperature) And
-                   .TryGetValue("NewHkrComfortVentilStatus", DeviceInfo.HkrComfortVentilStatus) And
-                   .TryGetValue("NewHkrComfortTemperature", DeviceInfo.HkrComfortTemperature)
+            Return .TryGetValueEx("NewAIN", DeviceInfo.AIN) And
+                   .TryGetValueEx("NewDeviceId", DeviceInfo.DeviceId) And
+                   .TryGetValueEx("NewFunctionBitMask", DeviceInfo.FunctionBitMask) And
+                   .TryGetValueEx("NewFirmwareVersion", DeviceInfo.FirmwareVersion) And
+                   .TryGetValueEx("NewManufacturer", DeviceInfo.Manufacturer) And
+                   .TryGetValueEx("NewProductName", DeviceInfo.ProductName) And
+                   .TryGetValueEx("NewDeviceName", DeviceInfo.DeviceName) And
+                   .TryGetValueEx("NewPresent", DeviceInfo.Present) And
+                   .TryGetValueEx("NewMultimeterIsEnabled", DeviceInfo.MultimeterIsEnabled) And
+                   .TryGetValueEx("NewMultimeterIsValid", DeviceInfo.MultimeterIsValid) And
+                   .TryGetValueEx("NewMultimeterPower", DeviceInfo.MultimeterPower) And
+                   .TryGetValueEx("NewMultimeterEnergy", DeviceInfo.MultimeterEnergy) And
+                   .TryGetValueEx("NewTemperatureIsEnabled", DeviceInfo.TemperatureIsEnabled) And
+                   .TryGetValueEx("NewTemperatureIsValid", DeviceInfo.TemperatureIsValid) And
+                   .TryGetValueEx("NewTemperatureCelsius", DeviceInfo.TemperatureCelsius) And
+                   .TryGetValueEx("NewTemperatureOffset", DeviceInfo.TemperatureOffset) And
+                   .TryGetValueEx("NewSwitchIsEnabled", DeviceInfo.SwitchIsEnabled) And
+                   .TryGetValueEx("NewSwitchIsValid", DeviceInfo.SwitchIsValid) And
+                   .TryGetValueEx("NewSwitchState", DeviceInfo.SwitchState) And
+                   .TryGetValueEx("NewSwitchMode", DeviceInfo.SwitchMode) And
+                   .TryGetValueEx("NewSwitchLock", DeviceInfo.SwitchLock) And
+                   .TryGetValueEx("NewHkrIsEnabled", DeviceInfo.HkrIsEnabled) And
+                   .TryGetValueEx("NewHkrIsValid", DeviceInfo.HkrIsValid) And
+                   .TryGetValueEx("NewHkrIsTemperature", DeviceInfo.HkrIsTemperature) And
+                   .TryGetValueEx("NewHkrSetVentilStatus", DeviceInfo.HkrSetVentilStatus) And
+                   .TryGetValueEx("NewHkrSetTemperature", DeviceInfo.HkrSetTemperature) And
+                   .TryGetValueEx("NewHkrReduceVentilStatus", DeviceInfo.HkrReduceVentilStatus) And
+                   .TryGetValueEx("NewHkrReduceTemperature", DeviceInfo.HkrReduceTemperature) And
+                   .TryGetValueEx("NewHkrComfortVentilStatus", DeviceInfo.HkrComfortVentilStatus) And
+                   .TryGetValueEx("NewHkrComfortTemperature", DeviceInfo.HkrComfortTemperature)
 
         End With
 
@@ -78,35 +78,35 @@ Friend Class X_homeautoSCPD
 
             DeviceInfo.AIN = AIN
 
-            Return .TryGetValue("NewDeviceId", DeviceInfo.DeviceId) And
-                   .TryGetValue("NewFunctionBitMask", DeviceInfo.FunctionBitMask) And
-                   .TryGetValue("NewFirmwareVersion", DeviceInfo.FirmwareVersion) And
-                   .TryGetValue("NewManufacturer", DeviceInfo.Manufacturer) And
-                   .TryGetValue("NewProductName", DeviceInfo.ProductName) And
-                   .TryGetValue("NewDeviceName", DeviceInfo.DeviceName) And
-                   .TryGetValue("NewPresent", DeviceInfo.Present) And
-                   .TryGetValue("NewMultimeterIsEnabled", DeviceInfo.MultimeterIsEnabled) And
-                   .TryGetValue("NewMultimeterIsValid", DeviceInfo.MultimeterIsValid) And
-                   .TryGetValue("NewMultimeterPower", DeviceInfo.MultimeterPower) And
-                   .TryGetValue("NewMultimeterEnergy", DeviceInfo.MultimeterEnergy) And
-                   .TryGetValue("NewTemperatureIsEnabled", DeviceInfo.TemperatureIsEnabled) And
-                   .TryGetValue("NewTemperatureIsValid", DeviceInfo.TemperatureIsValid) And
-                   .TryGetValue("NewTemperatureCelsius", DeviceInfo.TemperatureCelsius) And
-                   .TryGetValue("NewTemperatureOffset", DeviceInfo.TemperatureOffset) And
-                   .TryGetValue("NewSwitchIsEnabled", DeviceInfo.SwitchIsEnabled) And
-                   .TryGetValue("NewSwitchIsValid", DeviceInfo.SwitchIsValid) And
-                   .TryGetValue("NewSwitchState", DeviceInfo.SwitchState) And
-                   .TryGetValue("NewSwitchMode", DeviceInfo.SwitchMode) And
-                   .TryGetValue("NewSwitchLock", DeviceInfo.SwitchLock) And
-                   .TryGetValue("NewHkrIsEnabled", DeviceInfo.HkrIsEnabled) And
-                   .TryGetValue("NewHkrIsValid", DeviceInfo.HkrIsValid) And
-                   .TryGetValue("NewHkrIsTemperature", DeviceInfo.HkrIsTemperature) And
-                   .TryGetValue("NewHkrSetVentilStatus", DeviceInfo.HkrSetVentilStatus) And
-                   .TryGetValue("NewHkrSetTemperature", DeviceInfo.HkrSetTemperature) And
-                   .TryGetValue("NewHkrReduceVentilStatus", DeviceInfo.HkrReduceVentilStatus) And
-                   .TryGetValue("NewHkrReduceTemperature", DeviceInfo.HkrReduceTemperature) And
-                   .TryGetValue("NewHkrComfortVentilStatus", DeviceInfo.HkrComfortVentilStatus) And
-                   .TryGetValue("NewHkrComfortTemperature", DeviceInfo.HkrComfortTemperature)
+            Return .TryGetValueEx("NewDeviceId", DeviceInfo.DeviceId) And
+                   .TryGetValueEx("NewFunctionBitMask", DeviceInfo.FunctionBitMask) And
+                   .TryGetValueEx("NewFirmwareVersion", DeviceInfo.FirmwareVersion) And
+                   .TryGetValueEx("NewManufacturer", DeviceInfo.Manufacturer) And
+                   .TryGetValueEx("NewProductName", DeviceInfo.ProductName) And
+                   .TryGetValueEx("NewDeviceName", DeviceInfo.DeviceName) And
+                   .TryGetValueEx("NewPresent", DeviceInfo.Present) And
+                   .TryGetValueEx("NewMultimeterIsEnabled", DeviceInfo.MultimeterIsEnabled) And
+                   .TryGetValueEx("NewMultimeterIsValid", DeviceInfo.MultimeterIsValid) And
+                   .TryGetValueEx("NewMultimeterPower", DeviceInfo.MultimeterPower) And
+                   .TryGetValueEx("NewMultimeterEnergy", DeviceInfo.MultimeterEnergy) And
+                   .TryGetValueEx("NewTemperatureIsEnabled", DeviceInfo.TemperatureIsEnabled) And
+                   .TryGetValueEx("NewTemperatureIsValid", DeviceInfo.TemperatureIsValid) And
+                   .TryGetValueEx("NewTemperatureCelsius", DeviceInfo.TemperatureCelsius) And
+                   .TryGetValueEx("NewTemperatureOffset", DeviceInfo.TemperatureOffset) And
+                   .TryGetValueEx("NewSwitchIsEnabled", DeviceInfo.SwitchIsEnabled) And
+                   .TryGetValueEx("NewSwitchIsValid", DeviceInfo.SwitchIsValid) And
+                   .TryGetValueEx("NewSwitchState", DeviceInfo.SwitchState) And
+                   .TryGetValueEx("NewSwitchMode", DeviceInfo.SwitchMode) And
+                   .TryGetValueEx("NewSwitchLock", DeviceInfo.SwitchLock) And
+                   .TryGetValueEx("NewHkrIsEnabled", DeviceInfo.HkrIsEnabled) And
+                   .TryGetValueEx("NewHkrIsValid", DeviceInfo.HkrIsValid) And
+                   .TryGetValueEx("NewHkrIsTemperature", DeviceInfo.HkrIsTemperature) And
+                   .TryGetValueEx("NewHkrSetVentilStatus", DeviceInfo.HkrSetVentilStatus) And
+                   .TryGetValueEx("NewHkrSetTemperature", DeviceInfo.HkrSetTemperature) And
+                   .TryGetValueEx("NewHkrReduceVentilStatus", DeviceInfo.HkrReduceVentilStatus) And
+                   .TryGetValueEx("NewHkrReduceTemperature", DeviceInfo.HkrReduceTemperature) And
+                   .TryGetValueEx("NewHkrComfortVentilStatus", DeviceInfo.HkrComfortVentilStatus) And
+                   .TryGetValueEx("NewHkrComfortTemperature", DeviceInfo.HkrComfortTemperature)
         End With
     End Function
 

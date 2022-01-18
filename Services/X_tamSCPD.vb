@@ -28,14 +28,14 @@ Friend Class X_tamSCPD
 
                 TAMInfo.PhoneNumbers = .Item("NewPhoneNumbers").Split(",")
 
-                Return .TryGetValue("NewEnable", TAMInfo.Enable) And
-                       .TryGetValue("NewName", TAMInfo.Name) And
-                       .TryGetValue("NewTAMRunning", TAMInfo.TAMRunning) And
-                       .TryGetValue("NewStick", TAMInfo.Stick) And
-                       .TryGetValue("NewStatus", TAMInfo.Status) And
-                       .TryGetValue("NewCapacity", TAMInfo.Capacity) And
-                       .TryGetValue("NewMode", TAMInfo.Mode) And
-                       .TryGetValue("NewRingSeconds", TAMInfo.RingSeconds)
+                Return .TryGetValueEx("NewEnable", TAMInfo.Enable) And
+                       .TryGetValueEx("NewName", TAMInfo.Name) And
+                       .TryGetValueEx("NewTAMRunning", TAMInfo.TAMRunning) And
+                       .TryGetValueEx("NewStick", TAMInfo.Stick) And
+                       .TryGetValueEx("NewStatus", TAMInfo.Status) And
+                       .TryGetValueEx("NewCapacity", TAMInfo.Capacity) And
+                       .TryGetValueEx("NewMode", TAMInfo.Mode) And
+                       .TryGetValueEx("NewRingSeconds", TAMInfo.RingSeconds)
             Else
                 Return False
             End If
@@ -51,7 +51,7 @@ Friend Class X_tamSCPD
     Public Function GetMessageList(ByRef GetMessageListURL As String, i As Integer) As Boolean Implements IX_tamSCPD.GetMessageList
         Return TR064Start(ServiceFile, "GetMessageList",
                           New Dictionary(Of String, String) From {{"NewIndex", i}}).
-                          TryGetValue("NewURL", GetMessageListURL)
+                          TryGetValueEx("NewURL", GetMessageListURL)
     End Function
 
     Public Function MarkMessage(Index As Integer, MessageIndex As Integer, MarkedAsRead As Boolean) As Boolean Implements IX_tamSCPD.MarkMessage
@@ -66,18 +66,12 @@ Friend Class X_tamSCPD
     End Function
 
     Public Function GetList(ByRef List As String) As Boolean Implements IX_tamSCPD.GetList
-        Return TR064Start(ServiceFile, "GetList", Nothing).TryGetValue("NewTAMList", List)
+        Return TR064Start(ServiceFile, "GetList", Nothing).TryGetValueEx("NewTAMList", List)
     End Function
 
     Public Function GetList(ByRef List As TAMList) As Boolean Implements IX_tamSCPD.GetList
         Dim XMLList As String = String.Empty
-        If GetList(XMLList) Then
-            XML.Deserialize(XMLList, False, List)
-            Return True
-        Else
-            List = New TAMList
-            Return False
-        End If
+        Return GetList(XMLList) AndAlso XML.Deserialize(XMLList, False, List)
     End Function
 
 End Class

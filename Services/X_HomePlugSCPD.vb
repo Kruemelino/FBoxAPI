@@ -16,7 +16,7 @@ Public Class X_homePlugSCPD
     End Sub
 
     Public Function GetNumberOfDeviceEntries(NumberOfEntries As Integer) As Boolean Implements IX_homeplugSCPD.GetNumberOfDeviceEntries
-        Return TR064Start(ServiceFile, "GetNumberOfDeviceEntries", Nothing).TryGetValue("NewNumberOfEntries", NumberOfEntries)
+        Return TR064Start(ServiceFile, "GetNumberOfDeviceEntries", Nothing).TryGetValueEx("NewNumberOfEntries", NumberOfEntries)
     End Function
 
     Public Function GetNumberOfDeviceEntries(Index As Integer, ByRef Device As HomePlugDevice) As Boolean Implements IX_homeplugSCPD.GetNumberOfDeviceEntries
@@ -26,12 +26,12 @@ Public Class X_homePlugSCPD
 
             Device.Index = Index
 
-            Return .TryGetValue("NewMACAddress", Device.MACAddress) And
-                   .TryGetValue("NewActive", Device.Active) And
-                   .TryGetValue("NewName", Device.Name) And
-                   .TryGetValue("NewModel", Device.Model) And
-                   .TryGetValue("NewUpdateAvailable", Device.UpdateAvailable) And
-                   .TryGetValue("NewUpdateSuccessful", Device.UpdateSuccessful)
+            Return .TryGetValueEx("NewMACAddress", Device.MACAddress) And
+                   .TryGetValueEx("NewActive", Device.Active) And
+                   .TryGetValueEx("NewName", Device.Name) And
+                   .TryGetValueEx("NewModel", Device.Model) And
+                   .TryGetValueEx("NewUpdateAvailable", Device.UpdateAvailable) And
+                   .TryGetValueEx("NewUpdateSuccessful", Device.UpdateSuccessful)
         End With
     End Function
 
@@ -42,11 +42,11 @@ Public Class X_homePlugSCPD
 
             Device.MACAddress = MACAddress
 
-            Return .TryGetValue("NewActive", Device.Active) And
-                   .TryGetValue("NewName", Device.Name) And
-                   .TryGetValue("NewModel", Device.Model) And
-                   .TryGetValue("NewUpdateAvailable", Device.UpdateAvailable) And
-                   .TryGetValue("NewUpdateSuccessful", Device.UpdateSuccessful)
+            Return .TryGetValueEx("NewActive", Device.Active) And
+                   .TryGetValueEx("NewName", Device.Name) And
+                   .TryGetValueEx("NewModel", Device.Model) And
+                   .TryGetValueEx("NewUpdateAvailable", Device.UpdateAvailable) And
+                   .TryGetValueEx("NewUpdateSuccessful", Device.UpdateSuccessful)
         End With
     End Function
 

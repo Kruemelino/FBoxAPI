@@ -21,14 +21,14 @@ Friend Class X_SpeedtestSCPD
 
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
-            Return .TryGetValue("NewEnableTcp", Info.EnableTcp) And
-                   .TryGetValue("NewEnableUdp", Info.EnableUdp) And
-                   .TryGetValue("NewEnableUdpBidirect", Info.EnableUdpBidirect) And
-                   .TryGetValue("NewWANEnableTcp", Info.WANEnableTcp) And
-                   .TryGetValue("NewWANEnableUdp", Info.WANEnableUdp) And
-                   .TryGetValue("NewPortTcp", Info.PortTcp) And
-                   .TryGetValue("NewPortUdp", Info.PortUdp) And
-                   .TryGetValue("NewPortUdpBidirect", Info.PortUdpBidirect)
+            Return .TryGetValueEx("NewEnableTcp", Info.EnableTcp) And
+                   .TryGetValueEx("NewEnableUdp", Info.EnableUdp) And
+                   .TryGetValueEx("NewEnableUdpBidirect", Info.EnableUdpBidirect) And
+                   .TryGetValueEx("NewWANEnableTcp", Info.WANEnableTcp) And
+                   .TryGetValueEx("NewWANEnableUdp", Info.WANEnableUdp) And
+                   .TryGetValueEx("NewPortTcp", Info.PortTcp) And
+                   .TryGetValueEx("NewPortUdp", Info.PortUdp) And
+                   .TryGetValueEx("NewPortUdpBidirect", Info.PortUdpBidirect)
 
         End With
     End Function

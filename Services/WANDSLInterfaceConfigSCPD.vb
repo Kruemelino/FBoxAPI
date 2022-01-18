@@ -13,66 +13,97 @@ Public Class WANDSLInterfaceConfigSCPD
         TR064Start = Start
     End Sub
 
-    Public Function GetInfo(ByRef Info As DSLLinkInfo) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetInfo
-        If Info Is Nothing Then Info = New DSLLinkInfo
+    Public Function GetInfo(ByRef Info As DSLLinkConfigInfo) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetInfo
+        If Info Is Nothing Then Info = New DSLLinkConfigInfo
 
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
-            Return .TryGetValue("NewEnable", Info.Enable) And
-                   .TryGetValue("NewLinkStatus", Info.LinkStatus) And
-                   .TryGetValue("NewLinkType", Info.LinkType) And
-                   .TryGetValue("NewDestinationAddress", Info.DestinationAddress) And
-                   .TryGetValue("NewATMEncapsulation", Info.ATMEncapsulation) And
-                   .TryGetValue("NewAutoConfig", Info.AutoConfig) And
-                   .TryGetValue("NewATMQoS", Info.ATMQoS) And
-                   .TryGetValue("NewATMPeakCellRate", Info.ATMPeakCellRate) And
-                   .TryGetValue("NewATMSustainableCellRate", Info.ATMSustainableCellRate)
+            Return .TryGetValueEx("NewEnable", Info.Enable) And
+                   .TryGetValueEx("NewStatus", Info.Status) And
+                   .TryGetValueEx("NewDataPath", Info.DataPath) And
+                   .TryGetValueEx("NewUpstreamCurrRate", Info.UpstreamCurrRate) And
+                   .TryGetValueEx("NewDownstreamCurrRate", Info.DownstreamCurrRate) And
+                   .TryGetValueEx("NewUpstreamMaxRate", Info.UpstreamMaxRate) And
+                   .TryGetValueEx("NewDownstreamMaxRate", Info.DownstreamMaxRate) And
+                   .TryGetValueEx("NewUpstreamNoiseMargin", Info.UpstreamNoiseMargin) And
+                   .TryGetValueEx("NewDownstreamNoiseMargin", Info.DownstreamNoiseMargin) And
+                   .TryGetValueEx("NewUpstreamAttenuation", Info.UpstreamAttenuation) And
+                   .TryGetValueEx("NewDownstreamAttenuation", Info.DownstreamAttenuation) And
+                   .TryGetValueEx("NewATURVendor", Info.ATURVendor) And
+                   .TryGetValueEx("NewATURCountry", Info.ATURCountry) And
+                   .TryGetValueEx("NewUpstreamPower", Info.UpstreamPower) And
+                   .TryGetValueEx("NewDownstreamPower", Info.DownstreamPower)
         End With
     End Function
 
-    Public Function SetEnable(Enable As Boolean) As Boolean Implements IWANDSLInterfaceConfigSCPD.SetEnable
-        Return Not TR064Start(ServiceFile, "SetEnable", New Dictionary(Of String, String) From {{"NewEnable", Enable.ToBoolStr}}).ContainsKey("Error")
-    End Function
+    Public Function GetStatisticsTotal(ByRef StatisticsTotal As DSLLinkStatTotal) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetStatisticsTotal
+        If StatisticsTotal Is Nothing Then StatisticsTotal = New DSLLinkStatTotal
 
-    Public Function SetDSLLinkType(LinkType As LinkTypeEnum) As Boolean Implements IWANDSLInterfaceConfigSCPD.SetDSLLinkType
-        Return Not TR064Start(ServiceFile, "SetDSLLinkType", New Dictionary(Of String, String) From {{"NewLinkType", LinkType}}).ContainsKey("Error")
-    End Function
+        With TR064Start(ServiceFile, "GetInfo", Nothing)
 
-    Public Function GetDSLLinkInfo(ByRef LinkType As LinkTypeEnum, ByRef LinkStatus As LinkStatusEnum) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetDSLLinkInfo
-        With TR064Start(ServiceFile, "GetDSLLinkInfo", Nothing)
-
-            Return .TryGetValue("NewLinkType", LinkType) And
-                   .TryGetValue("NewLinkStatus", LinkStatus)
+            Return .TryGetValueEx("NewReceiveBlocks", StatisticsTotal.ReceiveBlocks) And
+                   .TryGetValueEx("NewTransmitBlocks", StatisticsTotal.TransmitBlocks) And
+                   .TryGetValueEx("NewCellDelin", StatisticsTotal.CellDelin) And
+                   .TryGetValueEx("NewLinkRetrain", StatisticsTotal.LinkRetrain) And
+                   .TryGetValueEx("NewInitErrors", StatisticsTotal.InitErrors) And
+                   .TryGetValueEx("NewInitTimeouts", StatisticsTotal.InitTimeouts) And
+                   .TryGetValueEx("NewLossOfFraming", StatisticsTotal.LossOfFraming) And
+                   .TryGetValueEx("NewErroredSecs", StatisticsTotal.ErroredSecs) And
+                   .TryGetValueEx("NewSeverelyErroredSecs", StatisticsTotal.SeverelyErroredSecs) And
+                   .TryGetValueEx("NewFECErrors", StatisticsTotal.FECErrors) And
+                   .TryGetValueEx("NewATUCFECErrors", StatisticsTotal.ATUCFECErrors) And
+                   .TryGetValueEx("NewHECErrors", StatisticsTotal.HECErrors) And
+                   .TryGetValueEx("NewATUCHECErrors", StatisticsTotal.ATUCHECErrors) And
+                   .TryGetValueEx("NewATUCCRCErrors", StatisticsTotal.ATUCCRCErrors) And
+                   .TryGetValueEx("NewCRCErrors", StatisticsTotal.CRCErrors)
         End With
     End Function
 
-    Public Function SetDestinationAddress(DestinationAddress As String) As Boolean Implements IWANDSLInterfaceConfigSCPD.SetDestinationAddress
-        Return Not TR064Start(ServiceFile, "SetDestinationAddress", New Dictionary(Of String, String) From {{"NewDestinationAddress", DestinationAddress}}).ContainsKey("Error")
+    Public Function GetDSLDiagnoseInfo(ByRef Info As DSLDiagnoseInfo) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetDSLDiagnoseInfo
+        If Info Is Nothing Then Info = New DSLDiagnoseInfo
+
+        With TR064Start(ServiceFile, "GetInfo", Nothing)
+
+            Return .TryGetValueEx("NewX_AVM-DE_DSLDigagnoseState", Info.DSLDigagnoseState) And
+                   .TryGetValueEx("NewX_AVM-DE_CableNokDistance", Info.CableNokDistance) And
+                   .TryGetValueEx("NewX_AVM-DE_DSLLastDiagnoseTime", Info.DSLLastDiagnoseTime) And
+                   .TryGetValueEx("NewX_AVM-DE_DSLSignalLossTime", Info.DSLSignalLossTime) And
+                   .TryGetValueEx("NewX_AVM-DE_DSLActive", Info.DSLActive) And
+                   .TryGetValueEx("NewX_AVM-DE_DSLSync", Info.DSLSync)
+        End With
     End Function
 
-    Public Function GetDestinationAddress(ByRef DestinationAddress As String) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetDestinationAddress
-        Return TR064Start(ServiceFile, "GetDestinationAddress", Nothing).TryGetValue("NewDestinationAddress", DestinationAddress)
-    End Function
+    Public Function GetDSLInfo(ByRef Info As DSLInfo) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetDSLInfo
+        If Info Is Nothing Then Info = New DSLInfo
 
-    Public Function SetATMEncapsulation(ATMEncapsulation As String) As Boolean Implements IWANDSLInterfaceConfigSCPD.SetATMEncapsulation
-        Return Not TR064Start(ServiceFile, "SetATMEncapsulation", New Dictionary(Of String, String) From {{"NewATMEncapsulation", ATMEncapsulation}}).ContainsKey("Error")
-    End Function
+        With TR064Start(ServiceFile, "GetInfo", Nothing)
 
-    Public Function GetATMEncapsulation(ByRef ATMEncapsulation As String) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetATMEncapsulation
-        Return TR064Start(ServiceFile, "GetATMEncapsulation", Nothing).TryGetValue("NewATMEncapsulation", ATMEncapsulation)
-    End Function
+            Return .TryGetValueEx("NewSNRGds", Info.SNRGds) And
+                   .TryGetValueEx("NewSNRGus", Info.SNRGus) And
+                   .TryGetValueEx("NewSNRpsds", Info.SNRpsds) And
+                   .TryGetValueEx("NewSNRpsus", Info.SNRpsus) And
+                   .TryGetValueEx("NewSNRMTds", Info.SNRMTds) And
+                   .TryGetValueEx("NewSNRMTus", Info.SNRMTus) And
+                   .TryGetValueEx("NewLATNds", Info.LATNds) And
+                   .TryGetValueEx("NewLATNus", Info.LATNus) And
+                   .TryGetValueEx("NewFECErrors", Info.FECErrors) And
+                   .TryGetValueEx("NewCRCErrors", Info.CRCErrors) And
+                   .TryGetValueEx("NewLinkStatus", Info.LinkStatus) And
+                   .TryGetValueEx("NewModulationType", Info.ModulationType) And
+                   .TryGetValueEx("NewCurrentProfile", Info.CurrentProfile) And
+                   .TryGetValueEx("NewUpstreamCurrRate", Info.UpstreamCurrRate) And
+                   .TryGetValueEx("NewDownstreamCurrRate", Info.DownstreamCurrRate) And
+                   .TryGetValueEx("NewUpstreamMaxRate", Info.UpstreamMaxRate) And
+                   .TryGetValueEx("NewDownstreamMaxRate", Info.DownstreamMaxRate) And
+                   .TryGetValueEx("NewUpstreamNoiseMargin", Info.UpstreamNoiseMargin) And
+                   .TryGetValueEx("NewDownstreamNoiseMargin", Info.DownstreamNoiseMargin) And
+                   .TryGetValueEx("NewUpstreamAttenuation", Info.UpstreamAttenuation) And
+                   .TryGetValueEx("NewDownstreamAttenuation", Info.DownstreamAttenuation) And
+                   .TryGetValueEx("NewATURVendor", Info.ATURVendor) And
+                   .TryGetValueEx("NewATURCountry", Info.ATURCountry) And
+                   .TryGetValueEx("NewUpstreamPower", Info.UpstreamPower) And
+                   .TryGetValueEx("NewDownstreamPower", Info.DownstreamPower)
 
-    Public Function GetAutoConfig(ByRef AutoConfig As Boolean) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetAutoConfig
-        Return TR064Start(ServiceFile, "GetAutoConfig", Nothing).TryGetValue("NewAutoConfig", AutoConfig)
-    End Function
-
-    Public Function GetStatistics(ByRef ATMTransmittedBlocks As Integer, ByRef ATMReceivedBlocks As Integer, ByRef AAL5CRCErrors As Integer, ByRef ATMCRCErrors As Integer) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetStatistics
-        With TR064Start(ServiceFile, "GetDSLLinkInfo", Nothing)
-
-            Return .TryGetValue("NewATMTransmittedBlocks", ATMTransmittedBlocks) And
-                   .TryGetValue("NewATMReceivedBlocks", ATMReceivedBlocks) And
-                   .TryGetValue("NewAAL5CRCErrors", AAL5CRCErrors) And
-                   .TryGetValue("NewATMCRCErrors", ATMCRCErrors)
         End With
     End Function
 End Class

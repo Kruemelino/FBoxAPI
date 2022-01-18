@@ -18,7 +18,7 @@ Friend Class HostsSCPD
     End Sub
 
     Public Function GetHostNumberOfEntries(ByRef HostNumberOfEntries As Integer) As Boolean Implements IHostsSCPD.GetHostNumberOfEntries
-        Return TR064Start(ServiceFile, "GetHostNumberOfEntries", Nothing).TryGetValue("NewHostNumberOfEntries", HostNumberOfEntries)
+        Return TR064Start(ServiceFile, "GetHostNumberOfEntries", Nothing).TryGetValueEx("NewHostNumberOfEntries", HostNumberOfEntries)
     End Function
 
     Public Function GetSpecificHostEntry(MACAddress As String, ByRef Host As HostEntry) As Boolean Implements IHostsSCPD.GetSpecificHostEntry
@@ -28,12 +28,12 @@ Friend Class HostsSCPD
 
             Host.MACAddress = MACAddress
 
-            Return .TryGetValue("NewIPAddress", Host.IPAddress) And
-                   .TryGetValue("NewAddressSource", Host.AddressSource) And
-                   .TryGetValue("NewLeaseTimeRemaining", Host.LeaseTimeRemaining) And
-                   .TryGetValue("NewInterfaceType", Host.InterfaceType) And
-                   .TryGetValue("NewActive", Host.Active) And
-                   .TryGetValue("NewHostName", Host.HostName)
+            Return .TryGetValueEx("NewIPAddress", Host.IPAddress) And
+                   .TryGetValueEx("NewAddressSource", Host.AddressSource) And
+                   .TryGetValueEx("NewLeaseTimeRemaining", Host.LeaseTimeRemaining) And
+                   .TryGetValueEx("NewInterfaceType", Host.InterfaceType) And
+                   .TryGetValueEx("NewActive", Host.Active) And
+                   .TryGetValueEx("NewHostName", Host.HostName)
 
         End With
     End Function
@@ -45,25 +45,25 @@ Friend Class HostsSCPD
 
             Host.Index = Index
 
-            Return .TryGetValue("NewMACAddress", Host.MACAddress) And
-                   .TryGetValue("NewIPAddress", Host.IPAddress) And
-                   .TryGetValue("NewAddressSource", Host.AddressSource) And
-                   .TryGetValue("NewLeaseTimeRemaining", Host.LeaseTimeRemaining) And
-                   .TryGetValue("NewInterfaceType", Host.InterfaceType) And
-                   .TryGetValue("NewActive", Host.Active) And
-                   .TryGetValue("NewHostName", Host.HostName)
+            Return .TryGetValueEx("NewMACAddress", Host.MACAddress) And
+                   .TryGetValueEx("NewIPAddress", Host.IPAddress) And
+                   .TryGetValueEx("NewAddressSource", Host.AddressSource) And
+                   .TryGetValueEx("NewLeaseTimeRemaining", Host.LeaseTimeRemaining) And
+                   .TryGetValueEx("NewInterfaceType", Host.InterfaceType) And
+                   .TryGetValueEx("NewActive", Host.Active) And
+                   .TryGetValueEx("NewHostName", Host.HostName)
 
         End With
     End Function
 
     Public Function GetChangeCounter(ByRef ChangeCounter As Integer) As Boolean Implements IHostsSCPD.GetChangeCounter
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetChangeCounter", Nothing).TryGetValue("NewX_AVM-DE_ChangeCounter", ChangeCounter)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetChangeCounter", Nothing).TryGetValueEx("NewX_AVM-DE_ChangeCounter", ChangeCounter)
     End Function
 
     Public Function GetAutoWakeOnLANByMACAddress(MACAddress As String, ByRef AutoWOLEnabled As Boolean) As Boolean Implements IHostsSCPD.GetAutoWakeOnLANByMACAddress
         Return TR064Start(ServiceFile, "X_AVM-DE_GetAutoWakeOnLANByMACAddress",
                           New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}}).
-                          TryGetValue("NewAutoWOLEnabled", AutoWOLEnabled)
+                          TryGetValueEx("NewAutoWOLEnabled", AutoWOLEnabled)
 
 
     End Function
@@ -90,17 +90,17 @@ Friend Class HostsSCPD
 
             Host.IPAddress = IPAddress
 
-            Return .TryGetValue("NewMACAddress", Host.MACAddress) And
-                   .TryGetValue("NewActive", Host.Active) And
-                   .TryGetValue("NewHostName", Host.HostName) And
-                   .TryGetValue("NewInterfaceType", Host.InterfaceType) And
-                   .TryGetValue("NewX_AVM-DE_Port", Host.Port) And
-                   .TryGetValue("NewX_AVM-DE_Speed", Host.Speed) And
-                   .TryGetValue("NewX_AVM-DE_UpdateAvailable", Host.UpdateAvailable) And
-                   .TryGetValue("NewX_AVM-DE_UpdateSuccessful", Host.UpdateSuccessful) And
-                   .TryGetValue("NewX_AVM-DE_InfoURL", Host.InfoURL) And
-                   .TryGetValue("NewX_AVM-DE_Model", Host.Model) And
-                   .TryGetValue("NewX_AVM-DE_URL", Host.URL)
+            Return .TryGetValueEx("NewMACAddress", Host.MACAddress) And
+                   .TryGetValueEx("NewActive", Host.Active) And
+                   .TryGetValueEx("NewHostName", Host.HostName) And
+                   .TryGetValueEx("NewInterfaceType", Host.InterfaceType) And
+                   .TryGetValueEx("NewX_AVM-DE_Port", Host.Port) And
+                   .TryGetValueEx("NewX_AVM-DE_Speed", Host.Speed) And
+                   .TryGetValueEx("NewX_AVM-DE_UpdateAvailable", Host.UpdateAvailable) And
+                   .TryGetValueEx("NewX_AVM-DE_UpdateSuccessful", Host.UpdateSuccessful) And
+                   .TryGetValueEx("NewX_AVM-DE_InfoURL", Host.InfoURL) And
+                   .TryGetValueEx("NewX_AVM-DE_Model", Host.Model) And
+                   .TryGetValueEx("NewX_AVM-DE_URL", Host.URL)
 
         End With
     End Function
@@ -114,27 +114,15 @@ Friend Class HostsSCPD
     End Function
 
     Public Function GetHostListPath(ByRef HostListPath As String) As Boolean Implements IHostsSCPD.GetHostListPath
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetHostListPath", Nothing).TryGetValue("NewX_AVM-DE_HostListPath", HostListPath)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetHostListPath", Nothing).TryGetValueEx("NewX_AVM-DE_HostListPath", HostListPath)
     End Function
 
     Public Function GetHostList(ByRef Hosts As HostList) As Boolean Implements IHostsSCPD.GetHostList
-        With TR064Start(ServiceFile, "X_AVM-DE_GetHostListPath", Nothing)
-            If .ContainsKey("NewX_AVM-DE_HostListPath") Then
-
-                XML.Deserialize(.Item("NewX_AVM-DE_HostListPath"), False, Hosts)
-
-                ' Wenn keine Hosts angeschlossen wurden, gib eine leere Klasse zurück
-                If Hosts Is Nothing Then Hosts = New HostList
-
-                Return True
-
-            Else
-                Return False
-            End If
-        End With
+        Dim LostList As String = String.Empty
+        Return GetHostListPath(LostList) AndAlso XML.Deserialize(LostList, False, Hosts)
     End Function
 
     Public Function GetMeshListPath(ByRef MeshListPath As String) As Boolean Implements IHostsSCPD.GetMeshListPath
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetMeshListPath", Nothing).TryGetValue("NewX_AVM-DE_MeshListPath", MeshListPath)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetMeshListPath", Nothing).TryGetValueEx("NewX_AVM-DE_MeshListPath", MeshListPath)
     End Function
 End Class

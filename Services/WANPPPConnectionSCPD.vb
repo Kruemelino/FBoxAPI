@@ -23,43 +23,43 @@ Friend Class WANPPPConnectionSCPD
 
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
-            Return .TryGetValue("NewEnable", Info.Enable) And
-                   .TryGetValue("NewConnectionStatus", Info.ConnectionStatus) And
-                   .TryGetValue("NewPossibleConnectionTypes", Info.PossibleConnectionTypes) And
-                   .TryGetValue("NewConnectionType", Info.ConnectionType) And
-                   .TryGetValue("NewName", Info.Name) And
-                   .TryGetValue("NewUptime", Info.Uptime) And
-                   .TryGetValue("NewUpstreamMaxBitRate", Info.UpstreamMaxBitRate) And
-                   .TryGetValue("NewDownstreamMaxBitRate", Info.DownstreamMaxBitRate) And
-                   .TryGetValue("NewLastConnectionError", Info.LastConnectionError) And
-                   .TryGetValue("NewRSIPAvailable", Info.RSIPAvailable) And
-                   .TryGetValue("NewUserName", Info.UserName) And
-                   .TryGetValue("NewNATEnabled", Info.NATEnabled) And
-                   .TryGetValue("NewExternalIPAddress", Info.ExternalIPAddress) And
-                   .TryGetValue("NewDNSServers", Info.DNSServers) And
-                   .TryGetValue("NewMACAddress", Info.MACAddress) And
-                   .TryGetValue("NewConnectionTrigger", Info.ConnectionTrigger) And
-                   .TryGetValue("NewLastAuthErrorInfo", Info.LastAuthErrorInfo) And
-                   .TryGetValue("NewMaxCharsUsername", Info.MaxCharsUsername) And
-                   .TryGetValue("NewMinCharsUsername", Info.MinCharsUsername) And
-                   .TryGetValue("NewAllowedCharsUsername", Info.AllowedCharsUsername) And
-                   .TryGetValue("NewMaxCharsPassword", Info.MaxCharsPassword) And
-                   .TryGetValue("NewMinCharsPassword", Info.MinCharsPassword) And
-                   .TryGetValue("NewAllowedCharsPassword", Info.AllowedCharsPassword) And
-                   .TryGetValue("NewTransportType", Info.TransportType) And
-                   .TryGetValue("NewRouteProtocolRx", Info.RouteProtocolRx) And
-                   .TryGetValue("NewPPPoEServiceName", Info.PPPoEServiceName) And
-                   .TryGetValue("NewRemoteIPAddress", Info.RemoteIPAddress) And
-                   .TryGetValue("NewPPPoEACName", Info.PPPoEACName) And
-                   .TryGetValue("NewDNSEnabled", Info.DNSEnabled) And
-                   .TryGetValue("NewDNSOverrideAllowed", Info.DNSOverrideAllowed)
+            Return .TryGetValueEx("NewEnable", Info.Enable) And
+                   .TryGetValueEx("NewConnectionStatus", Info.ConnectionStatus) And
+                   .TryGetValueEx("NewPossibleConnectionTypes", Info.PossibleConnectionTypes) And
+                   .TryGetValueEx("NewConnectionType", Info.ConnectionType) And
+                   .TryGetValueEx("NewName", Info.Name) And
+                   .TryGetValueEx("NewUptime", Info.Uptime) And
+                   .TryGetValueEx("NewUpstreamMaxBitRate", Info.UpstreamMaxBitRate) And
+                   .TryGetValueEx("NewDownstreamMaxBitRate", Info.DownstreamMaxBitRate) And
+                   .TryGetValueEx("NewLastConnectionError", Info.LastConnectionError) And
+                   .TryGetValueEx("NewRSIPAvailable", Info.RSIPAvailable) And
+                   .TryGetValueEx("NewUserName", Info.UserName) And
+                   .TryGetValueEx("NewNATEnabled", Info.NATEnabled) And
+                   .TryGetValueEx("NewExternalIPAddress", Info.ExternalIPAddress) And
+                   .TryGetValueEx("NewDNSServers", Info.DNSServers) And
+                   .TryGetValueEx("NewMACAddress", Info.MACAddress) And
+                   .TryGetValueEx("NewConnectionTrigger", Info.ConnectionTrigger) And
+                   .TryGetValueEx("NewLastAuthErrorInfo", Info.LastAuthErrorInfo) And
+                   .TryGetValueEx("NewMaxCharsUsername", Info.MaxCharsUsername) And
+                   .TryGetValueEx("NewMinCharsUsername", Info.MinCharsUsername) And
+                   .TryGetValueEx("NewAllowedCharsUsername", Info.AllowedCharsUsername) And
+                   .TryGetValueEx("NewMaxCharsPassword", Info.MaxCharsPassword) And
+                   .TryGetValueEx("NewMinCharsPassword", Info.MinCharsPassword) And
+                   .TryGetValueEx("NewAllowedCharsPassword", Info.AllowedCharsPassword) And
+                   .TryGetValueEx("NewTransportType", Info.TransportType) And
+                   .TryGetValueEx("NewRouteProtocolRx", Info.RouteProtocolRx) And
+                   .TryGetValueEx("NewPPPoEServiceName", Info.PPPoEServiceName) And
+                   .TryGetValueEx("NewRemoteIPAddress", Info.RemoteIPAddress) And
+                   .TryGetValueEx("NewPPPoEACName", Info.PPPoEACName) And
+                   .TryGetValueEx("NewDNSEnabled", Info.DNSEnabled) And
+                   .TryGetValueEx("NewDNSOverrideAllowed", Info.DNSOverrideAllowed)
         End With
     End Function
     Public Function GetConnectionTypeInfo(ByRef ConnectionType As ConnectionTypeEnum, ByRef PossibleConnectionTypes As ConnectionTypeEnum) As Boolean Implements IWANPPPConnectionSCPD.GetConnectionTypeInfo
         With TR064Start(ServiceFile, "GetConnectionTypeInfo", Nothing)
 
-            Return .TryGetValue("NewConnectionType", ConnectionType) And
-                   .TryGetValue("NewPossibleConnectionTypes", PossibleConnectionTypes)
+            Return .TryGetValueEx("NewConnectionType", ConnectionType) And
+                   .TryGetValueEx("NewPossibleConnectionTypes", PossibleConnectionTypes)
         End With
     End Function
 
@@ -70,22 +70,22 @@ Friend Class WANPPPConnectionSCPD
     Public Function GetStatusInfo(ByRef ConnectionStatus As ConnectionStatusEnum, ByRef LastConnectionError As LastConnectionErrorEnum, ByRef NewUptime As Integer) As Boolean Implements IWANPPPConnectionSCPD.GetStatusInfo
         With TR064Start(ServiceFile, "GetStatusInfo", Nothing)
 
-            Return .TryGetValue("NewConnectionStatus", ConnectionStatus) And
-                   .TryGetValue("NewLastConnectionError", LastConnectionError) And
-                   .TryGetValue("NewUptime", NewUptime)
+            Return .TryGetValueEx("NewConnectionStatus", ConnectionStatus) And
+                   .TryGetValueEx("NewLastConnectionError", LastConnectionError) And
+                   .TryGetValueEx("NewUptime", NewUptime)
         End With
     End Function
 
     Public Function GetLinkLayerMaxBitRates(ByRef UpstreamMaxBitRate As Integer, ByRef DownstreamMaxBitRate As Integer) As Boolean Implements IWANPPPConnectionSCPD.GetLinkLayerMaxBitRates
         With TR064Start(ServiceFile, "GetLinkLayerMaxBitRates", Nothing)
 
-            Return .TryGetValue("NewUpstreamMaxBitRate", UpstreamMaxBitRate) And
-                   .TryGetValue("NewDownstreamMaxBitRate", DownstreamMaxBitRate)
+            Return .TryGetValueEx("NewUpstreamMaxBitRate", UpstreamMaxBitRate) And
+                   .TryGetValueEx("NewDownstreamMaxBitRate", DownstreamMaxBitRate)
         End With
     End Function
 
     Public Function GetUserName(ByRef UserName As String) As Boolean Implements IWANPPPConnectionSCPD.GetUserName
-        Return TR064Start(ServiceFile, "GetUserName", Nothing).TryGetValue("NewUserName", UserName)
+        Return TR064Start(ServiceFile, "GetUserName", Nothing).TryGetValueEx("NewUserName", UserName)
     End Function
 
     Public Function SetUserName(UserName As String) As Boolean Implements IWANPPPConnectionSCPD.SetUserName
@@ -99,8 +99,8 @@ Friend Class WANPPPConnectionSCPD
     Public Function GetNATRSIPStatus(ByRef RSIPAvailable As Boolean, ByRef NATEnabled As Boolean) As Boolean Implements IWANPPPConnectionSCPD.GetNATRSIPStatus
         With TR064Start(ServiceFile, "GetNATRSIPStatus", Nothing)
 
-            Return .TryGetValue("NewRSIPAvailable", RSIPAvailable) And
-                   .TryGetValue("NewNATEnabled", NATEnabled)
+            Return .TryGetValueEx("NewRSIPAvailable", RSIPAvailable) And
+                   .TryGetValueEx("NewNATEnabled", NATEnabled)
         End With
     End Function
 
@@ -117,11 +117,11 @@ Friend Class WANPPPConnectionSCPD
     End Function
 
     Public Function X_GetDNSServers(ByRef DNSServers As String) As Boolean Implements IWANPPPConnectionSCPD.X_GetDNSServers
-        Return TR064Start(ServiceFile, "X_GetDNSServers", Nothing).TryGetValue("NewDNSServers", DNSServers)
+        Return TR064Start(ServiceFile, "X_GetDNSServers", Nothing).TryGetValueEx("NewDNSServers", DNSServers)
     End Function
 
     Public Function GetPortMappingNumberOfEntries(ByRef PortMappingNumberOfEntries As Integer) As Boolean Implements IWANPPPConnectionSCPD.GetPortMappingNumberOfEntries
-        Return TR064Start(ServiceFile, "GetPortMappingNumberOfEntries", Nothing).TryGetValue("NewPortMappingNumberOfEntries", PortMappingNumberOfEntries)
+        Return TR064Start(ServiceFile, "GetPortMappingNumberOfEntries", Nothing).TryGetValueEx("NewPortMappingNumberOfEntries", PortMappingNumberOfEntries)
     End Function
 
     Public Function GetGenericPortMappingEntry(PortMappingIndex As Integer, ByRef GenericPortMappingEntry As PortMappingEntry) As Boolean Implements IWANPPPConnectionSCPD.GetGenericPortMappingEntry
@@ -129,14 +129,14 @@ Friend Class WANPPPConnectionSCPD
 
         With TR064Start(ServiceFile, "GetGenericPortMappingEntry", New Dictionary(Of String, String) From {{"NewPortMappingIndex", PortMappingIndex}})
 
-            Return .TryGetValue("NewRemoteHost", GenericPortMappingEntry.RemoteHost) And
-                   .TryGetValue("NewExternalPort", GenericPortMappingEntry.ExternalPort) And
-                   .TryGetValue("NewProtocol", GenericPortMappingEntry.PortMappingProtocol) And
-                   .TryGetValue("NewInternalPort", GenericPortMappingEntry.InternalPort) And
-                   .TryGetValue("NewInternalClient", GenericPortMappingEntry.InternalClient) And
-                   .TryGetValue("NewEnabled", GenericPortMappingEntry.PortMappingEnabled) And
-                   .TryGetValue("NewPortMappingDescription", GenericPortMappingEntry.PortMappingDescription) And
-                   .TryGetValue("NewLeaseDuration", GenericPortMappingEntry.PortMappingLeaseDuration)
+            Return .TryGetValueEx("NewRemoteHost", GenericPortMappingEntry.RemoteHost) And
+                   .TryGetValueEx("NewExternalPort", GenericPortMappingEntry.ExternalPort) And
+                   .TryGetValueEx("NewProtocol", GenericPortMappingEntry.PortMappingProtocol) And
+                   .TryGetValueEx("NewInternalPort", GenericPortMappingEntry.InternalPort) And
+                   .TryGetValueEx("NewInternalClient", GenericPortMappingEntry.InternalClient) And
+                   .TryGetValueEx("NewEnabled", GenericPortMappingEntry.PortMappingEnabled) And
+                   .TryGetValueEx("NewPortMappingDescription", GenericPortMappingEntry.PortMappingDescription) And
+                   .TryGetValueEx("NewLeaseDuration", GenericPortMappingEntry.PortMappingLeaseDuration)
         End With
     End Function
 
@@ -152,11 +152,11 @@ Friend Class WANPPPConnectionSCPD
             GenericPortMappingEntry.ExternalPort = ExternalPort
             GenericPortMappingEntry.PortMappingProtocol = PortMappingProtocol
 
-            Return .TryGetValue("NewInternalPort", GenericPortMappingEntry.InternalPort) And
-                   .TryGetValue("NewInternalClient", GenericPortMappingEntry.InternalClient) And
-                   .TryGetValue("NewEnabled", GenericPortMappingEntry.PortMappingEnabled) And
-                   .TryGetValue("NewPortMappingDescription", GenericPortMappingEntry.PortMappingDescription) And
-                   .TryGetValue("NewLeaseDuration", GenericPortMappingEntry.PortMappingLeaseDuration)
+            Return .TryGetValueEx("NewInternalPort", GenericPortMappingEntry.InternalPort) And
+                   .TryGetValueEx("NewInternalClient", GenericPortMappingEntry.InternalClient) And
+                   .TryGetValueEx("NewEnabled", GenericPortMappingEntry.PortMappingEnabled) And
+                   .TryGetValueEx("NewPortMappingDescription", GenericPortMappingEntry.PortMappingDescription) And
+                   .TryGetValueEx("NewLeaseDuration", GenericPortMappingEntry.PortMappingLeaseDuration)
         End With
     End Function
 
@@ -187,7 +187,7 @@ Friend Class WANPPPConnectionSCPD
     End Function
 
     Public Function GetExternalIPAddress(ByRef ExternalIPAddress As String) As Boolean Implements IWANPPPConnectionSCPD.GetExternalIPAddress
-        Return TR064Start(ServiceFile, "GetExternalIPAddress", Nothing).TryGetValue("NewExternalIPAddress", ExternalIPAddress)
+        Return TR064Start(ServiceFile, "GetExternalIPAddress", Nothing).TryGetValueEx("NewExternalIPAddress", ExternalIPAddress)
     End Function
 
     Public Function SetRouteProtocolRx(RouteProtocolRx As String) As Boolean Implements IWANPPPConnectionSCPD.SetRouteProtocolRx
@@ -201,8 +201,8 @@ Friend Class WANPPPConnectionSCPD
     Public Function X_AVM_DE_GetAutoDisconnectTimeSpan(ByRef DisconnectPreventionEnable As Boolean, ByRef DisconnectPreventionHour As Integer) As Boolean Implements IWANPPPConnectionSCPD.X_AVM_DE_GetAutoDisconnectTimeSpan
         With TR064Start(ServiceFile, "X_AVM_DE_GetAutoDisconnectTimeSpan ", Nothing)
 
-            Return .TryGetValue("NewX_AVM-DE_DisconnectPreventionEnable", DisconnectPreventionEnable) And
-                   .TryGetValue("NewX_AVM-DE_DisconnectPreventionHour", DisconnectPreventionHour)
+            Return .TryGetValueEx("NewX_AVM-DE_DisconnectPreventionEnable", DisconnectPreventionEnable) And
+                   .TryGetValueEx("NewX_AVM-DE_DisconnectPreventionHour", DisconnectPreventionHour)
         End With
     End Function
 

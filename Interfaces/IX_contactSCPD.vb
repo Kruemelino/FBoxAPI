@@ -216,8 +216,8 @@ Public Interface IX_contactSCPD
     ''' <summary>
     ''' Ermittelt die Liste der DECTHandset. 
     ''' </summary>
-    ''' <param name="DectIDList">Liste der DECT IDs</param>
-    Function GetDECTHandsetList(ByRef DectIDList As Integer()) As Boolean
+    ''' <param name="DectIDList">Comma separated list of DectID</param>
+    Function GetDECTHandsetList(ByRef DectIDList As String()) As Boolean
 
     Function GetDECTHandsetInfo(DectID As Integer, ByRef HandsetName As String, ByRef PhonebookID As String) As Boolean
 

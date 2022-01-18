@@ -6,4 +6,8 @@
     <XmlAttribute("name")> Public Property Name As String
     <XmlElement("timestamp")> Public Property TimeStamp As String
     <XmlElement("contact")> Public Property Contacts As List(Of Contact)
+
+    Public Sub New()
+        Contacts = New List(Of Contact)
+    End Sub
 End Class

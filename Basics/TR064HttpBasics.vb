@@ -76,7 +76,7 @@ Friend Class TR064HttpBasics
                             Return True
 
                         Catch ex As ArgumentNullException
-                            PushStatus?.Invoke(CreateLog(LogLevel.Error, "Der address-Parameter ist null.", ex))
+                            PushStatus?.Invoke(CreateLog(LogLevel.Error, ex))
 
                         Catch ex As WebException
                             ' Der durch Kombinieren von BaseAddress und address gebildete URI ist ungültig.
@@ -85,7 +85,7 @@ Friend Class TR064HttpBasics
                             PushStatus?.Invoke(CreateLog(LogLevel.Error, $"Link: {UniformResourceIdentifier.AbsoluteUri} ", ex))
 
                         Catch ex As NotSupportedException
-                            PushStatus?.Invoke(CreateLog(LogLevel.Error, "Die Methode wurde gleichzeitig für mehrere Threads aufgerufen.", ex))
+                            PushStatus?.Invoke(CreateLog(LogLevel.Error, ex))
 
                         End Try
                     End With

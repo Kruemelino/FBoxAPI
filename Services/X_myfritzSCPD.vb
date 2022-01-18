@@ -19,17 +19,17 @@ Friend Class X_myfritzSCPD
 
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
-            Return .TryGetValue("NewEnable", Enabled) And
-                   .TryGetValue("NewDynDNSName", DynDNSName) And
-                   .TryGetValue("NewPort", Port) And
-                   .TryGetValue("NewDeviceRegistered", DeviceRegistered)
+            Return .TryGetValueEx("NewEnable", Enabled) And
+                   .TryGetValueEx("NewDynDNSName", DynDNSName) And
+                   .TryGetValueEx("NewPort", Port) And
+                   .TryGetValueEx("NewDeviceRegistered", DeviceRegistered)
 
         End With
 
     End Function
 
     Public Function GetNumberOfServices(ByRef NumberOfServices As Integer) As Boolean Implements IX_myfritzSCPD.GetNumberOfServices
-        Return TR064Start(ServiceFile, "GetNumberOfServices", Nothing).TryGetValue("NewNumberOfServices", NumberOfServices)
+        Return TR064Start(ServiceFile, "GetNumberOfServices", Nothing).TryGetValueEx("NewNumberOfServices", NumberOfServices)
     End Function
 
     Public Function GetServiceByIndex(Index As Integer, ByRef Info As MyFritzInfo) As Boolean Implements IX_myfritzSCPD.GetServiceByIndex
@@ -39,20 +39,20 @@ Friend Class X_myfritzSCPD
 
             Info.Index = Index
 
-            Return .TryGetValue("NewEnable", Info.Enabled) And
-                   .TryGetValue("NewName", Info.Name) And
-                   .TryGetValue("NewScheme", Info.Scheme) And
-                   .TryGetValue("NewPort", Info.Port) And
-                   .TryGetValue("NewURLPath", Info.URLPath) And
-                   .TryGetValue("NewType", Info.Type) And
-                   .TryGetValue("NewIPv4ForwardingWarning", Info.IPv4ForwardingWarning) And
-                   .TryGetValue("NewIPv4Addresses", Info.IPv4Addresses) And
-                   .TryGetValue("NewIPv6Addresses", Info.IPv6Addresses) And
-                   .TryGetValue("NewIPv6InterfaceIDs", Info.IPv6InterfaceIDs) And
-                   .TryGetValue("NewMACAddress", Info.MACAddress) And
-                   .TryGetValue("NewHostName", Info.HostName) And
-                   .TryGetValue("NewDynDnsLabel", Info.DynDnsLabel) And
-                   .TryGetValue("NewStatus", Info.Status)
+            Return .TryGetValueEx("NewEnable", Info.Enabled) And
+                   .TryGetValueEx("NewName", Info.Name) And
+                   .TryGetValueEx("NewScheme", Info.Scheme) And
+                   .TryGetValueEx("NewPort", Info.Port) And
+                   .TryGetValueEx("NewURLPath", Info.URLPath) And
+                   .TryGetValueEx("NewType", Info.Type) And
+                   .TryGetValueEx("NewIPv4ForwardingWarning", Info.IPv4ForwardingWarning) And
+                   .TryGetValueEx("NewIPv4Addresses", Info.IPv4Addresses) And
+                   .TryGetValueEx("NewIPv6Addresses", Info.IPv6Addresses) And
+                   .TryGetValueEx("NewIPv6InterfaceIDs", Info.IPv6InterfaceIDs) And
+                   .TryGetValueEx("NewMACAddress", Info.MACAddress) And
+                   .TryGetValueEx("NewHostName", Info.HostName) And
+                   .TryGetValueEx("NewDynDnsLabel", Info.DynDnsLabel) And
+                   .TryGetValueEx("NewStatus", Info.Status)
         End With
     End Function
 

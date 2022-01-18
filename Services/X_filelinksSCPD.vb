@@ -19,7 +19,7 @@ Friend Class X_filelinksSCPD
     End Sub
 
     Public Function GetNumberOfFilelinkEntries(ByRef NumberOfEntries As Integer) As Boolean Implements IX_filelinksSCPD.GetNumberOfFilelinkEntries
-        Return TR064Start(ServiceFile, "GetNumberOfFilelinkEntries", Nothing).TryGetValue("NewNumberOfEntries", NumberOfEntries)
+        Return TR064Start(ServiceFile, "GetNumberOfFilelinkEntries", Nothing).TryGetValueEx("NewNumberOfEntries", NumberOfEntries)
     End Function
 
     Public Function GetGenericFilelinkEntry(Index As Integer, ByRef Entry As FileLinkEntry) As Boolean Implements IX_filelinksSCPD.GetGenericFilelinkEntry
@@ -29,16 +29,16 @@ Friend Class X_filelinksSCPD
 
             Entry.Index = Index
 
-            Return .TryGetValue("NewID", Entry.ID) And
-                   .TryGetValue("NewValid", Entry.Valid) And
-                   .TryGetValue("NewPath", Entry.Path) And
-                   .TryGetValue("NewIsDirectory", Entry.IsDirectory) And
-                   .TryGetValue("NewUrl", Entry.Url) And
-                   .TryGetValue("NewUsername", Entry.Username) And
-                   .TryGetValue("NewAccessCountLimit", Entry.AccessCountLimit) And
-                   .TryGetValue("NewAccessCount", Entry.AccessCount) And
-                   .TryGetValue("NewExpire", Entry.Expire) And
-                   .TryGetValue("NewExpireDate", Entry.ExpireDate)
+            Return .TryGetValueEx("NewID", Entry.ID) And
+                   .TryGetValueEx("NewValid", Entry.Valid) And
+                   .TryGetValueEx("NewPath", Entry.Path) And
+                   .TryGetValueEx("NewIsDirectory", Entry.IsDirectory) And
+                   .TryGetValueEx("NewUrl", Entry.Url) And
+                   .TryGetValueEx("NewUsername", Entry.Username) And
+                   .TryGetValueEx("NewAccessCountLimit", Entry.AccessCountLimit) And
+                   .TryGetValueEx("NewAccessCount", Entry.AccessCount) And
+                   .TryGetValueEx("NewExpire", Entry.Expire) And
+                   .TryGetValueEx("NewExpireDate", Entry.ExpireDate)
 
         End With
     End Function
@@ -50,15 +50,15 @@ Friend Class X_filelinksSCPD
 
             Entry.ID = ID
 
-            Return .TryGetValue("NewValid", Entry.Valid) And
-                   .TryGetValue("NewPath", Entry.Path) And
-                   .TryGetValue("NewIsDirectory", Entry.IsDirectory) And
-                   .TryGetValue("NewUrl", Entry.Url) And
-                   .TryGetValue("NewUsername", Entry.Username) And
-                   .TryGetValue("NewAccessCountLimit", Entry.AccessCountLimit) And
-                   .TryGetValue("NewAccessCount", Entry.AccessCount) And
-                   .TryGetValue("NewExpire", Entry.Expire) And
-                   .TryGetValue("NewExpireDate", Entry.ExpireDate)
+            Return .TryGetValueEx("NewValid", Entry.Valid) And
+                   .TryGetValueEx("NewPath", Entry.Path) And
+                   .TryGetValueEx("NewIsDirectory", Entry.IsDirectory) And
+                   .TryGetValueEx("NewUrl", Entry.Url) And
+                   .TryGetValueEx("NewUsername", Entry.Username) And
+                   .TryGetValueEx("NewAccessCountLimit", Entry.AccessCountLimit) And
+                   .TryGetValueEx("NewAccessCount", Entry.AccessCount) And
+                   .TryGetValueEx("NewExpire", Entry.Expire) And
+                   .TryGetValueEx("NewExpireDate", Entry.ExpireDate)
         End With
     End Function
 
@@ -66,7 +66,7 @@ Friend Class X_filelinksSCPD
         Return TR064Start(ServiceFile, "NewFilelinkEntry",
                           New Dictionary(Of String, String) From {{"NewPath", Path},
                                                                   {"NewAccessCountLimit", AccessCountLimit},
-                                                                  {"NewExpire", Expire}}).TryGetValue("NewID", ID)
+                                                                  {"NewExpire", Expire}}).TryGetValueEx("NewID", ID)
     End Function
 
     Public Function SetFilelinkEntry(ID As String, AccessCountLimit As Integer, Expire As Integer) As Boolean Implements IX_filelinksSCPD.SetFilelinkEntry
@@ -80,26 +80,11 @@ Friend Class X_filelinksSCPD
     End Function
 
     Public Function GetFilelinkListPath(FilelinkListPath As String) As Boolean Implements IX_filelinksSCPD.GetFilelinkListPath
-        Return TR064Start(ServiceFile, "GetFilelinkListPath", Nothing).TryGetValue("NewFilelinkListPath", FilelinkListPath)
+        Return TR064Start(ServiceFile, "GetFilelinkListPath", Nothing).TryGetValueEx("NewFilelinkListPath", FilelinkListPath)
     End Function
 
     Public Function GetFilelinkList(ByRef List As FileLinkList) As Boolean Implements IX_filelinksSCPD.GetFilelinkList
-        With TR064Start(ServiceFile, "GetFilelinkListPath", Nothing)
-
-            If .ContainsKey("GetFilelinkListPath") Then
-
-                XML.Deserialize(.Item("GetFilelinkListPath"), False, List)
-
-                ' Wenn keine Hosts angeschlossen wurden, gib eine leere Klasse zurück
-                If List Is Nothing Then List = New FileLinkList
-
-                Return True
-
-            Else
-                List = Nothing
-
-                Return False
-            End If
-        End With
+        Dim Path As String = String.Empty
+        Return GetFilelinkListPath(Path) AndAlso XML.Deserialize(Path, False, List)
     End Function
 End Class

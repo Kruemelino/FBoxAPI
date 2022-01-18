@@ -12,6 +12,7 @@ Public Class FritzBoxTR64
     Private Property Credential As NetworkCredential
     Private Property FBoxIPAdresse As String
 
+    Private Property Services As List(Of Service)
 #Region "Services"
     Public Property DECT As IDECT_SCPD
     Public Property Deviceconfig As IDeviceconfigSCPD
@@ -26,6 +27,7 @@ Public Class FritzBoxTR64
     Public Property WANIPConnection As IWANIPConnectionSCPD
     Public Property WANPPPConnection As IWANPPPConnectionSCPD
     Public Property Wlanconfig As IWlanconfigSCPD
+    Public Property X_appsetup As IX_appsetupSCPD
     Public Property X_contact As IX_contactSCPD
     Public Property X_filelinks As IX_filelinksSCPD
     Public Property X_HomeAuto As IX_homeautoSCPD
@@ -33,8 +35,12 @@ Public Class FritzBoxTR64
     Public Property X_HostFilter As IX_hostfilterSCPD
     Public Property X_MyFritz As IX_myfritzSCPD
     Public Property X_Speedtest As IX_speedtestSCPD
+    Public Property X_remote As IX_remoteSCPD
+    Public Property X_storage As IX_storageSCPD
     Public Property X_tam As IX_tamSCPD
+    Public Property X_upnp As IX_upnpSCPD
     Public Property X_voip As IX_voipSCPD
+    Public Property X_webdav As IX_webdavSCPD
 
     Public Property UserMode As UserModeSCPD
 #End Region
@@ -112,7 +118,11 @@ Public Class FritzBoxTR64
 
                 ' Deserialisieren
                 If XML.Deserialize(Response, False, FBTR64Desc) Then
-                    PushStatus(CreateLog(LogLevel.Info, "Fritz!Box TR064 API erfolgreich initialisiert."))
+
+                    ' Ermittle alle vorhandenen Services
+                    Services = FBTR64Desc.Device.GetAllServices()
+
+                    PushStatus(CreateLog(LogLevel.Info, $"Fritz!Box TR064 API mit {Services.Count} Services erfolgreich initialisiert."))
 
                     ' Füge das Flag hinzu, dass die TR064-Schnittstelle bereit ist.
                     Return True
@@ -147,15 +157,20 @@ Public Class FritzBoxTR64
         WANIPConnection = New WANIPConnectionSCPD(AddressOf TR064Start)
         WANPPPConnection = New WANPPPConnectionSCPD(AddressOf TR064Start)
         Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, XML)
+        X_appsetup = New X_appsetupSCPD(AddressOf TR064Start)
         X_contact = New X_contactSCPD(AddressOf TR064Start, XML)
         X_filelinks = New X_filelinksSCPD(AddressOf TR064Start, XML)
         X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start)
         X_HomePlug = New X_homePlugSCPD(AddressOf TR064Start)
         X_HostFilter = New X_hostfilterSCPD(AddressOf TR064Start)
         X_MyFritz = New X_myfritzSCPD(AddressOf TR064Start)
+        X_remote = New X_remoteSCPD(AddressOf TR064Start, XML)
         X_Speedtest = New X_SpeedtestSCPD(AddressOf TR064Start)
+        X_storage = New X_storageSCPD(AddressOf TR064Start)
         X_tam = New X_tamSCPD(AddressOf TR064Start, XML)
+        X_upnp = New X_upnpSCPD(AddressOf TR064Start)
         X_voip = New X_voipSCPD(AddressOf TR064Start, XML)
+        X_webdav = New X_webdavSCPD(AddressOf TR064Start)
 
     End Sub
 
@@ -187,9 +202,9 @@ Public Class FritzBoxTR64
 
     Private Function GetService(SCPDURL As SCPDFiles) As Service
 
-        If FBTR64Desc IsNot Nothing AndAlso FBTR64Desc.Device.ServiceList.Any Then
+        If Services IsNot Nothing AndAlso Services.Any Then
             ' Suche den angeforderten Service
-            Dim FBoxService As Service = FBTR64Desc.Device.ServiceList.Find(Function(Service) Service.SCPDURL.AreEqual(SCPDURL.Description))
+            Dim FBoxService As Service = Services.Find(Function(Service) Service.SCPDURL.AreEqual(SCPDURL.Description))
 
             ' Weise die Fritz!Box IP-Adresse zu
             If FBoxService IsNot Nothing Then
@@ -202,12 +217,12 @@ Public Class FritzBoxTR64
                     .PushStatus = AddressOf PushStatus
                 End With
             Else
-                PushStatus(CreateLog(LogLevel.Error, $"Service für {SCPDURL} nicht vorhanden: {FBTR64Desc.Device.ServiceList.Count}!"))
+                PushStatus(CreateLog(LogLevel.Error, $"Service für {SCPDURL} nicht vorhanden."))
             End If
 
             Return FBoxService
         Else
-            PushStatus(CreateLog(LogLevel.Error, $"TR064 zur Fritz!Box ist nicht bereit: {FBoxIPAdresse}"))
+            PushStatus(CreateLog(LogLevel.Error, $"Keine Sercvices geladen."))
             Return Nothing
         End If
 

@@ -50,6 +50,7 @@ Imports System.Xml.Serialization
     ''' </summary>
     Friend Function CheckInput(ActionName As String, InputData As Dictionary(Of String, String)) As Boolean
         CheckInput = False
+
         Dim ActionInputData As Dictionary(Of String, String) = GetActionByName(ActionName).ArgumentList.Where(Function(A) A.Direction = ArgumentDirection.IN).ToDictionary(Function(k) k.Name, Function(v) String.Empty)
         If InputData Is Nothing Then
             Return ActionInputData.Count.IsZero

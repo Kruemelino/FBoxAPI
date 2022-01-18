@@ -28,22 +28,22 @@ Friend Class WlanconfigSCPD
             If .ContainsKey("NewX_AVM-DE_PossibleBeaconTypes") Then
                 Info.PossibleBeaconTypes = .Item("NewX_AVM-DE_PossibleBeaconTypes").Split(",")
 
-                Return .TryGetValue("NewEnable", Info.Enable) And
-                       .TryGetValue("NewStatus", Info.Status) And
-                       .TryGetValue("NewChannel", Info.Channel) And
-                       .TryGetValue("NewSSID", Info.SSID) And
-                       .TryGetValue("NewBeaconType", Info.BeaconType) And
-                       .TryGetValue("NewMACAddressControlEnabled", Info.MACAddressControlEnabled) And
-                       .TryGetValue("NewStandard", Info.Standard) And
-                       .TryGetValue("NewBSSID", Info.BSSID) And
-                       .TryGetValue("NewBasicEncryptionModes", Info.BasicEncryptionModes) And
-                       .TryGetValue("NewBasicAuthenticationMode", Info.BasicAuthenticationMode) And
-                       .TryGetValue("NewMaxCharsSSID", Info.MaxCharsSSID) And
-                       .TryGetValue("NewMinCharsSSID", Info.MinCharsSSID) And
-                       .TryGetValue("NewAllowedCharsSSID", Info.AllowedCharsSSID) And
-                       .TryGetValue("NewMinCharsPSK", Info.MinCharsPSK) And
-                       .TryGetValue("NewMaxCharsPSK", Info.MaxCharsPSK) And
-                       .TryGetValue("NewAllowedCharsPSK", Info.AllowedCharsPSK)
+                Return .TryGetValueEx("NewEnable", Info.Enable) And
+                       .TryGetValueEx("NewStatus", Info.Status) And
+                       .TryGetValueEx("NewChannel", Info.Channel) And
+                       .TryGetValueEx("NewSSID", Info.SSID) And
+                       .TryGetValueEx("NewBeaconType", Info.BeaconType) And
+                       .TryGetValueEx("NewMACAddressControlEnabled", Info.MACAddressControlEnabled) And
+                       .TryGetValueEx("NewStandard", Info.Standard) And
+                       .TryGetValueEx("NewBSSID", Info.BSSID) And
+                       .TryGetValueEx("NewBasicEncryptionModes", Info.BasicEncryptionModes) And
+                       .TryGetValueEx("NewBasicAuthenticationMode", Info.BasicAuthenticationMode) And
+                       .TryGetValueEx("NewMaxCharsSSID", Info.MaxCharsSSID) And
+                       .TryGetValueEx("NewMinCharsSSID", Info.MinCharsSSID) And
+                       .TryGetValueEx("NewAllowedCharsSSID", Info.AllowedCharsSSID) And
+                       .TryGetValueEx("NewMinCharsPSK", Info.MinCharsPSK) And
+                       .TryGetValueEx("NewMaxCharsPSK", Info.MaxCharsPSK) And
+                       .TryGetValueEx("NewAllowedCharsPSK", Info.AllowedCharsPSK)
 
             Else
                 Return False
@@ -75,8 +75,8 @@ Friend Class WlanconfigSCPD
     Public Function GetSecurityKeys(ByRef PreSharedKey As String, ByRef KeyPassphrase As String) As Boolean Implements IWlanconfigSCPD.GetSecurityKeys
         With TR064Start(ServiceFile, "GetSecurityKeys", Nothing)
 
-            Return .TryGetValue("NewPreSharedKey", PreSharedKey) And
-                   .TryGetValue("NewKeyPassphrase", KeyPassphrase)
+            Return .TryGetValueEx("NewPreSharedKey", PreSharedKey) And
+                   .TryGetValueEx("NewKeyPassphrase", KeyPassphrase)
 
         End With
     End Function
@@ -89,18 +89,18 @@ Friend Class WlanconfigSCPD
     Public Function GetBasBeaconSecurityProperties(ByRef BasicEncryptionModes As String, ByRef BasicAuthenticationMode As String) As Boolean Implements IWlanconfigSCPD.GetBasBeaconSecurityProperties
         With TR064Start(ServiceFile, "GetBasBeaconSecurityProperties", Nothing)
 
-            Return .TryGetValue("NewBasicEncryptionModes", BasicEncryptionModes) And
-                   .TryGetValue("NewBasicAuthenticationMode", BasicAuthenticationMode)
+            Return .TryGetValueEx("NewBasicEncryptionModes", BasicEncryptionModes) And
+                   .TryGetValueEx("NewBasicAuthenticationMode", BasicAuthenticationMode)
 
         End With
     End Function
 
     Public Function GetBSSID(ByRef BSSID As String) As Boolean Implements IWlanconfigSCPD.GetBSSID
-        Return TR064Start(ServiceFile, "GetBSSID", Nothing).TryGetValue("NewBSSID", BSSID)
+        Return TR064Start(ServiceFile, "GetBSSID", Nothing).TryGetValueEx("NewBSSID", BSSID)
     End Function
 
     Public Function GetSSID(ByRef SSID As String) As Boolean Implements IWlanconfigSCPD.GetSSID
-        Return TR064Start(ServiceFile, "GetSSID", Nothing).TryGetValue("NewSSID", SSID)
+        Return TR064Start(ServiceFile, "GetSSID", Nothing).TryGetValueEx("NewSSID", SSID)
     End Function
 
     Public Function SetSSID(SSID As String) As Boolean Implements IWlanconfigSCPD.SetSSID
@@ -112,7 +112,7 @@ Friend Class WlanconfigSCPD
 
             If .ContainsKey("NewX_AVM-DE_PossibleBeaconTypes") Then
                 PossibleBeaconTypes = .Item("NewX_AVM-DE_PossibleBeaconTypes").Split(",")
-                Return .TryGetValue("NewBeaconType", BeaconType)
+                Return .TryGetValueEx("NewBeaconType", BeaconType)
             Else
                 Return False
             End If
@@ -126,8 +126,8 @@ Friend Class WlanconfigSCPD
     Public Function GetChannelInfo(ByRef Channel As Integer, ByRef PossibleChannels As String) As Boolean Implements IWlanconfigSCPD.GetChannelInfo
         With TR064Start(ServiceFile, "GetChannelInfo", Nothing)
 
-            Return .TryGetValue("NewChannel", Channel) And
-                   .TryGetValue("NewPossibleChannels", PossibleChannels)
+            Return .TryGetValueEx("NewChannel", Channel) And
+                   .TryGetValueEx("NewPossibleChannels", PossibleChannels)
 
         End With
     End Function
@@ -137,7 +137,7 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function GetBeaconAdvertisement(ByRef BeaconAdvertisementEnabled As Boolean) As Boolean Implements IWlanconfigSCPD.GetBeaconAdvertisement
-        Return TR064Start(ServiceFile, "GetBeaconAdvertisement", Nothing).TryGetValue("NewBeaconAdvertisementEnabled", BeaconAdvertisementEnabled)
+        Return TR064Start(ServiceFile, "GetBeaconAdvertisement", Nothing).TryGetValueEx("NewBeaconAdvertisementEnabled", BeaconAdvertisementEnabled)
     End Function
 
     Public Function SetBeaconAdvertisement(BeaconAdvertisementEnabled As Boolean) As Boolean Implements IWlanconfigSCPD.SetBeaconAdvertisement
@@ -145,7 +145,7 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function GetTotalAssociations(ByRef TotalAssociations As Integer) As Boolean Implements IWlanconfigSCPD.GetTotalAssociations
-        Return TR064Start(ServiceFile, "GetTotalAssociations", Nothing).TryGetValue("NewTotalAssociations", TotalAssociations)
+        Return TR064Start(ServiceFile, "GetTotalAssociations", Nothing).TryGetValueEx("NewTotalAssociations", TotalAssociations)
     End Function
 
     Public Function GetGenericAssociatedDeviceInfo(DeviceIndex As Integer, ByRef DeviceInfo As AssociatedDevice) As Boolean Implements IWlanconfigSCPD.GetGenericAssociatedDeviceInfo
@@ -155,11 +155,11 @@ Friend Class WlanconfigSCPD
 
             DeviceInfo.AssociatedDeviceIndex = DeviceIndex
 
-            Return .TryGetValue("NewAssociatedDeviceMACAddress", DeviceInfo.AssociatedDeviceMACAddress) And
-                   .TryGetValue("NewAssociatedDeviceIPAddress", DeviceInfo.AssociatedDeviceIPAddress) And
-                   .TryGetValue("NewAssociatedDeviceAuthState", DeviceInfo.AssociatedDeviceAuthState) And
-                   .TryGetValue("X_AVM-DE_Speed", DeviceInfo.Speed) And
-                   .TryGetValue("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength)
+            Return .TryGetValueEx("NewAssociatedDeviceMACAddress", DeviceInfo.AssociatedDeviceMACAddress) And
+                   .TryGetValueEx("NewAssociatedDeviceIPAddress", DeviceInfo.AssociatedDeviceIPAddress) And
+                   .TryGetValueEx("NewAssociatedDeviceAuthState", DeviceInfo.AssociatedDeviceAuthState) And
+                   .TryGetValueEx("X_AVM-DE_Speed", DeviceInfo.Speed) And
+                   .TryGetValueEx("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength)
 
         End With
     End Function
@@ -171,11 +171,11 @@ Friend Class WlanconfigSCPD
 
             DeviceInfo.AssociatedDeviceMACAddress = AssociatedDeviceMACAddress
 
-            Return .TryGetValue("NewAssociatedDeviceMACAddress", DeviceInfo.AssociatedDeviceMACAddress) And
-                   .TryGetValue("NewAssociatedDeviceIPAddress", DeviceInfo.AssociatedDeviceIPAddress) And
-                   .TryGetValue("NewAssociatedDeviceAuthState", DeviceInfo.AssociatedDeviceAuthState) And
-                   .TryGetValue("X_AVM-DE_Speed", DeviceInfo.Speed) And
-                   .TryGetValue("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength)
+            Return .TryGetValueEx("NewAssociatedDeviceMACAddress", DeviceInfo.AssociatedDeviceMACAddress) And
+                   .TryGetValueEx("NewAssociatedDeviceIPAddress", DeviceInfo.AssociatedDeviceIPAddress) And
+                   .TryGetValueEx("NewAssociatedDeviceAuthState", DeviceInfo.AssociatedDeviceAuthState) And
+                   .TryGetValueEx("X_AVM-DE_Speed", DeviceInfo.Speed) And
+                   .TryGetValueEx("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength)
 
         End With
     End Function
@@ -187,15 +187,15 @@ Friend Class WlanconfigSCPD
 
             DeviceInfo.AssociatedDeviceIPAddress = AssociatedDeviceIPAddress
 
-            Return .TryGetValue("NewAssociatedDeviceMACAddress", DeviceInfo.AssociatedDeviceMACAddress) And
-                   .TryGetValue("NewAssociatedDeviceAuthState", DeviceInfo.AssociatedDeviceAuthState) And
-                   .TryGetValue("X_AVM-DE_Speed", DeviceInfo.Speed) And
-                   .TryGetValue("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength)
+            Return .TryGetValueEx("NewAssociatedDeviceMACAddress", DeviceInfo.AssociatedDeviceMACAddress) And
+                   .TryGetValueEx("NewAssociatedDeviceAuthState", DeviceInfo.AssociatedDeviceAuthState) And
+                   .TryGetValueEx("X_AVM-DE_Speed", DeviceInfo.Speed) And
+                   .TryGetValueEx("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength)
         End With
     End Function
 
     Public Function GetWLANDeviceListPath(ByRef WLANDeviceListPath As String) As Boolean Implements IWlanconfigSCPD.GetWLANDeviceListPath
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetWLANDeviceListPath", Nothing).TryGetValue("NewX_AVM-DE_WLANDeviceListPath", WLANDeviceListPath)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetWLANDeviceListPath", Nothing).TryGetValueEx("NewX_AVM-DE_WLANDeviceListPath", WLANDeviceListPath)
     End Function
 
     Public Function GetWLANDeviceList(AssociatedDevices As WLANDeviceList) As Boolean Implements IWlanconfigSCPD.GetWLANDeviceList
@@ -223,7 +223,7 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function GetIPTVOptimized(ByRef IPTVoptimize As Boolean) As Boolean Implements IWlanconfigSCPD.GetIPTVOptimized
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetIPTVOptimized", Nothing).TryGetValue("NewX_AVM-DE_IPTVoptimize", IPTVoptimize)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetIPTVOptimized", Nothing).TryGetValueEx("NewX_AVM-DE_IPTVoptimize", IPTVoptimize)
     End Function
 
     Public Function SetIPTVOptimized(IPTVoptimize As Boolean) As Boolean Implements IWlanconfigSCPD.SetIPTVOptimized
@@ -233,8 +233,8 @@ Friend Class WlanconfigSCPD
     Public Function GetStatistics(ByRef TotalPacketsSent As Integer, ByRef TotalPacketsReceived As Integer) As Boolean Implements IWlanconfigSCPD.GetStatistics
         With TR064Start(ServiceFile, "GetStatistics", Nothing)
 
-            Return .TryGetValue("NewTotalPacketsSent", TotalPacketsSent) And
-                   .TryGetValue("NewTotalPacketsReceived", TotalPacketsReceived)
+            Return .TryGetValueEx("NewTotalPacketsSent", TotalPacketsSent) And
+                   .TryGetValueEx("NewTotalPacketsReceived", TotalPacketsReceived)
 
         End With
     End Function
@@ -242,8 +242,8 @@ Friend Class WlanconfigSCPD
     Public Function GetPacketStatistics(ByRef TotalPacketsSent As Integer, ByRef TotalPacketsReceived As Integer) As Boolean Implements IWlanconfigSCPD.GetPacketStatistics
         With TR064Start(ServiceFile, "GetPacketStatistics", Nothing)
 
-            Return .TryGetValue("NewTotalPacketsSent", TotalPacketsSent) And
-                   .TryGetValue("NewTotalPacketsReceived", TotalPacketsReceived)
+            Return .TryGetValueEx("NewTotalPacketsSent", TotalPacketsSent) And
+                   .TryGetValueEx("NewTotalPacketsReceived", TotalPacketsReceived)
 
         End With
     End Function
@@ -251,8 +251,8 @@ Friend Class WlanconfigSCPD
     Public Function GetNightControl(ByRef NightControl As String, ByRef NightTimeControlNoForcedOff As Boolean) As Boolean Implements IWlanconfigSCPD.GetNightControl
         With TR064Start(ServiceFile, "X_AVM-DE_GetNightControl", Nothing)
 
-            Return .TryGetValue("NewNightControl", NightControl) And
-                   .TryGetValue("NewNightTimeControlNoForcedOff", NightTimeControlNoForcedOff)
+            Return .TryGetValueEx("NewNightControl", NightControl) And
+                   .TryGetValueEx("NewNightTimeControlNoForcedOff", NightTimeControlNoForcedOff)
 
         End With
     End Function
@@ -266,15 +266,15 @@ Friend Class WlanconfigSCPD
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetWLANHybridMode", Nothing)
 
-            Return .TryGetValue("NewEnable", Info.Enable) And
-                   .TryGetValue("NewBeaconType", Info.BeaconType) And
-                   .TryGetValue("NewKeyPassphrase", Info.KeyPassphrase) And
-                   .TryGetValue("NewSSID", Info.SSID) And
-                   .TryGetValue("NewBSSID", Info.BSSID) And
-                   .TryGetValue("NewTrafficMode", Info.TrafficMode) And
-                   .TryGetValue("NewManualSpeed", Info.ManualSpeed) And
-                   .TryGetValue("NewMaxSpeedDS", Info.MaxSpeedDS) And
-                   .TryGetValue("NewMaxSpeedUS", Info.MaxSpeedUS)
+            Return .TryGetValueEx("NewEnable", Info.Enable) And
+                   .TryGetValueEx("NewBeaconType", Info.BeaconType) And
+                   .TryGetValueEx("NewKeyPassphrase", Info.KeyPassphrase) And
+                   .TryGetValueEx("NewSSID", Info.SSID) And
+                   .TryGetValueEx("NewBSSID", Info.BSSID) And
+                   .TryGetValueEx("NewTrafficMode", Info.TrafficMode) And
+                   .TryGetValueEx("NewManualSpeed", Info.ManualSpeed) And
+                   .TryGetValueEx("NewMaxSpeedDS", Info.MaxSpeedDS) And
+                   .TryGetValueEx("NewMaxSpeedUS", Info.MaxSpeedUS)
 
         End With
     End Function
@@ -297,15 +297,15 @@ Friend Class WlanconfigSCPD
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetWLANExtInfo", Nothing)
 
-            Return .TryGetValue("NewX_AVM-DE_APEnabled", Info.APEnabled) And
-                   .TryGetValue("NewX_AVM-DE_APType", Info.APType) And
-                   .TryGetValue("NewX_AVM-DE_TimeoutActive", Info.TimeoutActive) And
-                   .TryGetValue("NewX_AVM-DE_Timeout", Info.Timeout) And
-                   .TryGetValue("NewX_AVM-DE_TimeRemain", Info.TimeRemain) And
-                   .TryGetValue("NewX_AVM-DE_NoForcedOff", Info.NoForcedOff) And
-                   .TryGetValue("NewX_AVM-DE_UserIsolation", Info.UserIsolation) And
-                   .TryGetValue("NewX_AVM-DE_EncryptionMode", Info.EncryptionMode) And
-                   .TryGetValue("NewX_AVM-DE_LastChangedStamp", Info.LastChangedStamp)
+            Return .TryGetValueEx("NewX_AVM-DE_APEnabled", Info.APEnabled) And
+                   .TryGetValueEx("NewX_AVM-DE_APType", Info.APType) And
+                   .TryGetValueEx("NewX_AVM-DE_TimeoutActive", Info.TimeoutActive) And
+                   .TryGetValueEx("NewX_AVM-DE_Timeout", Info.Timeout) And
+                   .TryGetValueEx("NewX_AVM-DE_TimeRemain", Info.TimeRemain) And
+                   .TryGetValueEx("NewX_AVM-DE_NoForcedOff", Info.NoForcedOff) And
+                   .TryGetValueEx("NewX_AVM-DE_UserIsolation", Info.UserIsolation) And
+                   .TryGetValueEx("NewX_AVM-DE_EncryptionMode", Info.EncryptionMode) And
+                   .TryGetValueEx("NewX_AVM-DE_LastChangedStamp", Info.LastChangedStamp)
 
         End With
     End Function
@@ -317,8 +317,8 @@ Friend Class WlanconfigSCPD
     Public Function GetWPSInfo(ByRef WPSMode As WPSModeEnum, ByRef WPSStatus As WPSStatusEnum) As Boolean Implements IWlanconfigSCPD.GetWPSInfo
         With TR064Start(ServiceFile, "X_AVM-DE_GetWPSInfo", Nothing)
 
-            Return .TryGetValue("NewX_AVM-DE_WPSMode", WPSMode) And
-                   .TryGetValue("NewX_AVM-DE_WPSStatus", WPSStatus)
+            Return .TryGetValueEx("NewX_AVM-DE_WPSMode", WPSMode) And
+                   .TryGetValueEx("NewX_AVM-DE_WPSStatus", WPSStatus)
 
         End With
     End Function
@@ -326,7 +326,7 @@ Friend Class WlanconfigSCPD
     Public Function SetWPSConfig(WPSMode As WPSModeEnum, ByRef WPSStatus As WPSStatusEnum) As Boolean Implements IWlanconfigSCPD.SetWPSConfig
         Return TR064Start(ServiceFile, "X_AVM-DE_GetWPSInfo",
                           New Dictionary(Of String, String) From {{"NewX_AVM-DE_WPSMode", WPSMode}}).
-                          TryGetValue("NewX_AVM-DE_WPSStatus", WPSStatus)
+                          TryGetValueEx("NewX_AVM-DE_WPSStatus", WPSStatus)
 
     End Function
 
@@ -339,16 +339,16 @@ Friend Class WlanconfigSCPD
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetWLANConnectionInfo", Nothing)
 
-            Return .TryGetValue("NewAssociatedDeviceMACAddress", Info.AssociatedDeviceMACAddress) And
-                   .TryGetValue("NewSSID", Info.SSID) And
-                   .TryGetValue("NewBSSID", Info.BSSID) And
-                   .TryGetValue("NewBeaconType", Info.BeaconType) And
-                   .TryGetValue("NewChannel", Info.Channel) And
-                   .TryGetValue("NewStandard", Info.Standard) And
-                   .TryGetValue("NewX_AVM-DE_Speed", Info.Speed) And
-                   .TryGetValue("NewX_AVM-DE_SpeedRX", Info.SpeedRX) And
-                   .TryGetValue("NewX_AVM-DE_SpeedMax", Info.SpeedMax) And
-                   .TryGetValue("NewX_AVM-DE_SpeedRXMax", Info.SpeedRXMax)
+            Return .TryGetValueEx("NewAssociatedDeviceMACAddress", Info.AssociatedDeviceMACAddress) And
+                   .TryGetValueEx("NewSSID", Info.SSID) And
+                   .TryGetValueEx("NewBSSID", Info.BSSID) And
+                   .TryGetValueEx("NewBeaconType", Info.BeaconType) And
+                   .TryGetValueEx("NewChannel", Info.Channel) And
+                   .TryGetValueEx("NewStandard", Info.Standard) And
+                   .TryGetValueEx("NewX_AVM-DE_Speed", Info.Speed) And
+                   .TryGetValueEx("NewX_AVM-DE_SpeedRX", Info.SpeedRX) And
+                   .TryGetValueEx("NewX_AVM-DE_SpeedMax", Info.SpeedMax) And
+                   .TryGetValueEx("NewX_AVM-DE_SpeedRXMax", Info.SpeedRXMax)
 
         End With
     End Function

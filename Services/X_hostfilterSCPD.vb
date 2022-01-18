@@ -24,17 +24,17 @@ Public Class X_hostfilterSCPD
     End Function
 
     Public Function GetTicketIDStatus(TicketID As String, ByRef TicketIDStatus As TicketIDStatusEnum) As Boolean Implements IX_hostfilterSCPD.GetTicketIDStatus
-        Return TR064Start(ServiceFile, "GetTicketIDStatus", New Dictionary(Of String, String) From {{"NewTicketID", TicketID}}).TryGetValue("NewTicketIDStatus", TicketIDStatus)
+        Return TR064Start(ServiceFile, "GetTicketIDStatus", New Dictionary(Of String, String) From {{"NewTicketID", TicketID}}).TryGetValueEx("NewTicketIDStatus", TicketIDStatus)
     End Function
 
     Public Function GetWANAccessByIP(IPv4Address As String, ByRef WANAccess As WANAccessEnum, ByRef Disallow As Boolean) As Boolean Implements IX_hostfilterSCPD.GetWANAccessByIP
         With TR064Start(ServiceFile, "GetWANAccessByIP", New Dictionary(Of String, String) From {{"NewIPv4Address", IPv4Address}})
-            Return .TryGetValue("NewWANAccess", WANAccess) And
-                   .TryGetValue("NewDisallow", Disallow)
+            Return .TryGetValueEx("NewWANAccess", WANAccess) And
+                   .TryGetValueEx("NewDisallow", Disallow)
         End With
     End Function
 
     Public Function MarkTicket(ByRef TicketID As String) As Boolean Implements IX_hostfilterSCPD.MarkTicket
-        Return TR064Start(ServiceFile, "MarkTicket", Nothing).TryGetValue("NewTicketIDStatus", TicketID)
+        Return TR064Start(ServiceFile, "MarkTicket", Nothing).TryGetValueEx("NewTicketIDStatus", TicketID)
     End Function
 End Class

@@ -33,26 +33,30 @@ Friend Class Serializer
 
                     If IsPfad Then
                         .Load(InputData)
+
+                        PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"{InputData}: { .InnerXml}"))
                     Else
                         .LoadXml(InputData)
+
+                        PushStatus?.Invoke(CreateLog(LogLevel.Trace, .InnerXml))
                     End If
+
                 End With
 
                 Return True
 
             Catch ex As XmlException
-                'NLogger.Fatal(ex, $"Die XML-Datan weist einen Lade- oder Analysefehler auf: '{InputData}'")
+                PushStatus?.Invoke(CreateLog(LogLevel.Fatal, $"Die XML-Datan weist einen Lade- oder Analysefehler auf: '{InputData}')", ex))
 
                 Return False
 
             Catch ex As FileNotFoundException
-                'NLogger.Fatal(ex, $"Die XML-Datan kann nicht gefunden werden: '{InputData}'")
-
+                PushStatus?.Invoke(CreateLog(LogLevel.Fatal, $"Die XML-Datan kann nicht gefunden werden '{InputData}'", ex))
                 Return False
 
             End Try
         Else
-            'NLogger.Fatal("Die übergebenen XML-Datan sind leer.")
+            PushStatus?.Invoke(CreateLog(LogLevel.Fatal, "Die übergebenen XML-Datan sind leer."))
 
             Return False
         End If

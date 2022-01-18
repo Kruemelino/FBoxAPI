@@ -4,7 +4,7 @@
     <RootNamespace>FBoxAPI</RootNamespace>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net452;net461;net472;net48;netcoreapp3.1</TargetFrameworks>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>0.0.17</Version>
+    <Version>0.0.20</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Kruemelino/FBoxAPI</RepositoryUrl>
     <PackageTags>Fritz!Box fritzbox api tr-064 soap</PackageTags>
@@ -15,9 +15,12 @@
     <Authors>Kruemelino</Authors>
     <Company></Company>
     <PackageProjectUrl>https://github.com/Kruemelino/FBoxAPI</PackageProjectUrl>
-    <PackageReleaseNotes>Bugfix: Boolen korrekt übergeben</PackageReleaseNotes>
-    <AssemblyVersion>0.0.1.17</AssemblyVersion>
-    <FileVersion>0.0.1.17</FileVersion>
+    <PackageReleaseNotes>Fix: Nicht alle Services wurden erfasst
+Fix: Wenn ein Parameter nicht exisiert kam es zum Absturz, falls es sich um einen Boolean handelt
+Neue Service: AppSetup, Remote, Storage,upnp, webdav
+Änderung: GetDECTHandsetList gibt String() zurück</PackageReleaseNotes>
+    <AssemblyVersion>0.0.1.20</AssemblyVersion>
+    <FileVersion>0.0.1.20</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.1|AnyCPU'">

@@ -17,7 +17,7 @@ Friend Class DeviceconfigSCPD
 
 #Region "PersistentData"
     Public Function GetPersistentData(ByRef PersistentData As String) As Boolean Implements IDeviceconfigSCPD.GetPersistentData
-        Return TR064Start(ServiceFile, "GetPersistentData", Nothing).TryGetValue("NewPersistentData", PersistentData)
+        Return TR064Start(ServiceFile, "GetPersistentData", Nothing).TryGetValueEx("NewPersistentData", PersistentData)
     End Function
 
     ''' <param name="PersistentData">Shall not be empty.</param>
@@ -37,7 +37,7 @@ Friend Class DeviceconfigSCPD
     End Function
 
     Public Function ConfigurationFinished(ByRef Status As String) As Boolean Implements IDeviceconfigSCPD.ConfigurationFinished
-        Return TR064Start(ServiceFile, "GetPersistentData", Nothing).TryGetValue("NewStatus", Status)
+        Return TR064Start(ServiceFile, "GetPersistentData", Nothing).TryGetValueEx("NewStatus", Status)
     End Function
 #End Region
 
@@ -53,11 +53,11 @@ Friend Class DeviceconfigSCPD
 
 #Region "AVM"
     Public Function GenerateUUID(ByRef UUID As String) As Boolean Implements IDeviceconfigSCPD.GenerateUUID
-        Return TR064Start(ServiceFile, "X_GenerateUUID", Nothing).TryGetValue("NewUUID", UUID)
+        Return TR064Start(ServiceFile, "X_GenerateUUID", Nothing).TryGetValueEx("NewUUID", UUID)
     End Function
 
     Public Function GetConfigFile(Password As String, ByRef ConfigFileUrl As String) As Boolean Implements IDeviceconfigSCPD.GetConfigFile
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetConfigFile", New Dictionary(Of String, String) From {{"NewX_AVM-DE_Password", Password}}).TryGetValue("NewX_AVM-DE_ConfigFileUrl", ConfigFileUrl)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetConfigFile", New Dictionary(Of String, String) From {{"NewX_AVM-DE_Password", Password}}).TryGetValueEx("NewX_AVM-DE_ConfigFileUrl", ConfigFileUrl)
     End Function
 
     Public Function SetConfigFile(Password As String, ConfigFileUrl As String) As Boolean Implements IDeviceconfigSCPD.SetConfigFile
@@ -66,7 +66,7 @@ Friend Class DeviceconfigSCPD
     End Function
 
     Public Function GetSessionID(ByRef SessionID As String) As Boolean Implements IDeviceconfigSCPD.GetSessionID
-        Return TR064Start(ServiceFile, "X_AVM-DE_CreateUrlSID", Nothing).TryGetValue("NewX_AVM-DE_UrlSID", SessionID)
+        Return TR064Start(ServiceFile, "X_AVM-DE_CreateUrlSID", Nothing).TryGetValueEx("NewX_AVM-DE_UrlSID", SessionID)
     End Function
 
     Public Function GetSupportDataInfo(ByRef SupportDataMode As SupportDataModeEnum,
@@ -76,10 +76,10 @@ Friend Class DeviceconfigSCPD
 
         With TR064Start(ServiceFile, "X_AVM-DE_GetSupportDataInfo", Nothing)
 
-            Return .TryGetValue("NewX_AVM-DE_SupportDataMode", SupportDataMode) And
-                   .TryGetValue("NewX_AVM-DE_SupportDataID", SupportDataID) And
-                   .TryGetValue("NewX_AVM-DE_SupportDataTimestamp", SupportDataTimestamp) And
-                   .TryGetValue("NewX_AVM-DE_SupportDataStatus", SupportDataStatus)
+            Return .TryGetValueEx("NewX_AVM-DE_SupportDataMode", SupportDataMode) And
+                   .TryGetValueEx("NewX_AVM-DE_SupportDataID", SupportDataID) And
+                   .TryGetValueEx("NewX_AVM-DE_SupportDataTimestamp", SupportDataTimestamp) And
+                   .TryGetValueEx("NewX_AVM-DE_SupportDataStatus", SupportDataStatus)
 
         End With
 

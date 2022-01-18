@@ -16,9 +16,7 @@ Friend Class DECT_SCPD
     End Sub
 
     Public Function GetNumberOfDectEntries(ByRef NumberOfEntries As Integer) As Boolean Implements IDECT_SCPD.GetNumberOfDectEntries
-        Return TR064Start(ServiceFile,
-                        "GetNumberOfDectEntries",
-                        Nothing).TryGetValue("NewNumberOfEntries", NumberOfEntries)
+        Return TR064Start(ServiceFile, "GetNumberOfDectEntries", Nothing).TryGetValueEx("NewNumberOfEntries", NumberOfEntries)
     End Function
 
     Public Function GetGenericDectEntry(ByRef GenericDectEntry As DectEntry, NumberOfEntries As Integer) As Boolean Implements IDECT_SCPD.GetGenericDectEntry
@@ -28,13 +26,13 @@ Friend Class DECT_SCPD
                         "GetGenericDectEntry",
                         New Dictionary(Of String, String) From {{"NewIndex", NumberOfEntries}})
 
-            Return .TryGetValue("NewID", GenericDectEntry.ID) And
-                   .TryGetValue("NewActive", GenericDectEntry.Active) And
-                   .TryGetValue("NewName", GenericDectEntry.Name) And
-                   .TryGetValue("NewModel", GenericDectEntry.Model) And
-                   .TryGetValue("NewUpdateAvailable", GenericDectEntry.UpdateAvailable) And
-                   .TryGetValue("NewUpdateSuccessful", GenericDectEntry.UpdateSuccessful) And
-                   .TryGetValue("NewUpdateInfo", GenericDectEntry.UpdateInfo)
+            Return .TryGetValueEx("NewID", GenericDectEntry.ID) And
+                   .TryGetValueEx("NewActive", GenericDectEntry.Active) And
+                   .TryGetValueEx("NewName", GenericDectEntry.Name) And
+                   .TryGetValueEx("NewModel", GenericDectEntry.Model) And
+                   .TryGetValueEx("NewUpdateAvailable", GenericDectEntry.UpdateAvailable) And
+                   .TryGetValueEx("NewUpdateSuccessful", GenericDectEntry.UpdateSuccessful) And
+                   .TryGetValueEx("NewUpdateInfo", GenericDectEntry.UpdateInfo)
 
         End With
     End Function
@@ -48,13 +46,13 @@ Friend Class DECT_SCPD
 
             SpecificDectEntry.ID = ID
 
-            Return .TryGetValue("NewID", SpecificDectEntry.ID) And
-                   .TryGetValue("NewActive", SpecificDectEntry.Active) And
-                   .TryGetValue("NewName", SpecificDectEntry.Name) And
-                   .TryGetValue("NewModel", SpecificDectEntry.Model) And
-                   .TryGetValue("NewUpdateAvailable", SpecificDectEntry.UpdateAvailable) And
-                   .TryGetValue("NewUpdateSuccessful", SpecificDectEntry.UpdateSuccessful) And
-                   .TryGetValue("NewUpdateInfo", SpecificDectEntry.UpdateInfo)
+            Return .TryGetValueEx("NewID", SpecificDectEntry.ID) And
+                   .TryGetValueEx("NewActive", SpecificDectEntry.Active) And
+                   .TryGetValueEx("NewName", SpecificDectEntry.Name) And
+                   .TryGetValueEx("NewModel", SpecificDectEntry.Model) And
+                   .TryGetValueEx("NewUpdateAvailable", SpecificDectEntry.UpdateAvailable) And
+                   .TryGetValueEx("NewUpdateSuccessful", SpecificDectEntry.UpdateSuccessful) And
+                   .TryGetValueEx("NewUpdateInfo", SpecificDectEntry.UpdateInfo)
 
         End With
     End Function
