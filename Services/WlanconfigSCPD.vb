@@ -199,23 +199,8 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function GetWLANDeviceList(AssociatedDevices As WLANDeviceList) As Boolean Implements IWlanconfigSCPD.GetWLANDeviceList
-        With TR064Start(ServiceFile, "X_AVM-DE_GetWLANDeviceListPath", Nothing)
-
-            If .ContainsKey("NewX_AVM-DE_WLANDeviceListPath") Then
-
-                XML.Deserialize(.Item("NewX_AVM-DE_WLANDeviceListPath"), False, AssociatedDevices)
-
-                ' Wenn keine Hosts angeschlossen wurden, gib eine leere Klasse zurück
-                If AssociatedDevices Is Nothing Then AssociatedDevices = New WLANDeviceList
-
-                Return True
-
-            Else
-                AssociatedDevices = Nothing
-
-                Return False
-            End If
-        End With
+        Dim LuaPath As String = String.Empty
+        Return GetWLANDeviceListPath(LuaPath) AndAlso XML.Deserialize($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}{LuaPath}", True, AssociatedDevices)
     End Function
 
     Public Function SetStickSurfEnable(StickSurfEnable As Boolean) As Boolean Implements IWlanconfigSCPD.SetStickSurfEnable

@@ -21,7 +21,10 @@ Public Interface IHostsSCPD
     ''' <summary>
     ''' Gets a path to a lua script file, which generates an XML structured list of hosts.
     ''' </summary>
-    ''' <param name="HostListPath">Related path to lua script which generates a formatted list</param>
+    ''' <param name="HostListPath">Related path to lua script which generates a formatted list
+    ''' <br/>
+    ''' e. g. /devicehostlist.lua?sid=97ebd547080a032a
+    ''' </param>
     ''' <remarks>Required rights : PhoneRight, AppRight</remarks>
     Function GetHostListPath(ByRef HostListPath As String) As Boolean
 

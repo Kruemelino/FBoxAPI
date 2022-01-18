@@ -79,12 +79,12 @@ Friend Class X_filelinksSCPD
         Return Not TR064Start(ServiceFile, "DeleteFilelinkEntry", New Dictionary(Of String, String) From {{"NewID", ID}}).ContainsKey("Error")
     End Function
 
-    Public Function GetFilelinkListPath(FilelinkListPath As String) As Boolean Implements IX_filelinksSCPD.GetFilelinkListPath
+    Public Function GetFilelinkListPath(ByRef FilelinkListPath As String) As Boolean Implements IX_filelinksSCPD.GetFilelinkListPath
         Return TR064Start(ServiceFile, "GetFilelinkListPath", Nothing).TryGetValueEx("NewFilelinkListPath", FilelinkListPath)
     End Function
 
     Public Function GetFilelinkList(ByRef List As FileLinkList) As Boolean Implements IX_filelinksSCPD.GetFilelinkList
-        Dim Path As String = String.Empty
-        Return GetFilelinkListPath(Path) AndAlso XML.Deserialize(Path, False, List)
+        Dim LuaPath As String = String.Empty
+        Return GetFilelinkListPath(LuaPath) AndAlso XML.Deserialize($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}{LuaPath}", True, List)
     End Function
 End Class

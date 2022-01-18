@@ -10,7 +10,7 @@ Public Class FritzBoxTR64
     Private Property XML As Serializer
     Private Property Http As TR064HttpBasics
     Private Property Credential As NetworkCredential
-    Private Property FBoxIPAdresse As String
+    Friend Shared Property FBoxIPAdresse As String
 
     Private Property Services As List(Of Service)
 #Region "Services"
@@ -209,8 +209,6 @@ Public Class FritzBoxTR64
             ' Weise die Fritz!Box IP-Adresse zu
             If FBoxService IsNot Nothing Then
                 With FBoxService
-                    ' IP Adresse der Fritz!Box übergeben
-                    .FBoxIPAdresse = FBoxIPAdresse
                     ' XML-Klasse übergeben
                     .XML = XML
                     ' Routine für die Statusmeldungen übergeben

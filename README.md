@@ -76,9 +76,9 @@ Beispiel für [NLog](https://nlog-project.org/):
     End Sub
 ```
 ### Bekannte Probleme
-* DieDokumentation von AVM ist nicht immer korrekt. Z. B. wird der Dokumentation [X_AVM-DE_AppSetup](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_appsetup.pdf)
-  der Parameter `MyFritzDynDNSEnabled` der Action GetAppRemoteInfo aufgelistet. Dieser Parameter ist tatsächlich `NewMyFritzEnabled`. 
-  Es kann nicht ausgeschlossen werden, dann auch anderer Stelle deratige Probleme auftreten. 
+* Die Dokumentation von AVM ist nicht immer korrekt. Z. B. wird in der Dokumentation [X_AVM-DE_AppSetup](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_appsetup.pdf)
+  der Parameter `MyFritzDynDNSEnabled` der Action GetAppRemoteInfo aufgelistet. Dieser Parameter lautet aber `NewMyFritzEnabled`. 
+  Es kann nicht ausgeschlossen werden, dann auch anderer Stelle ähnliche Probleme auftreten. 
   (Hinweis: Alle Argumente in [X_AVM-DE_AppSetup](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_appsetup.pdf) sind falsch angegeben. Der übliche Präfix `New` wurde nicht dargestellt.)
 
 ### Umsetzung

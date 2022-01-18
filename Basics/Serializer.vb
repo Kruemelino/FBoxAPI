@@ -32,13 +32,20 @@ Friend Class Serializer
                     .XmlResolver = Nothing
 
                     If IsPfad Then
-                        .Load(InputData)
-
-                        PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"{InputData}: { .InnerXml}"))
+                        Try
+                            .Load(InputData)
+                            PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"{InputData}: { .InnerXml}"))
+                        Catch ex As Exception
+                            PushStatus?.Invoke(CreateLog(LogLevel.Error, InputData, ex))
+                        End Try
                     Else
-                        .LoadXml(InputData)
+                        Try
+                            .LoadXml(InputData)
+                            PushStatus?.Invoke(CreateLog(LogLevel.Trace, .InnerXml))
+                        Catch ex As Exception
+                            PushStatus?.Invoke(CreateLog(LogLevel.Error, InputData, ex))
+                        End Try
 
-                        PushStatus?.Invoke(CreateLog(LogLevel.Trace, .InnerXml))
                     End If
 
                 End With

@@ -48,7 +48,7 @@ Public Interface IX_filelinksSCPD
     ''' ghts of the user.
     ''' </summary>
     ''' <remarks>Required rights: NASRight, ConfigRight</remarks>
-    Function GetFilelinkListPath(FilelinkListPath As String) As Boolean
+    Function GetFilelinkListPath(ByRef FilelinkListPath As String) As Boolean
 
     ''' <summary>
     ''' Inoffizielle Action: GetFilelinkListPath wird als <see cref="FileLinkList"/> deserialisiert zurückgegeben.

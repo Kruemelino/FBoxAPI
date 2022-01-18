@@ -13,7 +13,6 @@ Imports System.Xml.Serialization
     <XmlElement("SCPDURL")> Public Property SCPDURL As String
 
     <XmlIgnore> Friend Property SCPD As ServiceControlProtocolDefinition
-    <XmlIgnore> Friend Property FBoxIPAdresse As String
     <XmlIgnore> Friend Property XML As Serializer
     <XmlIgnore> Friend Property PushStatus As Action(Of LogMessage)
 
@@ -31,10 +30,10 @@ Imports System.Xml.Serialization
         ' Wenn ServiceControlProtocolDefinition noch nicht geladen wurde, dann lade sie von der Fritz!Box
         If SCPD Is Nothing Then
             ' Wenn keine IPAddresse vorhanden ist, was eigentlich nicht möglich ist, dann wirf einen Fehler aus.
-            If FBoxIPAdresse.IsStringNothingOrEmpty Then
+            If FritzBoxTR64.FBoxIPAdresse.IsStringNothingOrEmpty Then
                 PushStatus?.Invoke(CreateLog(LogLevel.Error, New Exception($"Action '{ActionName}': IP Adresse nicht vorhanden.")))
             Else
-                If Not XML.Deserialize($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{DfltTR064Port}{SCPDURL}", True, SCPD) Then
+                If Not XML.Deserialize($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}{SCPDURL}", True, SCPD) Then
                     ' Fehlerfall
                     PushStatus?.Invoke(CreateLog(LogLevel.Error, New Exception($"Action '{ActionName}': ServiceControlProtocolDefinition nicht geladen.")))
                 End If
@@ -74,7 +73,7 @@ Imports System.Xml.Serialization
 
         With ResponseData
 
-            If FBoxIPAdresse.IsStringNothingOrEmpty Then
+            If FritzBoxTR64.FBoxIPAdresse.IsStringNothingOrEmpty Then
                 ' Wenn keine IPAddresse vorhanden ist, was eigentlich nicht möglich ist, dann wirf einen Fehler aus.
                 PushStatus?.Invoke(CreateLog(LogLevel.Error, New Exception($"Action '{[Action]}': IP Adresse nicht vorhanden.")))
                 .Add("Error", $"Action '{[Action]}': IP Adresse nicht vorhanden.")
@@ -84,7 +83,7 @@ Imports System.Xml.Serialization
                                                                  {HttpRequestHeader.UserAgent, TR064UserAgent},
                                                                  {"SOAPACTION", $"""{ServiceType}#{Action.Name}"""}}
 
-                If http.UploadData(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, ControlURL).Uri,
+                If http.UploadData(New UriBuilder(Uri.UriSchemeHttps, FritzBoxTR64.FBoxIPAdresse, DfltTR064PortSSL, ControlURL).Uri,
                                    GetRequest(Action, InputArguments).InnerXml,
                                    NetworkCredential,
                                    Response,

@@ -41,7 +41,7 @@ Friend Class HostsSCPD
     Public Function GetGenericHostEntry(Index As Integer, ByRef Host As HostEntry) As Boolean Implements IHostsSCPD.GetGenericHostEntry
         If Host Is Nothing Then Host = New HostEntry
 
-        With TR064Start(ServiceFile, "GetSpecificHostEntry", New Dictionary(Of String, String) From {{"NewIndex", Index}})
+        With TR064Start(ServiceFile, "GetGenericHostEntry", New Dictionary(Of String, String) From {{"NewIndex", Index}})
 
             Host.Index = Index
 
@@ -118,8 +118,8 @@ Friend Class HostsSCPD
     End Function
 
     Public Function GetHostList(ByRef Hosts As HostList) As Boolean Implements IHostsSCPD.GetHostList
-        Dim LostList As String = String.Empty
-        Return GetHostListPath(LostList) AndAlso XML.Deserialize(LostList, False, Hosts)
+        Dim LuaPath As String = String.Empty
+        Return GetHostListPath(LuaPath) AndAlso XML.Deserialize($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}{LuaPath}", True, Hosts)
     End Function
 
     Public Function GetMeshListPath(ByRef MeshListPath As String) As Boolean Implements IHostsSCPD.GetMeshListPath

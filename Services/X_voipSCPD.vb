@@ -360,25 +360,9 @@ Friend Class X_voipSCPD
     End Function
 
     Public Function GetNumbers(ByRef NumberList As SIPTelNrList) As Boolean Implements IX_voipSCPD.GetNumbers
-
-        With TR064Start(ServiceFile, "X_AVM-DE_GetNumbers", Nothing)
-
-            If .ContainsKey("NewNumberList") Then
-
-                XML.Deserialize(.Item("NewNumberList"), False, NumberList)
-
-                ' Wenn keine Nummern angeschlossen wurden, gib eine leere Klasse zurück
-                If NumberList Is Nothing Then NumberList = New SIPTelNrList
-
-                Return True
-
-            Else
-                NumberList = Nothing
-
-                Return False
-            End If
-        End With
-
+        Dim ListString As String = String.Empty
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetNumbers", Nothing).TryGetValueEx("NewNumberList", ListString) AndAlso
+               XML.Deserialize(ListString, False, NumberList)
     End Function
 #End Region
 
