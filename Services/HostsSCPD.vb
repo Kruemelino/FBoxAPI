@@ -1,7 +1,7 @@
 ﻿''' <summary>
 ''' TR-064 Support – Hosts
 ''' Date:  2020-12-01
-''' <see cref="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/hostsSCPD.pdf"/>
+''' <see href="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/hostsSCPD.pdf"/>
 ''' </summary>
 Friend Class HostsSCPD
     Implements IHostsSCPD

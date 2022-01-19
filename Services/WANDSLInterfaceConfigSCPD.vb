@@ -3,7 +3,7 @@
 ''' Date: 2019-11-01 
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wandslifconfigSCPD.pdf</see>
 ''' </summary>
-Public Class WANDSLInterfaceConfigSCPD
+Friend Class WANDSLInterfaceConfigSCPD
     Implements IWANDSLInterfaceConfigSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWANDSLInterfaceConfigSCPD.TR064Start

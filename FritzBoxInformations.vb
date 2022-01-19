@@ -37,7 +37,7 @@ Public Module FritzBoxInformations
     ''' </summary>
     Public Enum SCPDFiles
 
-        <Description("/any.xml")> any
+        '<Description("/any.xml")> any
 
         <Description("/deviceconfigSCPD.xml")> deviceconfigSCPD
 
@@ -47,13 +47,13 @@ Public Module FritzBoxInformations
 
         <Description("/hostsSCPD.xml")> hostsSCPD
 
-        <Description("/igdconnSCPD.xml")> igdconnSCPD
+        '<Description("/igdconnSCPD.xml")> igdconnSCPD
 
-        <Description("/igddesc.xml")> igddesc
+        '<Description("/igddesc.xml")> igddesc
 
-        <Description("/igddslSCPD.xml")> igddslSCPD
+        '<Description("/igddslSCPD.xml")> igddslSCPD
 
-        <Description("/igdicfgSCPD.xml")> igdicfgSCPD
+        '<Description("/igdicfgSCPD.xml")> igdicfgSCPD
 
         <Description("/lanconfigsecuritySCPD.xml")> lanconfigsecuritySCPD
 

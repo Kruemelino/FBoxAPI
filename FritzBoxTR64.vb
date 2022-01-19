@@ -11,14 +11,19 @@ Public Class FritzBoxTR64
     Private Property Http As TR064HttpBasics
     Private Property Credential As NetworkCredential
     Friend Shared Property FBoxIPAdresse As String
-
     Private Property Services As List(Of Service)
+
 #Region "Services"
     Public Property DECT As IDECT_SCPD
     Public Property Deviceconfig As IDeviceconfigSCPD
     Public Property Deviceinfo As IDeviceinfoSCPD
     Public Property Hosts As IHostsSCPD
     Public Property LANConfigSecurity As ILANConfigSecuritySCPD
+    Public Property LANhostconfigmgm As ILANhostconfigmgmSCPD
+    Public Property LANifconfig As ILANifconfigSCPD
+    Public Property Layer3Forwarding As ILayer3ForwardingSCPD
+    Public Property Mgmsrv As IMgmsrvSCPD
+    Public Property Time As ITimeSCPD
     Public Property UserInterface As IUserInterfaceSCPD
     Public Property WANCommonInterfaceConfig As IWANCommonInterfaceConfigSCPD
     Public Property WANDSLInterfaceConfig As IWANDSLInterfaceConfigSCPD
@@ -28,6 +33,7 @@ Public Class FritzBoxTR64
     Public Property WANPPPConnection As IWANPPPConnectionSCPD
     Public Property Wlanconfig As IWlanconfigSCPD
     Public Property X_appsetup As IX_appsetupSCPD
+    Public Property X_auth As IX_authSCPD
     Public Property X_contact As IX_contactSCPD
     Public Property X_filelinks As IX_filelinksSCPD
     Public Property X_HomeAuto As IX_homeautoSCPD
@@ -149,6 +155,11 @@ Public Class FritzBoxTR64
         Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start)
         Hosts = New HostsSCPD(AddressOf TR064Start, XML)
         LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start)
+        LANhostconfigmgm = New LANhostconfigmgmSCPD(AddressOf TR064Start)
+        LANifconfig = New LANifconfigSCPD(AddressOf TR064Start)
+        Layer3Forwarding = New Layer3ForwardingSCPD(AddressOf TR064Start)
+        Mgmsrv = New MgmsrvSCPD(AddressOf TR064Start)
+        Time = New TimeSCPD(AddressOf TR064Start)
         UserInterface = New UserInterfaceSCPD(AddressOf TR064Start)
         WANCommonInterfaceConfig = New WANCommonInterfaceConfigSCPD(AddressOf TR064Start)
         WANDSLInterfaceConfig = New WANDSLInterfaceConfigSCPD(AddressOf TR064Start)
@@ -158,6 +169,7 @@ Public Class FritzBoxTR64
         WANPPPConnection = New WANPPPConnectionSCPD(AddressOf TR064Start)
         Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, XML)
         X_appsetup = New X_appsetupSCPD(AddressOf TR064Start)
+        X_auth = New X_authSCPD(AddressOf TR064Start)
         X_contact = New X_contactSCPD(AddressOf TR064Start, XML)
         X_filelinks = New X_filelinksSCPD(AddressOf TR064Start, XML)
         X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start)

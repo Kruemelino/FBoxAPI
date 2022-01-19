@@ -3,7 +3,7 @@
 ''' Date: 2019-01-15
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/userifSCPD.pdf</see>
 ''' </summary>
-Public Class UserInterfaceSCPD
+Friend Class UserInterfaceSCPD
     Implements IUserInterfaceSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IUserInterfaceSCPD.TR064Start

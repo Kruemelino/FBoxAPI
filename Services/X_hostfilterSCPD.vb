@@ -3,7 +3,7 @@
 ''' Date:  2020-04-01
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_hostfilterSCPD.pdf</see>
 ''' </summary>
-Public Class X_hostfilterSCPD
+Friend Class X_hostfilterSCPD
     Implements IX_hostfilterSCPD
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_hostfilterSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_hostfilterSCPD Implements IX_hostfilterSCPD.Servicefile

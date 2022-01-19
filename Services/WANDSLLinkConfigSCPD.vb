@@ -3,7 +3,7 @@
 ''' Date: 2015-11-20 
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wandsllinkconfigSCPD.pdf</see>
 ''' </summary>
-Public Class WANDSLLinkConfigSCPD
+Friend Class WANDSLLinkConfigSCPD
     Implements IWANDSLLinkConfigSCPD
 
 

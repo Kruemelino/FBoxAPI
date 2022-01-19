@@ -455,8 +455,20 @@ Public Enum ConnectionStatusEnum
 End Enum
 
 Public Enum ConnectionTypeEnum
+
+    ''' <summary>
+    ''' Valid connection types cannot be identified. This may be due to the fact that the LinkType variable (if specified in the WAN*LinkConfig service) is uninitialized. 
+    ''' </summary>
     Unconfigured
+
+    ''' <summary>
+    ''' The Internet Gateway is an IP router between the LAN and the WAN connection.
+    ''' </summary>
     IP_Routed
+
+    ''' <summary>
+    ''' The Internet Gateway is an Ethernet bridge between the LAN and the WAN connection. A router at the other end of the WAN connection from the IGD routes IP packets.
+    ''' </summary>
     IP_Bridged
 End Enum
 Public Enum PortMappingProtocolEnum
@@ -573,5 +585,57 @@ Public Enum RightEnum
     ''' No specific right defined. 
     ''' </summary>
     UNDEFINED
+End Enum
+#End Region
+
+#Region "Authentication"
+Public Enum AuthStateEnum
+    ''' <summary>
+    ''' second factor authentication disabled by configuration
+    ''' </summary>
+    disabled
+
+    ''' <summary>
+    ''' second factor authentication waiting for user interaction to authenticate
+    ''' </summary>
+    waitingforauth
+
+    ''' <summary>
+    ''' second factor authentication running for another user 
+    ''' </summary>
+    anotherauthprocess
+
+    ''' <summary>
+    ''' second factor authentication granted for current user
+    ''' </summary>
+    authenticated
+
+    ''' <summary>
+    ''' second factor authentication stopped and not authenticated
+    ''' </summary>
+    stopped
+
+    ''' <summary>
+    ''' too many tries (limit reached)
+    ''' </summary>
+    blocked
+
+    ''' <summary>
+    ''' internal error occurred 
+    ''' </summary>
+    failure
+End Enum
+
+Public Enum AuthActionEnum
+    ''' <summary>
+    ''' Start second factor authentication process 
+    ''' </summary>
+    start
+
+    ''' <summary>
+    ''' Stop a started second factor authentication process
+    ''' Possible if State has value waitingforauth or authenticated 
+    ''' </summary>
+    [stop]
 End Enum
 #End Region

@@ -3,7 +3,7 @@
 ''' Date: 2017-01-06 
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeplugSCPD.pdf</see>
 ''' </summary>
-Public Class X_homePlugSCPD
+Friend Class X_homePlugSCPD
     Implements IX_homeplugSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_homeplugSCPD.TR064Start

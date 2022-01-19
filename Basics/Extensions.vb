@@ -1,8 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports System.Runtime.CompilerServices
 
-'
-'<DebuggerStepThrough()>
+<DebuggerStepThrough()>
 Public Module Extensions
 
 #Region "Extensions für Verarbeitung von Zahlen: Double, Integer, Long"

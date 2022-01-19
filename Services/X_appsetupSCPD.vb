@@ -121,8 +121,6 @@ Friend Class X_appsetupSCPD
             Return .TryGetValueEx("NewEncryptionSecret", EncryptionSecret) And
                    .TryGetValueEx("NewBoxSenderId", BoxSenderId)
         End With
-
-
     End Function
 
     Public Function SetAppVPN(AppId As String, IPSecIdentifier As String, IPSecPreSharedKey As String, IPSecXauthUsername As String, IPSecXauthPassword As String) As Boolean Implements IX_appsetupSCPD.SetAppVPN

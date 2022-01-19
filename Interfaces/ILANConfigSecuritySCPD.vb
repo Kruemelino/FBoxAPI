@@ -3,7 +3,6 @@
 ''' Date: 2020-02-27
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/lanconfigsecuritySCPD.pdf</see>
 ''' </summary>
-
 Public Interface ILANConfigSecuritySCPD
     Inherits IServiceBase
 
