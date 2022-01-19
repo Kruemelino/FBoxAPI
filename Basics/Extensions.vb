@@ -1,7 +1,8 @@
 ﻿Imports System.ComponentModel
 Imports System.Runtime.CompilerServices
 
-<DebuggerStepThrough()>
+'
+'<DebuggerStepThrough()>
 Public Module Extensions
 
 #Region "Extensions für Verarbeitung von Zahlen: Double, Integer, Long"
@@ -90,8 +91,17 @@ Public Module Extensions
             ' prüfe, der Key vorhanden ist.
             If .ContainsKey(key) Then
                 Try
-                    ' Typeumwandlung
-                    value = Convert.ChangeType(.Item(key), GetType(T))
+                    ' Typumwandlung
+
+                    ' Bei Boolean muss momentan ein Sonderweg gegangen werden.
+                    ' "0" und "1" können nicht in Boolean umgewandelt werden.
+                    If GetType(T) Is GetType(Boolean) AndAlso
+                        (.Item(key).Equals("0") Or .Item(key).Equals("1")) Then
+                        value = Convert.ChangeType(CInt(.Item(key)), GetType(T))
+                    Else
+                        value = Convert.ChangeType(.Item(key), GetType(T))
+                    End If
+
                     ' Erfolg
                     Return True
                 Catch ex As Exception
