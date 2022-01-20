@@ -1,9 +1,9 @@
 # FBoxAPI
 
-Dieses Projekt ist ein .NET Bibliothek für die TR-064 Schnittstelle der AVM Fritz!Box. 
-Das Projekt ist eine Ausgliederung aus meinem Addin für Microsoft Outlook: [Fritz!Box Telefon-dingsbums V5](https://github.com/Kruemelino/FritzBoxTelefon-dingsbums) 
+Dieses Projekt ist ein .NET Bibliothek fÃ¼r die TR-064 Schnittstelle der AVM Fritz!Box. 
+Das Projekt ist eine Ausgliederung aus meinem Addin fÃ¼r Microsoft Outlook: [Fritz!Box Telefon-dingsbums V5](https://github.com/Kruemelino/FritzBoxTelefon-dingsbums) 
 
-Dieses Addin ist in meiner Freizeit entstanden. Ich erwarte keine Gegenleistung. Ein Danke ist ausreichend. Wer mir dennoch etwas Gutes zukommen lassen möchte kann dies gerne tun:
+Dieses Addin ist in meiner Freizeit entstanden. Ich erwarte keine Gegenleistung. Ein Danke ist ausreichend. Wer mir dennoch etwas Gutes zukommen lassen mÃ¶chte kann dies gerne tun:
 
 [![Donate](https://img.shields.io/badge/Spenden-PayPal-green.svg)](https://www.paypal.com/paypalme/gertmichael)
 
@@ -11,29 +11,29 @@ Dieses Addin ist in meiner Freizeit entstanden. Ich erwarte keine Gegenleistung.
 Die Schnittstelle basiert auf der [AVM-Dokumentation](https://avm.de/service/schnittstellen). 
 
 ### Nutzung
-Die Verwendung ist recht einfach angedacht. Es muss eine neue `FBoxAPI.FritzBoxTR64`-Klasse instanziiert werden. Hierfür sind zwei Parameter erforderlich: IP-Adresse der Fritz!Box und die 
-Anmeldeinformationen. Nutzername und Passwort werden in einer neuen Instanz der `System.Net.NetworkCredential`-Klasse hinterlegt und übergeben.
-Im folgenen ist ein kleines Beispiel aufgeführt, wie die SessionID der Fritz!Box abgefragt werden kann. 
+Die Verwendung ist recht einfach angedacht. Es muss eine neue `FBoxAPI.FritzBoxTR64`-Klasse instanziiert werden. HierfÃ¼r sind zwei Parameter erforderlich: IP-Adresse der Fritz!Box und die 
+Anmeldeinformationen. Nutzername und Passwort werden in einer neuen Instanz der `System.Net.NetworkCredential`-Klasse hinterlegt und Ã¼bergeben.
+Im folgenen ist ein kleines Beispiel aufgefÃ¼hrt, wie die SessionID der Fritz!Box abgefragt werden kann. 
 
 ```vbnet
 Private Function GetSessionID() As String
     ' Bereitstellung der Variable(n), in die das Ergebnis gesetzt werden sollen.
     Dim SessionID As String = "0000000000000000"
 
-    ' Erstelle Anmeldeinformationen für die Fritz!Box bereit
+    ' Erstelle Anmeldeinformationen fÃ¼r die Fritz!Box bereit
     Dim Nutzername As String = "Fritz"
     Dim Passwort As String = "Box"
 
-    ' ANmeldeinformationen können Nothing sein, falls nur Actions ausgeführt werden, die keine Anmeldung erfordern.
+    ' ANmeldeinformationen kÃ¶nnen Nothing sein, falls nur Actions ausgefÃ¼hrt werden, die keine Anmeldung erfordern.
     Dim Anmeldeinformationen As New Net.NetworkCredential(Nutzername, Passwort)
 
     ' Starte die TR-064 Schnittstelle zur Fritz!Box
     Using FBoxTR064 As New FBoxAPI.FritzBoxTR64("192.168.178.1", Anmeldeinformationen)
 
-        ' Auwahl des Service
+        ' Auswahl des Service
         With FBoxTR064.Deviceconfig
 
-            ' Action ausführen
+            ' Action ausfÃ¼hren
             If .GetSessionID(SessionID) Then
                 ' Alles OK
             Else
@@ -51,7 +51,7 @@ End Function
 Sobald eine neue `FBoxAPI.FritzBoxTR64`-Klasse erstellt wurde, kann auch auf das Event `Status` abgefragt werden. 
 Die FBoxAPI.LogMessage beinhaltet diverse relevante Eigenschaften:
 
-* Level (`System.Enum`) für das LogLevel (`Trace` bis `Fatal`)
+* Level (`System.Enum`) fÃ¼r das LogLevel (`Trace` bis `Fatal`)
 * Message (`System.String`)
 * Exception (`System.Exception`)
 * CallerMemberName (`System.String`)
@@ -59,7 +59,7 @@ Die FBoxAPI.LogMessage beinhaltet diverse relevante Eigenschaften:
 * CallerClassName (`System.String`)
 * CallerLineNumber (`System.String`)
 
-Beispiel für [NLog](https://nlog-project.org/):
+Beispiel fÃ¼r [NLog](https://nlog-project.org/):
 ```vbnet
     Friend Sub FBoxAPIMessage(sender As Object, e As FBoxAPI.NotifyEventArgs(Of FBoxAPI.LogMessage))
 
@@ -78,11 +78,11 @@ Beispiel für [NLog](https://nlog-project.org/):
 ### Bekannte Probleme
 * Die Dokumentation von AVM ist nicht immer korrekt. Z. B. wird in der Dokumentation [X_AVM-DE_AppSetup](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_appsetup.pdf)
   der Parameter `MyFritzDynDNSEnabled` der Action GetAppRemoteInfo aufgelistet. Dieser Parameter lautet aber `NewMyFritzEnabled`. 
-  Es kann nicht ausgeschlossen werden, dann auch anderer Stelle ähnliche Probleme auftreten.
-* Die Services und Actions wurden per Copy&Paste aus den vorliegenden Dokumentationen zusammengestellt. Bitte habt Verständnis, dass ich nicht alles testen kann.  
+  Es kann nicht ausgeschlossen werden, dann auch anderer Stelle Ã¤hnliche Probleme auftreten.
+* Die Services und Actions wurden per Copy&Paste aus den vorliegenden Dokumentationen zusammengestellt. Bitte habt VerstÃ¤ndnis, dass ich nicht alles testen kann.  
 
 ### Umsetzung
-folgende angehakte Services werden derzeit unterstützt. Falls etwas fehlen sollte, oder etwas nicht funktioniert, dann gebt bitte Bescheid.
+folgende angehakte Services werden derzeit unterstÃ¼tzt. Falls etwas fehlen sollte, oder etwas nicht funktioniert, dann gebt bitte Bescheid.
 
 * [x] [DeviceConfig](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf)
 * [x] [DeviceInfo](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf)
@@ -101,7 +101,7 @@ folgende angehakte Services werden derzeit unterstützt. Falls etwas fehlen sollt
 * [x] [WANIPConnection](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wanipconnSCPD.pdf)
 * [x] [WANPPPConnection](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wanpppconnSCPD.pdf)
 * [x] [WLANConfiguration](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wlanconfigSCPD.pdf)
-* [x] [X_AVM-DE_AppSetup](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_appsetup.pdf) (Hinweis: Alle Argumente sind in der Dokumentation falsch angegeben. Der übliche Präfix `New` wurde nicht dargestellt.)
+* [x] [X_AVM-DE_AppSetup](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_appsetup.pdf) (Hinweis: Alle Argumente sind in der Dokumentation falsch angegeben. Der Ã¼bliche PrÃ¤fix `New` wurde nicht dargestellt.)
 * [x] [X_AVM-DE_Auth](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_auth.pdf)
 * [x] [X_AVM-DE_Dect](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_dectSCPD.pdf)
 * [x] [X_AVM-DE_Filelinks](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_filelinksSCPD.pdf)
@@ -120,5 +120,5 @@ folgende angehakte Services werden derzeit unterstützt. Falls etwas fehlen sollt
 		
 
 ### Markenrecht
-Dieses Software wird vom Autor privat in der Freizeit als Hobby gepflegt. Mit der Bereitstellung der Software werden keine gewerblichen Interessen verfolgt. Es wird aus rein ideellen Gründen zum Gemeinwohl aller Nutzer einer Fritz!Box betrieben. 
-Die Erstellung dieser Software erfolgt nicht im Auftrag oder mit Wissen der Firmen AVM GmbH. Diese Software wurde unabhängig erstellt. Der Autor pflegt im Zusammenhang mit dieser Software keine Beziehungen zur Firma AVM GmbH.
+Dieses Software wird vom Autor privat in der Freizeit als Hobby gepflegt. Mit der Bereitstellung der Software werden keine gewerblichen Interessen verfolgt. Es wird aus rein ideellen GrÃ¼nden zum Gemeinwohl aller Nutzer einer Fritz!Box betrieben. 
+Die Erstellung dieser Software erfolgt nicht im Auftrag oder mit Wissen der Firmen AVM GmbH. Diese Software wurde unabhÃ¤ngig erstellt. Der Autor pflegt im Zusammenhang mit dieser Software keine Beziehungen zur Firma AVM GmbH.
