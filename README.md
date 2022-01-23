@@ -24,7 +24,7 @@ Private Function GetSessionID() As String
     Dim Nutzername As String = "Fritz"
     Dim Passwort As String = "Box"
 
-    ' ANmeldeinformationen können Nothing sein, falls nur Actions ausgeführt werden, die keine Anmeldung erfordern.
+    ' Anmeldeinformationen können Nothing sein, falls nur Actions ausgeführt werden, die keine Anmeldung erfordern.
     Dim Anmeldeinformationen As New Net.NetworkCredential(Nutzername, Passwort)
 
     ' Starte die TR-064 Schnittstelle zur Fritz!Box
