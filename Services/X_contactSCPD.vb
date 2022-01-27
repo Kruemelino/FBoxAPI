@@ -242,7 +242,7 @@ Friend Class X_contactSCPD
     Public Function GetDeflections(ByRef DeflectionList As DeflectionList) As Boolean Implements IX_contactSCPD.GetDeflections
 
         Dim Deflections As String = String.Empty
-        If GetDeflections(DeflectionList) Then
+        If GetDeflections(Deflections) Then
             XML.Deserialize(Deflections, False, DeflectionList)
             Return True
         Else
