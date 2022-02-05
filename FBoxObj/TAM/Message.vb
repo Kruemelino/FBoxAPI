@@ -4,7 +4,7 @@
     ''' <summary>
     ''' Number of called party 
     ''' </summary>
-    <XmlElement("Called", GetType(String))> Public Property ID As String
+    <XmlElement("Called", GetType(String))> Public Property Called As String
     ''' <summary>
     ''' 31.07.12 12:03
     ''' </summary>
