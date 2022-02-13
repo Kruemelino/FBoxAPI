@@ -1,7 +1,7 @@
 ﻿Imports System.Xml.Serialization
 
 <Serializable()>
-<XmlRoot("scpd", Namespace:="urn:dslforum-org:service-1-0", IsNullable:=False)>
+<XmlRoot("scpd", IsNullable:=False)>
 Public Class ServiceControlProtocolDefinition
     <XmlElement("specVersion")> Public Property [SpecVersion] As SpecVersion
     <XmlArray("actionList")> <XmlArrayItem("action")> Public Property ActionList As List(Of Action)

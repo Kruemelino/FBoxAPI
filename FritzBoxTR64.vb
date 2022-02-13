@@ -13,7 +13,12 @@ Public Class FritzBoxTR64
     Friend Shared Property FBoxIPAdresse As String
     Private Property Services As List(Of Service)
 
+    ''' <summary>
+    ''' Angabe, ob der AURA Service (AVM USB Remote Access) genutzt werden soll.
+    ''' </summary>
+    Public Property UseAURA As Boolean = False
 #Region "Services"
+    Public Property AURA As IAuraSCPD
     Public Property DECT As IDECT_SCPD
     Public Property Deviceconfig As IDeviceconfigSCPD
     Public Property Deviceinfo As IDeviceinfoSCPD
@@ -53,8 +58,9 @@ Public Class FritzBoxTR64
 
 #Region "Kontruktor"
     ''' <summary>
-    ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Achtung! Die Routine <see cref="Init(String, NetworkCredential)"/> muss separat ausgeführt werden./>
+    ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. 
     ''' </summary>
+    ''' <remarks>Achtung! Die Routine <see cref="Init(String, NetworkCredential)"/> muss separat ausgeführt werden.</remarks>
     Public Sub New()
 
     End Sub
@@ -65,8 +71,10 @@ Public Class FritzBoxTR64
     ''' </summary>
     ''' <param name="FritzBoxAdresse">Die IP Adresse der Fritz!Box.</param>
     ''' <param name="Anmeldeinformationen">Die Anmeldeinformationen (Benutzername und Passwort) als <see cref="NetworkCredential"/>.</param>
-    Public Sub New(FritzBoxAdresse As String, timeout As Integer, Anmeldeinformationen As NetworkCredential)
-        Init(FritzBoxAdresse, timeout, Anmeldeinformationen)
+    ''' <param name="timeout">Timeout für die http Abfragen</param>
+    ''' <param name="UseAURA">Angabe, ob der AURA Service (AVM USB Remote Access) genutzt werden soll.</param>
+    Public Sub New(FritzBoxAdresse As String, timeout As Integer, Anmeldeinformationen As NetworkCredential, Optional InitAURA As Boolean = False)
+        Init(FritzBoxAdresse, timeout, Anmeldeinformationen, InitAURA)
     End Sub
 #End Region
 
@@ -77,7 +85,9 @@ Public Class FritzBoxTR64
     ''' </summary>
     ''' <param name="FritzBoxAdresse">Die IP Adresse der Fritz!Box.</param>
     ''' <param name="Anmeldeinformationen">Die Anmeldeinformationen (Benutzername und Passwort) als <see cref="NetworkCredential"/>.</param>
-    Public Sub Init(FritzBoxAdresse As String, timeout As Integer, Anmeldeinformationen As NetworkCredential)
+    ''' <param name="timeout">Timeout für die http Abfragen</param>
+    ''' <param name="UseAURA">Angabe, ob der AURA Service (AVM USB Remote Access) genutzt werden soll.</param>
+    Public Sub Init(FritzBoxAdresse As String, timeout As Integer, Anmeldeinformationen As NetworkCredential, Optional InitAURA As Boolean = False)
         ' ByPass SSL Certificate Validation Checking
         ServicePointManager.ServerCertificateValidationCallback = Function(se As Object, cert As System.Security.Cryptography.X509Certificates.X509Certificate, chain As System.Security.Cryptography.X509Certificates.X509Chain, sslerror As Security.SslPolicyErrors) True
 
@@ -91,7 +101,7 @@ Public Class FritzBoxTR64
         Http = New TR064HttpBasics(AddressOf PushStatus, timeout)
 
         ' Verbindung zur Fritz!Box aufbauen
-        Ready = ConnectTR064()
+        Ready = ConnectTR064(InitAURA)
 
         ' Lade die AVM Services (auch unabhängig davon, ob die Verbindung geklappt hat)
         InitAVMServices()
@@ -108,7 +118,7 @@ Public Class FritzBoxTR64
         End If
     End Sub
 
-    Private Function ConnectTR064() As Boolean
+    Private Function ConnectTR064(UseAura As Boolean) As Boolean
         ' Funktioniert nicht: ByPass SSL Certificate Validation Checking wird ignoriert. Es kommt zu unerklärlichen System.Net.WebException in FritzBoxPOST
         ' FBTR64Desc = DeserializeObject(Of TR64Desc)($"http://{FBoxIPAdresse}:{FritzBoxDefault.PDfltFBSOAP}{Tr064Files.tr64desc}")
 
@@ -128,6 +138,9 @@ Public Class FritzBoxTR64
                     ' Ermittle alle vorhandenen Services
                     Services = FBTR64Desc.Device.GetAllServices()
 
+                    ' Initiiere AURA (AVM USB Remote Access) 
+                    If UseAura Then AddAURAService(XML)
+
                     PushStatus(CreateLog(LogLevel.Info, $"Fritz!Box TR064 API mit {Services.Count} Services erfolgreich initialisiert."))
 
                     ' Füge das Flag hinzu, dass die TR064-Schnittstelle bereit ist.
@@ -145,11 +158,27 @@ Public Class FritzBoxTR64
         Return False
     End Function
 
+    Private Sub AddAURAService(XML As Serializer)
+        Dim Response As String = String.Empty
+        Dim AuraDesc As TR64Desc
+        If Http.DownloadString(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, SCPDFiles.auradesc.Description).Uri, Response) Then
+            AuraDesc = New TR64Desc
+            ' Deserialisieren
+            If XML.Deserialize(Response, False, AuraDesc) Then
+                ' Ermittle alle vorhandenen Services und hänge sie an
+                Services.AddRange(AuraDesc.Device.GetAllServices)
+
+                PushStatus(CreateLog(LogLevel.Debug, $"Fritz!Box AURA Services geladen."))
+            End If
+        End If
+    End Sub
+
     ''' <summary>
     ''' Lade die AVM Services
     ''' </summary>
     Private Sub InitAVMServices()
 
+        AURA = New AuraSCPD(AddressOf TR064Start)
         DECT = New DECT_SCPD(AddressOf TR064Start)
         Deviceconfig = New DeviceconfigSCPD(AddressOf TR064Start)
         Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start)
@@ -187,7 +216,7 @@ Public Class FritzBoxTR64
     End Sub
 
 #End Region
-
+    <DebuggerStepThrough>
     Private Sub PushStatus(LMsg As LogMessage)
         RaiseEvent Status(Me, New NotifyEventArgs(Of LogMessage)(LMsg))
     End Sub

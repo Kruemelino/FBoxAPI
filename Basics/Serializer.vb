@@ -88,7 +88,7 @@ Friend Class Serializer
             Dim Serializer As New XmlSerializer(GetType(T))
 
             ' Erstelle einen XMLReader zum Deserialisieren des XML-Documentes
-            Using Reader As New XmlNodeReader(xDoc)
+            Using Reader As New IgnoreNameSpaceXmlNodeReader(xDoc)
 
                 If Serializer.CanDeserialize(Reader) Then
                     Try
@@ -108,7 +108,6 @@ Friend Class Serializer
                     PushStatus?.Invoke(CreateLog(LogLevel.Fatal, New Exception("Fehler beim Deserialisieren."), xDoc.InnerXml))
                     Return False
                 End If
-
 
             End Using
 

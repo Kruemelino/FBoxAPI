@@ -39,6 +39,10 @@ Public Module FritzBoxInformations
 
         '<Description("/any.xml")> any
 
+        <Description("/aura.xml")> auradesc
+
+        <Description("/aura-scpd.xml")> auraSCPD
+
         <Description("/deviceconfigSCPD.xml")> deviceconfigSCPD
 
         <Description("/deviceinfoSCPD.xml")> deviceinfoSCPD

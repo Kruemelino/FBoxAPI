@@ -27,8 +27,11 @@ Private Function GetSessionID() As String
     ' Anmeldeinformationen können Nothing sein, falls nur Actions ausgeführt werden, die keine Anmeldung erfordern.
     Dim Anmeldeinformationen As New Net.NetworkCredential(Nutzername, Passwort)
 
+    ' Timeout für die http-Komunikation: 120 ms
+    Dim timeout as Integer = 120
+
     ' Starte die TR-064 Schnittstelle zur Fritz!Box
-    Using FBoxTR064 As New FBoxAPI.FritzBoxTR64("192.168.178.1", Anmeldeinformationen)
+    Using FBoxTR064 As New FBoxAPI.FritzBoxTR64("192.168.178.1", timeout, Anmeldeinformationen)
 
         ' Auswahl des Service
         With FBoxTR064.Deviceconfig
@@ -47,6 +50,8 @@ Private Function GetSessionID() As String
 
 End Function
 ```
+Hinweis: Wenn der AURA-Service (AVM USB Remote Access) verwendet werden soll, muss dies bei der Initialisierung der Schnittstelle übergegeben werden. 
+Hierfür gibt es einen optionalen Parameter `InitAURA` im Konstruktor bzw. Init-Funktion welcher standardmäßig auf `False` gesetzt ist.
 
 Sobald eine neue `FBoxAPI.FritzBoxTR64`-Klasse erstellt wurde, kann auch auf das Event `Status` abgefragt werden. 
 Die FBoxAPI.LogMessage beinhaltet diverse relevante Eigenschaften:
@@ -84,6 +89,7 @@ Beispiel für [NLog](https://nlog-project.org/):
 ### Umsetzung
 folgende angehakte Services werden derzeit unterstützt. Falls etwas fehlen sollte, oder etwas nicht funktioniert, dann gebt bitte Bescheid.
 
+* [x] [AURA](https://github.com/blacksenator/fritzsoap/blob/master/docs/auraSCPD.pdf) (Inoffizielle Dokumentation von Black Senator aus dem IPPF)
 * [x] [DeviceConfig](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf)
 * [x] [DeviceInfo](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf)
 * [x] [Hosts](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/hostsSCPD.pdf)
@@ -117,6 +123,7 @@ folgende angehakte Services werden derzeit unterstützt. Falls etwas fehlen soll
 * [x] [X_HomeAuto](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf)
 * [x] [X_HomePlug](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeplugSCPD.pdf)
 * [x] [X_VoIP](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voip-avm.pdf)	
+      
 		
 
 ### Markenrecht
