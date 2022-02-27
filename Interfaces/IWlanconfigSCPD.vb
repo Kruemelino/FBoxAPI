@@ -43,10 +43,10 @@ Public Interface IWlanconfigSCPD
     ''' </remarks>
     Function GetWLANDeviceListPath(ByRef WLANDeviceListPath As String) As Boolean
 
-    ''' <summary>
-    ''' Inoffizielle Action: X_AVM-DE_GetWLANDeviceListPath wird als <see cref="WLANDeviceList"/> deserialisiert zurückgegeben.
-    ''' </summary>
+    <Obsolete("This function is obsolete and will be removed in a future version. Use the function GetWLANDeviceList() As Task(Of WLANDeviceList) instead.")>
     Function GetWLANDeviceList(AssociatedDevices As WLANDeviceList) As Boolean
+    Function GetWLANDeviceList() As Task(Of WLANDeviceList)
+
     Function SetStickSurfEnable(StickSurfEnable As Boolean) As Boolean
     Function GetIPTVOptimized(ByRef IPTVoptimize As Boolean) As Boolean
     Function SetIPTVOptimized(IPTVoptimize As Boolean) As Boolean

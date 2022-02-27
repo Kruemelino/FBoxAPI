@@ -1,14 +1,19 @@
 ﻿Imports System.IO
+Imports System.Text
 Imports System.Xml
 Imports System.Xml.Serialization
+Imports System.Xml.Xsl
 
+<DebuggerStepThrough()>
 Friend Class Serializer
     Inherits LogBase
 
     Private Property PushStatus As Action(Of LogMessage)
+    Private Property Client As TR064WebFunctions
 
-    Public Sub New(Status As Action(Of LogMessage))
+    Public Sub New(Status As Action(Of LogMessage), http As TR064WebFunctions)
         PushStatus = Status
+        Client = http
     End Sub
 
 #Region "XML"
@@ -68,10 +73,10 @@ Friend Class Serializer
             Return False
         End If
     End Function
-
 #End Region
 
 #Region "XML Deserialisieren"
+
     ''' <summary>
     ''' Deserialisiert die XML-Datei, die unter <paramref name="Data"/> gespeichert ist.
     ''' </summary>
@@ -80,33 +85,35 @@ Friend Class Serializer
     ''' <param name="IsPath">Angabe, ob es sich um einen Pfad handelt.</param>
     ''' <param name="ReturnObj">Deserialisiertes Datenobjekt vom Type <typeparamref name="T"/>.</param>
     ''' <returns>True oder False, je nach Ergebnis der Deserialisierung</returns>
-    Friend Function Deserialize(Of T)(Data As String, IsPath As Boolean, ByRef ReturnObj As T) As Boolean
+    Friend Function Deserialize(Of T)(Data As String, IsPath As Boolean, ByRef ReturnObj As T, Optional xslt As XslCompiledTransform = Nothing) As Boolean
 
         Dim xDoc As New XmlDocument
         If CheckXMLData(Data, IsPath, xDoc) Then
 
-            Dim Serializer As New XmlSerializer(GetType(T))
-
             ' Erstelle einen XMLReader zum Deserialisieren des XML-Documentes
             Using Reader As New IgnoreNameSpaceXmlNodeReader(xDoc)
 
-                If Serializer.CanDeserialize(Reader) Then
-                    Try
-                        ReturnObj = CType(Serializer.Deserialize(Reader, New XmlDeserializationEvents With {.OnUnknownAttribute = AddressOf On_UnknownAttribute,
-                                                                                                            .OnUnknownElement = AddressOf On_UnknownElement,
-                                                                                                            .OnUnknownNode = AddressOf On_UnknownNode,
-                                                                                                            .OnUnreferencedObject = AddressOf On_UnreferencedObject}), T)
+                If xslt Is Nothing Then
+                    ' Deserialisiere das XML-Objekt ohne Transformation
+                    Return DeserializeObject(Reader, ReturnObj)
 
-                        Return True
-
-                    Catch ex As InvalidOperationException
-
-                        PushStatus?.Invoke(CreateLog(LogLevel.Fatal, "Bei der Deserialisierung ist ein Fehler aufgetreten.", ex))
-                        Return False
-                    End Try
                 Else
-                    PushStatus?.Invoke(CreateLog(LogLevel.Fatal, New Exception("Fehler beim Deserialisieren."), xDoc.InnerXml))
-                    Return False
+                    ' Führe eine Transformation durch
+                    Dim TransformationOutput As New StringBuilder
+
+                    ' Erstelle einen XMLWriter
+                    Using transformedData As XmlWriter = XmlWriter.Create(TransformationOutput, New XmlWriterSettings With {.OmitXmlDeclaration = True})
+                        ' Transformiere das XML-Objekt
+                        xslt.Transform(Reader, transformedData)
+
+                        ' Lies das transformierte XML-Objekt ein
+                        Using ReaderTransformed As XmlReader = XmlReader.Create(New StringReader(TransformationOutput.ToString()))
+
+                            ' Deserialisiere das transformierte XML-Objekt
+                            Return DeserializeObject(ReaderTransformed, ReturnObj)
+
+                        End Using
+                    End Using
                 End If
 
             End Using
@@ -114,10 +121,54 @@ Friend Class Serializer
         Else
             PushStatus?.Invoke(CreateLog(LogLevel.Fatal, New Exception($"Fehler beim Deserialisieren: {Data} kann nicht deserialisert werden.")))
             Return False
+
         End If
         xDoc = Nothing
     End Function
 
+    ''' <summary>
+    ''' Deserialisiert den übergebenen <paramref name="Reader"/> (<see cref="XmlReader"/>).
+    ''' </summary>
+    ''' <typeparam name="T">Typ des deserialsierten Objektes.</typeparam>
+    ''' <param name="Reader">Der <see cref="XmlReader"/>.</param>
+    ''' <param name="ReturnObj">Deserialisiertes Datenobjekt vom Type <typeparamref name="T"/>.</param>
+    ''' <returns>True oder False, je nach Ergebnis der Deserialisierung</returns>
+    Private Function DeserializeObject(Of T)(Reader As XmlReader, ByRef ReturnObj As T) As Boolean
+
+        Dim Serializer As New XmlSerializer(GetType(T))
+
+        If Serializer.CanDeserialize(Reader) Then
+            Try
+                ReturnObj = CType(Serializer.Deserialize(Reader, New XmlDeserializationEvents With {.OnUnknownAttribute = AddressOf On_UnknownAttribute,
+                                                                                                    .OnUnknownElement = AddressOf On_UnknownElement,
+                                                                                                    .OnUnknownNode = AddressOf On_UnknownNode,
+                                                                                                    .OnUnreferencedObject = AddressOf On_UnreferencedObject}), T)
+
+                Return True
+
+            Catch ex As InvalidOperationException
+
+                PushStatus?.Invoke(CreateLog(LogLevel.Fatal, "Bei der Deserialisierung ist ein Fehler aufgetreten.", ex))
+                Return False
+            End Try
+        Else
+            PushStatus?.Invoke(CreateLog(LogLevel.Fatal, New Exception("Fehler beim Deserialisieren.")))
+            Return False
+        End If
+
+    End Function
+
+    Friend Async Function DeserializeAsyncFromPath(Of T)(Path As String, Optional xslt As XslCompiledTransform = Nothing) As Task(Of T)
+        ' Lade Daten herunter und starte das Deserialisiere der XML-Daten
+        Return Await DeserializeAsyncData(Of T)(Await Client.GetStringWebClientAsync(Path), xslt)
+    End Function
+
+    Friend Function DeserializeAsyncData(Of T)(Data As String, Optional xslt As XslCompiledTransform = Nothing) As Task(Of T)
+        Return Task.Run(Function()
+                            Dim ReturnObj As T
+                            Return If(Deserialize(Data, False, ReturnObj, xslt), ReturnObj, Nothing)
+                        End Function)
+    End Function
 #End Region
 
 #Region "XML Serialisieren"

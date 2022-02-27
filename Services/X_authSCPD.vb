@@ -22,7 +22,7 @@ Friend Class X_authSCPD
     End Function
 
     Public Function SetConfig(Action As AuthActionEnum, ByRef Token As String, ByRef State As AuthStateEnum, ByRef Methods As String) As Boolean Implements IX_authSCPD.SetConfig
-        With TR064Start(ServiceFile, "SetConfig", New Dictionary(Of String, String) From {{"NewAction", Action}})
+        With TR064Start(ServiceFile, "SetConfig", New Dictionary(Of String, String) From {{"NewAction", Action.ToString}})
 
             Return .TryGetValueEx("NewToken", Token) And
                    .TryGetValueEx("NewState", State) And

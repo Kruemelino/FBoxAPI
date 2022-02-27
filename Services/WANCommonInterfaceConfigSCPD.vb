@@ -47,13 +47,13 @@ Friend Class WANCommonInterfaceConfigSCPD
     End Function
 
     Public Function SetWANAccessType(AccessType As AccessTypeEnum) As Boolean Implements IWANCommonInterfaceConfigSCPD.SetWANAccessType
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetWANAccessType", New Dictionary(Of String, String) From {{"NewAccessType", AccessType}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetWANAccessType", New Dictionary(Of String, String) From {{"NewAccessType", AccessType.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetOnlineMonitor(ByRef OnlineMonitor As OnlineMonitor, SyncGroupIndex As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetOnlineMonitor
         If OnlineMonitor Is Nothing Then OnlineMonitor = New OnlineMonitor
 
-        With TR064Start(ServiceFile, "X_AVM-DE_GetOnlineMonitor", New Dictionary(Of String, String) From {{"NewSyncGroupIndex", SyncGroupIndex}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetOnlineMonitor", New Dictionary(Of String, String) From {{"NewSyncGroupIndex", SyncGroupIndex.ToString}})
 
             OnlineMonitor.SyncGroupIndex = SyncGroupIndex
 

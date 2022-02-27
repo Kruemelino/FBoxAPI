@@ -19,7 +19,7 @@
     ''' <summary>
     ''' Sequential number for each host
     ''' </summary>
-    <XmlElement("Index")> Public Property Index As String
+    <XmlElement("Index")> Public Property Index As Integer
 
     ''' <summary>
     ''' The interface with which the host accesses the F!Box ("Ethernet", "802.11", "HomePlug", "")

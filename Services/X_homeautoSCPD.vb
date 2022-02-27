@@ -33,7 +33,7 @@ Friend Class X_homeautoSCPD
 
         If DeviceInfo Is Nothing Then DeviceInfo = New HomeAutoDeviceInfo
 
-        With TR064Start(ServiceFile, "GetGenericDeviceInfos", New Dictionary(Of String, String) From {{"NewIndex", Index}})
+        With TR064Start(ServiceFile, "GetGenericDeviceInfos", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
             Return .TryGetValueEx("NewAIN", DeviceInfo.AIN) And
                    .TryGetValueEx("NewDeviceId", DeviceInfo.DeviceId) And
@@ -117,6 +117,6 @@ Friend Class X_homeautoSCPD
 
     Public Function SetSwitch(AIN As String, SwitchState As SwStateEnum) As Boolean Implements IX_homeautoSCPD.SetSwitch
         Return Not TR064Start(ServiceFile, "SetSwitch", New Dictionary(Of String, String) From {{"NewAIN", AIN},
-                                                                                                {"NewSwitchState", SwitchState}}).ContainsKey("Error")
+                                                                                                {"NewSwitchState", SwitchState.ToString}}).ContainsKey("Error")
     End Function
 End Class

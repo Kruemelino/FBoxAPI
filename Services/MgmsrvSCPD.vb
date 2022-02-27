@@ -46,7 +46,7 @@ Friend Class MgmsrvSCPD
     Public Function SetPeriodicInform(PeriodicInformEnable As Boolean, PeriodicInformInterval As Integer, PeriodicInformTime As String) As Boolean Implements IMgmsrvSCPD.SetPeriodicInform
         Return Not TR064Start(ServiceFile, "SetPeriodicInform",
                               New Dictionary(Of String, String) From {{"NewPeriodicInformEnable", PeriodicInformEnable.ToBoolStr},
-                                                                      {"NewPeriodicInformInterval", PeriodicInformInterval},
+                                                                      {"NewPeriodicInformInterval", PeriodicInformInterval.ToString},
                                                                       {"NewPeriodicInformTime", PeriodicInformTime}}).ContainsKey("Error")
     End Function
 

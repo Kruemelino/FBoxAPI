@@ -5,6 +5,6 @@
 ''' </summary>
 Public Interface IWANEthernetLinkConfigSCPD
     Inherits IServiceBase
-    Function GetEthernetLinkStatus(ByRef EthernetLinkStatus As EthernetLinkStatusEnum)
+    Function GetEthernetLinkStatus(ByRef EthernetLinkStatus As EthernetLinkStatusEnum) As Boolean
 
 End Interface

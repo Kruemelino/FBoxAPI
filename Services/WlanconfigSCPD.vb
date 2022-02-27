@@ -10,10 +10,10 @@ Friend Class WlanconfigSCPD
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.wlanconfigSCPD Implements IWlanconfigSCPD.Servicefile
     Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), XMLSerializer As Serializer)
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)),
+                   XMLSerializer As Serializer)
 
         TR064Start = Start
-
         XML = XMLSerializer
     End Sub
 
@@ -26,7 +26,7 @@ Friend Class WlanconfigSCPD
 
         With TR064Start(ServiceFile, "GetInfo", Nothing)
             If .ContainsKey("NewX_AVM-DE_PossibleBeaconTypes") Then
-                Info.PossibleBeaconTypes = .Item("NewX_AVM-DE_PossibleBeaconTypes").Split(",")
+                Info.PossibleBeaconTypes = .Item("NewX_AVM-DE_PossibleBeaconTypes").Split(","c)
 
                 Return .TryGetValueEx("NewEnable", Info.Enable) And
                        .TryGetValueEx("NewStatus", Info.Status) And
@@ -53,22 +53,24 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function SetConfig(Config As WLANInfo) As Boolean Implements IWlanconfigSCPD.SetConfig
-        Return Not TR064Start(ServiceFile, "SetConfig", New Dictionary(Of String, String) From {{"NewMaxBitRate", Config.MaxBitRate},
-                                                                                                {"NewChannel", Config.Channel},
-                                                                                                {"NewSSID", Config.SSID},
-                                                                                                {"NewBeaconType", Config.BeaconType},
-                                                                                                {"NewMacAddressControlEnabled", Config.MACAddressControlEnabled.ToBoolStr},
-                                                                                                {"NewBasicEncryptionModes", Config.BasicEncryptionModes},
-                                                                                                {"NewBasicAuthenticationMode", Config.BasicAuthenticationMode}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetConfig",
+                              New Dictionary(Of String, String) From {{"NewMaxBitRate", Config.MaxBitRate},
+                                                                      {"NewChannel", Config.Channel},
+                                                                      {"NewSSID", Config.SSID},
+                                                                      {"NewBeaconType", Config.BeaconType},
+                                                                      {"NewMacAddressControlEnabled", Config.MACAddressControlEnabled.ToBoolStr},
+                                                                      {"NewBasicEncryptionModes", Config.BasicEncryptionModes},
+                                                                      {"NewBasicAuthenticationMode", Config.BasicAuthenticationMode}}).ContainsKey("Error")
     End Function
 
     Public Function SetSecurityKeys(PreSharedKey As String, KeyPassphrase As String) As Boolean Implements IWlanconfigSCPD.SetSecurityKeys
-        Return Not TR064Start(ServiceFile, "SetSecurityKeys", New Dictionary(Of String, String) From {{"NewWEPKey0", String.Empty},
-                                                                                                      {"NewWEPKey1", String.Empty},
-                                                                                                      {"NewWEPKey2", String.Empty},
-                                                                                                      {"NewWEPKey3", String.Empty},
-                                                                                                      {"NewPreSharedKey", PreSharedKey},
-                                                                                                      {"NewKeyPassphrase", KeyPassphrase}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetSecurityKeys",
+                              New Dictionary(Of String, String) From {{"NewWEPKey0", String.Empty},
+                                                                      {"NewWEPKey1", String.Empty},
+                                                                      {"NewWEPKey2", String.Empty},
+                                                                      {"NewWEPKey3", String.Empty},
+                                                                      {"NewPreSharedKey", PreSharedKey},
+                                                                      {"NewKeyPassphrase", KeyPassphrase}}).ContainsKey("Error")
 
     End Function
 
@@ -82,8 +84,9 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function SetBasBeaconSecurityProperties(BasicEncryptionModes As String, BasicAuthenticationMode As String) As Boolean Implements IWlanconfigSCPD.SetBasBeaconSecurityProperties
-        Return Not TR064Start(ServiceFile, "SetBasBeaconSecurityProperties", New Dictionary(Of String, String) From {{"NewBasicEncryptionModes", BasicEncryptionModes},
-                                                                                                                     {"NewBasicAuthenticationMode", BasicAuthenticationMode}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetBasBeaconSecurityProperties",
+                              New Dictionary(Of String, String) From {{"NewBasicEncryptionModes", BasicEncryptionModes},
+                                                                      {"NewBasicAuthenticationMode", BasicAuthenticationMode}}).ContainsKey("Error")
     End Function
 
     Public Function GetBasBeaconSecurityProperties(ByRef BasicEncryptionModes As String, ByRef BasicAuthenticationMode As String) As Boolean Implements IWlanconfigSCPD.GetBasBeaconSecurityProperties
@@ -104,14 +107,15 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function SetSSID(SSID As String) As Boolean Implements IWlanconfigSCPD.SetSSID
-        Return Not TR064Start(ServiceFile, "SetSSID", New Dictionary(Of String, String) From {{"NewSSID", SSID}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetSSID",
+                              New Dictionary(Of String, String) From {{"NewSSID", SSID}}).ContainsKey("Error")
     End Function
 
     Public Function GetBeaconType(ByRef BeaconType As String, ByRef PossibleBeaconTypes() As String) As Boolean Implements IWlanconfigSCPD.GetBeaconType
         With TR064Start(ServiceFile, "GetBeaconType", Nothing)
 
             If .ContainsKey("NewX_AVM-DE_PossibleBeaconTypes") Then
-                PossibleBeaconTypes = .Item("NewX_AVM-DE_PossibleBeaconTypes").Split(",")
+                PossibleBeaconTypes = .Item("NewX_AVM-DE_PossibleBeaconTypes").Split(","c)
                 Return .TryGetValueEx("NewBeaconType", BeaconType)
             Else
                 Return False
@@ -120,7 +124,8 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function SetBeaconType(BeaconType As String) As Boolean Implements IWlanconfigSCPD.SetBeaconType
-        Return Not TR064Start(ServiceFile, "SetBeaconType", New Dictionary(Of String, String) From {{"NewBeaconType", BeaconType}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetBeaconType",
+                              New Dictionary(Of String, String) From {{"NewBeaconType", BeaconType}}).ContainsKey("Error")
     End Function
 
     Public Function GetChannelInfo(ByRef Channel As Integer, ByRef PossibleChannels As String) As Boolean Implements IWlanconfigSCPD.GetChannelInfo
@@ -133,7 +138,8 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function SetChannel(Channel As Integer) As Boolean Implements IWlanconfigSCPD.SetChannel
-        Return Not TR064Start(ServiceFile, "SetChannel", New Dictionary(Of String, String) From {{"NewChannel", Channel}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetChannel",
+                              New Dictionary(Of String, String) From {{"NewChannel", Channel.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetBeaconAdvertisement(ByRef BeaconAdvertisementEnabled As Boolean) As Boolean Implements IWlanconfigSCPD.GetBeaconAdvertisement
@@ -141,7 +147,8 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function SetBeaconAdvertisement(BeaconAdvertisementEnabled As Boolean) As Boolean Implements IWlanconfigSCPD.SetBeaconAdvertisement
-        Return Not TR064Start(ServiceFile, "SetBeaconAdvertisement", New Dictionary(Of String, String) From {{"NewBeaconAdvertisementEnabled", BeaconAdvertisementEnabled.ToBoolStr}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetBeaconAdvertisement",
+                              New Dictionary(Of String, String) From {{"NewBeaconAdvertisementEnabled", BeaconAdvertisementEnabled.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetTotalAssociations(ByRef TotalAssociations As Integer) As Boolean Implements IWlanconfigSCPD.GetTotalAssociations
@@ -149,11 +156,10 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function GetGenericAssociatedDeviceInfo(DeviceIndex As Integer, ByRef DeviceInfo As AssociatedDevice) As Boolean Implements IWlanconfigSCPD.GetGenericAssociatedDeviceInfo
-        If DeviceInfo Is Nothing Then DeviceInfo = New AssociatedDevice
+        If DeviceInfo Is Nothing Then DeviceInfo = New AssociatedDevice With {.AssociatedDeviceIndex = DeviceIndex}
 
-        With TR064Start(ServiceFile, "GetGenericAssociatedDeviceInfo", New Dictionary(Of String, String) From {{"NewAssociatedDeviceIndex", DeviceIndex}})
-
-            DeviceInfo.AssociatedDeviceIndex = DeviceIndex
+        With TR064Start(ServiceFile, "GetGenericAssociatedDeviceInfo",
+                        New Dictionary(Of String, String) From {{"NewAssociatedDeviceIndex", DeviceIndex.ToString}})
 
             Return .TryGetValueEx("NewAssociatedDeviceMACAddress", DeviceInfo.AssociatedDeviceMACAddress) And
                    .TryGetValueEx("NewAssociatedDeviceIPAddress", DeviceInfo.AssociatedDeviceIPAddress) And
@@ -167,7 +173,8 @@ Friend Class WlanconfigSCPD
     Public Function GetSpecificAssociatedDeviceInfo(AssociatedDeviceMACAddress As String, ByRef DeviceInfo As AssociatedDevice) As Boolean Implements IWlanconfigSCPD.GetSpecificAssociatedDeviceInfo
         If DeviceInfo Is Nothing Then DeviceInfo = New AssociatedDevice
 
-        With TR064Start(ServiceFile, "GetGenericAssociatedDeviceInfo", New Dictionary(Of String, String) From {{"NewAssociatedDeviceMACAddress", AssociatedDeviceMACAddress}})
+        With TR064Start(ServiceFile, "GetGenericAssociatedDeviceInfo",
+                        New Dictionary(Of String, String) From {{"NewAssociatedDeviceMACAddress", AssociatedDeviceMACAddress}})
 
             DeviceInfo.AssociatedDeviceMACAddress = AssociatedDeviceMACAddress
 
@@ -183,7 +190,8 @@ Friend Class WlanconfigSCPD
     Public Function GetSpecificAssociatedDeviceInfoByIp(AssociatedDeviceIPAddress As String, ByRef DeviceInfo As AssociatedDevice) As Boolean Implements IWlanconfigSCPD.GetSpecificAssociatedDeviceInfoByIp
         If DeviceInfo Is Nothing Then DeviceInfo = New AssociatedDevice
 
-        With TR064Start(ServiceFile, "GetGenericAssociatedDeviceInfo", New Dictionary(Of String, String) From {{"NewAssociatedDeviceIPAddress", AssociatedDeviceIPAddress}})
+        With TR064Start(ServiceFile, "GetGenericAssociatedDeviceInfo",
+                        New Dictionary(Of String, String) From {{"NewAssociatedDeviceIPAddress", AssociatedDeviceIPAddress}})
 
             DeviceInfo.AssociatedDeviceIPAddress = AssociatedDeviceIPAddress
 
@@ -198,13 +206,23 @@ Friend Class WlanconfigSCPD
         Return TR064Start(ServiceFile, "X_AVM-DE_GetWLANDeviceListPath", Nothing).TryGetValueEx("NewX_AVM-DE_WLANDeviceListPath", WLANDeviceListPath)
     End Function
 
-    Public Function GetWLANDeviceList(AssociatedDevices As WLANDeviceList) As Boolean Implements IWlanconfigSCPD.GetWLANDeviceList
+    <Obsolete> Public Function GetWLANDeviceList(AssociatedDevices As WLANDeviceList) As Boolean Implements IWlanconfigSCPD.GetWLANDeviceList
         Dim LuaPath As String = String.Empty
         Return GetWLANDeviceListPath(LuaPath) AndAlso XML.Deserialize($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}{LuaPath}", True, AssociatedDevices)
     End Function
 
+    Public Async Function GetWLANDeviceList() As Task(Of WLANDeviceList) Implements IWlanconfigSCPD.GetWLANDeviceList
+        ' Ermittle den Pfad zu AssociatedDevices und deserialisiere die Daten
+        ' X_AVM-DE_GetWLANDeviceListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
+        Return Await XML.DeserializeAsyncFromPath(Of WLANDeviceList)($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}" &
+                                                                     (TR064Start(ServiceFile,
+                                                                                 "X_AVM-DE_GetWLANDeviceListPath",
+                                                                                 Nothing)).TryGetValueEx(Of String)("NewX_AVM-DE_WLANDeviceListPath"))
+    End Function
+
     Public Function SetStickSurfEnable(StickSurfEnable As Boolean) As Boolean Implements IWlanconfigSCPD.SetStickSurfEnable
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetStickSurfEnable", New Dictionary(Of String, String) From {{"NewStickSurfEnable", StickSurfEnable.ToBoolStr}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetStickSurfEnable",
+                              New Dictionary(Of String, String) From {{"NewStickSurfEnable", StickSurfEnable.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetIPTVOptimized(ByRef IPTVoptimize As Boolean) As Boolean Implements IWlanconfigSCPD.GetIPTVOptimized
@@ -212,7 +230,8 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function SetIPTVOptimized(IPTVoptimize As Boolean) As Boolean Implements IWlanconfigSCPD.SetIPTVOptimized
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetIPTVOptimized", New Dictionary(Of String, String) From {{"NewX_AVM-DE_IPTVoptimize", IPTVoptimize.ToBoolStr}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetIPTVOptimized",
+                              New Dictionary(Of String, String) From {{"NewX_AVM-DE_IPTVoptimize", IPTVoptimize.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetStatistics(ByRef TotalPacketsSent As Integer, ByRef TotalPacketsReceived As Integer) As Boolean Implements IWlanconfigSCPD.GetStatistics
@@ -243,7 +262,8 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function SetHighFrequencyBand(EnableHighFrequency As Boolean) As Boolean Implements IWlanconfigSCPD.SetHighFrequencyBand
-        Return Not TR064Start(ServiceFile, "X_SetHighFrequencyBand", New Dictionary(Of String, String) From {{"NewEnableHighFrequency", EnableHighFrequency.ToBoolStr}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_SetHighFrequencyBand",
+                              New Dictionary(Of String, String) From {{"NewEnableHighFrequency", EnableHighFrequency.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetWLANHybridMode(ByRef Info As WLANHybridMode) As Boolean Implements IWlanconfigSCPD.GetWLANHybridMode
@@ -265,15 +285,16 @@ Friend Class WlanconfigSCPD
     End Function
 
     Public Function SetWLANHybridMode(Info As WLANHybridMode) As Boolean Implements IWlanconfigSCPD.SetWLANHybridMode
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetWLANHybridMode", New Dictionary(Of String, String) From {{"NewEnable", Info.Enable.ToBoolStr},
-                                                                                                                 {"NewBeaconType", Info.BeaconType},
-                                                                                                                 {"NewKeyPassphrase", Info.KeyPassphrase},
-                                                                                                                 {"NewSSID", Info.SSID},
-                                                                                                                 {"NewBSSID", Info.BSSID},
-                                                                                                                 {"NewTrafficMode", Info.TrafficMode},
-                                                                                                                 {"NewManualSpeed", Info.ManualSpeed.ToBoolStr},
-                                                                                                                 {"NewMaxSpeedDS", Info.MaxSpeedDS},
-                                                                                                                 {"NewMaxSpeedUS", Info.MaxSpeedUS}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetWLANHybridMode",
+                              New Dictionary(Of String, String) From {{"NewEnable", Info.Enable.ToBoolStr},
+                                                                      {"NewBeaconType", Info.BeaconType},
+                                                                      {"NewKeyPassphrase", Info.KeyPassphrase},
+                                                                      {"NewSSID", Info.SSID},
+                                                                      {"NewBSSID", Info.BSSID},
+                                                                      {"NewTrafficMode", Info.TrafficMode},
+                                                                      {"NewManualSpeed", Info.ManualSpeed.ToBoolStr},
+                                                                      {"NewMaxSpeedDS", Info.MaxSpeedDS.ToString},
+                                                                      {"NewMaxSpeedUS", Info.MaxSpeedUS.ToString}}).ContainsKey("Error")
 
     End Function
 
@@ -310,7 +331,7 @@ Friend Class WlanconfigSCPD
 
     Public Function SetWPSConfig(WPSMode As WPSModeEnum, ByRef WPSStatus As WPSStatusEnum) As Boolean Implements IWlanconfigSCPD.SetWPSConfig
         Return TR064Start(ServiceFile, "X_AVM-DE_GetWPSInfo",
-                          New Dictionary(Of String, String) From {{"NewX_AVM-DE_WPSMode", WPSMode}}).
+                          New Dictionary(Of String, String) From {{"NewX_AVM-DE_WPSMode", WPSMode.ToString}}).
                           TryGetValueEx("NewX_AVM-DE_WPSStatus", WPSStatus)
 
     End Function
@@ -337,4 +358,5 @@ Friend Class WlanconfigSCPD
 
         End With
     End Function
+
 End Class

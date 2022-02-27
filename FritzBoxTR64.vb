@@ -6,17 +6,12 @@ Public Class FritzBoxTR64
 
     Public Event Status As EventHandler(Of NotifyEventArgs(Of LogMessage))
     Public Property Ready As Boolean = False
+    Friend Shared Property FBoxIPAdresse As String
     Private Property FBTR64Desc As TR64Desc
     Private Property XML As Serializer
-    Private Property Http As TR064HttpBasics
-    Private Property Credential As NetworkCredential
-    Friend Shared Property FBoxIPAdresse As String
+    Private Property Client As TR064WebFunctions
     Private Property Services As List(Of Service)
 
-    ''' <summary>
-    ''' Angabe, ob der AURA Service (AVM USB Remote Access) genutzt werden soll.
-    ''' </summary>
-    Public Property UseAURA As Boolean = False
 #Region "Services"
     Public Property AURA As IAuraSCPD
     Public Property DECT As IDECT_SCPD
@@ -54,16 +49,10 @@ Public Class FritzBoxTR64
     Public Property X_webdav As IX_webdavSCPD
 
     Public Property UserMode As UserModeSCPD
+    Public Property HttpService As IFBoxHttpTransfer
 #End Region
 
-#Region "Kontruktor"
-    ''' <summary>
-    ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. 
-    ''' </summary>
-    ''' <remarks>Achtung! Die Routine <see cref="Init(String, NetworkCredential)"/> muss separat ausgeführt werden.</remarks>
-    Public Sub New()
-
-    End Sub
+#Region "Konstruktor"
 
     ''' <summary>
     ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Die <see cref="NetworkCredential"/> werden hier übergeben.<br/>
@@ -71,80 +60,48 @@ Public Class FritzBoxTR64
     ''' </summary>
     ''' <param name="FritzBoxAdresse">Die IP Adresse der Fritz!Box.</param>
     ''' <param name="Anmeldeinformationen">Die Anmeldeinformationen (Benutzername und Passwort) als <see cref="NetworkCredential"/>.</param>
-    ''' <param name="timeout">Timeout für die http Abfragen</param>
-    ''' <param name="UseAURA">Angabe, ob der AURA Service (AVM USB Remote Access) genutzt werden soll.</param>
-    Public Sub New(FritzBoxAdresse As String, timeout As Integer, Anmeldeinformationen As NetworkCredential, Optional InitAURA As Boolean = False)
-        Init(FritzBoxAdresse, timeout, Anmeldeinformationen, InitAURA)
+    Public Sub New(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential)
+        ' IP Adresse der Fritz!Box setzen
+        _FBoxIPAdresse = FritzBoxAdresse
+
+        ' Lade die Klasse für die http-Funktionalitäten.
+        _Client = New TR064WebFunctions(AddressOf PushStatus, Anmeldeinformationen)
+
+        ' XML initialisieren
+        _XML = New Serializer(AddressOf PushStatus, Client)
+
+        ' Lade die TR064 Services, LUA und UserMode
+        InitServices()
+
+        ' Lade alle relevanten Daten von der Fritz!Box und initialisiere die Services
+        ConnectTR064()
+
     End Sub
 #End Region
 
 #Region "Initialisierung"
     ''' <summary>
-    ''' Initiiert eine neue TR064 Schnittstelle zur Fritz!Box. Die <see cref="NetworkCredential"/> werden hier übergeben.<br/>
-    ''' Falls die auzuführende Funktion keine Anmeldung erfordert, kann <paramref name="Anmeldeinformationen"/> Nothing sein.
+    ''' Lädt alle TR-064Description herunter und initialisiert die Services
     ''' </summary>
-    ''' <param name="FritzBoxAdresse">Die IP Adresse der Fritz!Box.</param>
-    ''' <param name="Anmeldeinformationen">Die Anmeldeinformationen (Benutzername und Passwort) als <see cref="NetworkCredential"/>.</param>
-    ''' <param name="timeout">Timeout für die http Abfragen</param>
-    ''' <param name="UseAURA">Angabe, ob der AURA Service (AVM USB Remote Access) genutzt werden soll.</param>
-    Public Sub Init(FritzBoxAdresse As String, timeout As Integer, Anmeldeinformationen As NetworkCredential, Optional InitAURA As Boolean = False)
-        ' ByPass SSL Certificate Validation Checking
-        ServicePointManager.ServerCertificateValidationCallback = Function(se As Object, cert As System.Security.Cryptography.X509Certificates.X509Certificate, chain As System.Security.Cryptography.X509Certificates.X509Chain, sslerror As Security.SslPolicyErrors) True
+    Private Async Sub ConnectTR064()
 
-        ' IP Adresse der Fritz!Box setzen
-        FBoxIPAdresse = FritzBoxAdresse
+        If Client.Ping(FBoxIPAdresse) Then
 
-        ' Netzwerkanmeldeinformationen zuweisen
-        Credential = Anmeldeinformationen
-
-        ' Lade die Klasse für die http-Funktionalitäten.
-        Http = New TR064HttpBasics(AddressOf PushStatus, timeout)
-
-        ' Verbindung zur Fritz!Box aufbauen
-        Ready = ConnectTR064(InitAURA)
-
-        ' Lade die AVM Services (auch unabhängig davon, ob die Verbindung geklappt hat)
-        InitAVMServices()
-
-        ' Lade den UserModus
-        UserMode = New UserModeSCPD(AddressOf TR064Start)
-
-        If Credential Is Nothing Then
-            PushStatus(CreateLog(LogLevel.Info, $"Init abgeschlossen: {FBoxIPAdresse} für eingeschränkten anonymen Zugriff."))
-        Else
-            ' Führe einen Logintest durch: Ermittle die Informationen zur Fritz!Box
-            Ready = Deviceconfig.LoginTest()
-            PushStatus(CreateLog(LogLevel.Info, $"Init abgeschlossen: {FBoxIPAdresse} für User: {Credential.UserName}: Passwort {If(Ready, "gültig", "ungültig")}"))
-        End If
-    End Sub
-
-    Private Function ConnectTR064(UseAura As Boolean) As Boolean
-        ' Funktioniert nicht: ByPass SSL Certificate Validation Checking wird ignoriert. Es kommt zu unerklärlichen System.Net.WebException in FritzBoxPOST
-        ' FBTR64Desc = DeserializeObject(Of TR64Desc)($"http://{FBoxIPAdresse}:{FritzBoxDefault.PDfltFBSOAP}{Tr064Files.tr64desc}")
-
-        ' Workaround: XML-Datei als String herunterladen und separat deserialisieren
-        If Http.Ping(FBoxIPAdresse) Then
-            Dim Response As String = String.Empty
+            Dim TR064Description As String = Await Client.GetStringWebClientAsync(New Uri($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{DfltTR064Port}{SCPDFiles.tr64desc.Description}"))
 
             ' Herunterladen
-            If Http.DownloadString(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, SCPDFiles.tr64desc.Description).Uri, Response) Then
-
-                ' XML initialisieren
-                XML = New Serializer(AddressOf PushStatus)
-
+            If TR064Description.IsNotStringNothingOrEmpty Then
                 ' Deserialisieren
-                If XML.Deserialize(Response, False, FBTR64Desc) Then
+                FBTR64Desc = Await XML.DeserializeAsyncData(Of TR64Desc)(TR064Description)
 
+                If FBTR64Desc IsNot Nothing Then
                     ' Ermittle alle vorhandenen Services
                     Services = FBTR64Desc.Device.GetAllServices()
-
-                    ' Initiiere AURA (AVM USB Remote Access) 
-                    If UseAura Then AddAURAService(XML)
 
                     PushStatus(CreateLog(LogLevel.Info, $"Fritz!Box TR064 API mit {Services.Count} Services erfolgreich initialisiert."))
 
                     ' Füge das Flag hinzu, dass die TR064-Schnittstelle bereit ist.
-                    Return True
+                    Ready = True
                 Else
                     PushStatus(CreateLog(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc."))
                 End If
@@ -155,23 +112,30 @@ Public Class FritzBoxTR64
             PushStatus(CreateLog(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fritz!Box unter {FBoxIPAdresse} nicht verfügbar."))
         End If
 
-        Return False
-    End Function
+    End Sub
 
-    Private Sub AddAURAService(XML As Serializer)
-        Dim Response As String = String.Empty
-        Dim AuraDesc As TR64Desc
-        If Http.DownloadString(New UriBuilder(Uri.UriSchemeHttps, FBoxIPAdresse, DfltTR064PortSSL, SCPDFiles.auradesc.Description).Uri, Response) Then
-            AuraDesc = New TR64Desc
-            ' Deserialisieren
-            If XML.Deserialize(Response, False, AuraDesc) Then
-                ' Ermittle alle vorhandenen Services und hänge sie an
-                Services.AddRange(AuraDesc.Device.GetAllServices)
+    ''' <summary>
+    ''' Fügt den Aura-Service hinzu. Der Zugriff auf die ServiceDefinition wird durch die Fritz!Box blockiert, wenn der Fernzugriff nicht aktiviert wurde.
+    ''' </summary>
+    Public Async Function AddAURAService() As Task(Of Boolean)
 
-                PushStatus(CreateLog(LogLevel.Debug, $"Fritz!Box AURA Services geladen."))
+        If Services?.Any Then
+            Dim Response As String = Await Client.GetStringWebClientAsync(New Uri($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{DfltTR064Port}{SCPDFiles.auradesc.Description}"))
+
+            If Response.IsNotStringNothingOrEmpty Then
+                Dim AuraDesc As New TR64Desc
+                ' Deserialisieren
+                If XML.Deserialize(Response, False, AuraDesc) Then
+                    ' Ermittle alle vorhandenen Services und hänge sie an
+                    Services.AddRange(AuraDesc.Device.GetAllServices)
+
+                    PushStatus(CreateLog(LogLevel.Debug, $"Fritz!Box AURA Services geladen."))
+                    Return True
+                End If
             End If
         End If
-    End Sub
+        Return False
+    End Function
 
     ''' <summary>
     ''' Lade die AVM Services
@@ -215,60 +179,77 @@ Public Class FritzBoxTR64
 
     End Sub
 
+    Private Sub InitServices()
+        ' Lade die AVM Services unabhängig davon, ob die Verbindung geklappt hat
+        InitAVMServices()
+
+        ' Lade den UserModus
+        UserMode = New UserModeSCPD(AddressOf TR064Start)
+
+        ' Lade den LuaService
+        HttpService = New FBoxHttpTransfer(Client)
+    End Sub
+
+    ''' <summary>
+    ''' Aktualisiert die Anmeldeinformationen zur Fritz!Box. (Passwortwechsel)
+    ''' </summary>
+    ''' <param name="Anmeldeinformationen">Neue Anmeldeinformationen</param>
+    Public Sub UpdateCredential(Anmeldeinformationen As NetworkCredential)
+
+        If Anmeldeinformationen.SecurePassword.Length.IsNotZero Then
+            ' Aktualisiere die Klasse für die http-Funktionalitäten.
+            Client.UpdateCredential(Anmeldeinformationen)
+
+            PushStatus(CreateLog(LogLevel.Info, $"Anmeldeinformationen aktualisiert. Login für {Anmeldeinformationen.UserName}:{If(Deviceconfig.LoginTest, String.Empty, " nicht")} erfolgreich"))
+        End If
+
+    End Sub
 #End Region
+
     <DebuggerStepThrough>
     Private Sub PushStatus(LMsg As LogMessage)
         RaiseEvent Status(Me, New NotifyEventArgs(Of LogMessage)(LMsg))
     End Sub
 
     Private Function TR064Start(SCPDURL As SCPDFiles, ActionName As String, Optional InputArguments As Dictionary(Of String, String) = Nothing) As Dictionary(Of String, String)
+        ' Versuche einen Start, falls noch nicht geschehen
+        If Not Ready Then ConnectTR064()
 
+        ' Prüfe, ob die Schnittstelle grundsätzlich verbunden ist.
         If Ready Then
-            With GetService(SCPDURL)
-                If?.ActionExists(ActionName) Then
-                    If .CheckInput(ActionName, InputArguments) Then
-                        Return .StartAction(.GetActionByName(ActionName), InputArguments, Http, Credential)
-                    Else
-                        PushStatus(CreateLog(LogLevel.Error, $"InputData for Action '{ActionName}' not valid!"))
-                    End If
-                Else
-                    PushStatus(CreateLog(LogLevel.Error, $"Action '{ActionName}' does not exist!"))
-                End If
-            End With
-            PushStatus(CreateLog(LogLevel.Error, "Fritz!Box TR064 API nicht gestartet (Init Routine starten!)."))
+            ' Ermittle den Service, welcher zu der übergebenen SCPD gehört
+            Dim Service As Service = GetService(SCPDURL)
 
+            If Service IsNot Nothing Then Return Service.StartAction(ActionName, InputArguments)
         End If
-        Return New Dictionary(Of String, String) From {{"Error", $"Service für {SCPDURL} nicht vorhanden!"}}
+        Return New Dictionary(Of String, String) From {{"Error", $"Service für {SCPDURL} und {ActionName} nicht vorhanden!"}}
     End Function
 
     Private Function GetService(SCPDURL As SCPDFiles) As Service
 
         If Services IsNot Nothing AndAlso Services.Any Then
-            ' Suche den angeforderten Service
+            ' Suche den angeforderten Service, gibt im Fehlerfall Nothing zurück
             Dim FBoxService As Service = Services.Find(Function(Service) Service.SCPDURL.AreEqual(SCPDURL.Description))
 
             ' Weise die Fritz!Box IP-Adresse zu
             If FBoxService IsNot Nothing Then
-                With FBoxService
-                    ' XML-Klasse übergeben
-                    .XML = XML
-                    ' Routine für die Statusmeldungen übergeben
-                    .PushStatus = AddressOf PushStatus
-                End With
+                ' Prüfe, ob der Service bereits initialisiert wurde
+                If Not FBoxService.Initialized Then FBoxService.Init(XML, Client, AddressOf PushStatus)
+
             Else
                 PushStatus(CreateLog(LogLevel.Error, $"Service für {SCPDURL} nicht vorhanden."))
             End If
 
             Return FBoxService
         Else
-            PushStatus(CreateLog(LogLevel.Error, $"Keine Sercvices geladen."))
+            PushStatus(CreateLog(LogLevel.Error, $"Keine Services geladen."))
             Return Nothing
         End If
 
     End Function
+
 #Region "Abfragen"
 
-#Region "TR64Desc"
     ''' <summary>
     ''' Gibt die Firmware der Fritz!Box aus der TR-064 Description zurück.
     ''' </summary>
@@ -279,6 +260,9 @@ Public Class FritzBoxTR64
         End Get
     End Property
 
+    ''' <summary>
+    ''' Gibt die Hardware-Version der Fritz!Box zurück.
+    ''' </summary>
     Public ReadOnly Property HardwareVersion As Integer
         Get
             PushStatus(CreateLog(LogLevel.Trace, $"Fritz!Box Hardware: {FBTR64Desc.SystemVersion.HW}"))
@@ -286,6 +270,9 @@ Public Class FritzBoxTR64
         End Get
     End Property
 
+    ''' <summary>
+    ''' Gibt die Major-Firmwareversion der Fritz!Box zurück.
+    ''' </summary>
     Public ReadOnly Property Major As Integer
         Get
             PushStatus(CreateLog(LogLevel.Trace, $"Fritz!Box Major: {FBTR64Desc.SystemVersion.Major}"))
@@ -293,6 +280,9 @@ Public Class FritzBoxTR64
         End Get
     End Property
 
+    ''' <summary>
+    ''' Gibt die Minor-Firmwareversion der Fritz!Box zurück.
+    ''' </summary>
     Public ReadOnly Property Minor As Integer
         Get
             PushStatus(CreateLog(LogLevel.Trace, $"Fritz!Box Minor: {FBTR64Desc.SystemVersion.Minor}"))
@@ -300,13 +290,14 @@ Public Class FritzBoxTR64
         End Get
     End Property
 
+    ''' <summary>
+    ''' Gibt den FriendlyName der Fritz!Box zurück.
+    ''' </summary>
     Public ReadOnly Property FriendlyName As String
         Get
             Return If(FBTR64Desc IsNot Nothing AndAlso FBTR64Desc.Device IsNot Nothing, FBTR64Desc.Device.FriendlyName, "Keine Verbindung zu einer Fritz!Box hergestellt.")
         End Get
     End Property
-
-#End Region
 
 #End Region
 
@@ -316,19 +307,17 @@ Public Class FritzBoxTR64
     ' IDisposable
     Protected Overridable Sub Dispose(disposing As Boolean)
         If Not disposedValue Then
-            'Restore SSL Certificate Validation Checking
-            ServicePointManager.ServerCertificateValidationCallback = Nothing
+            Client.Dispose()
         End If
         disposedValue = True
 
-        'Http = Nothing
-        'XML = Nothing
     End Sub
 
     ' Dieser Code wird von Visual Basic hinzugefügt, um das Dispose-Muster richtig zu implementieren.
     Public Sub Dispose() Implements IDisposable.Dispose
         ' Ändern Sie diesen Code nicht. Fügen Sie Bereinigungscode in Dispose(disposing As Boolean) weiter oben ein.
         Dispose(True)
+        GC.SuppressFinalize(Me)
     End Sub
 
     Protected Overrides Sub Finalize()

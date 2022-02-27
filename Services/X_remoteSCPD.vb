@@ -30,7 +30,7 @@ Friend Class X_remoteSCPD
     Public Function SetConfig(Enabled As Boolean, Port As Integer, Username As String, Password As String) As Boolean Implements IX_remoteSCPD.SetConfig
         Return Not TR064Start(ServiceFile, "SetConfig",
                               New Dictionary(Of String, String) From {{"NewEnabled", Enabled.ToBoolStr},
-                                                                      {"NewPort", Port},
+                                                                      {"NewPort", Port.ToString},
                                                                       {"NewUsername", Username},
                                                                       {"NewPassword", Password}}).ContainsKey("Error")
 
@@ -74,7 +74,7 @@ Friend Class X_remoteSCPD
                                                               {"NewDomain", Info.Domain},
                                                               {"NewUsername", Info.Username},
                                                               {"NewPassword", Password},
-                                                              {"NewMode", Info.Mode}}).ContainsKey("Error")
+                                                              {"NewMode", Info.Mode.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function SetEnable(Enabled As Boolean, ByRef Port As Integer) As Boolean Implements IX_remoteSCPD.SetEnable

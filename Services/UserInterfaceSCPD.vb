@@ -99,7 +99,7 @@ Friend Class UserInterfaceSCPD
     End Function
 
     Public Function SetConfig(AutoUpdateMode As AutoUpdateModeEnum) As Boolean Implements IUserInterfaceSCPD.SetConfig
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetConfig", New Dictionary(Of String, String) From {{"NewX_AVM-DE_AutoUpdateMode", AutoUpdateMode}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetConfig", New Dictionary(Of String, String) From {{"NewX_AVM-DE_AutoUpdateMode", AutoUpdateMode.ToString}}).ContainsKey("Error")
     End Function
 
 End Class

@@ -35,7 +35,7 @@ Friend Class X_myfritzSCPD
     Public Function GetServiceByIndex(Index As Integer, ByRef Info As MyFritzInfo) As Boolean Implements IX_myfritzSCPD.GetServiceByIndex
         If Info Is Nothing Then Info = New MyFritzInfo
 
-        With TR064Start(ServiceFile, "GetServiceByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index}})
+        With TR064Start(ServiceFile, "GetServiceByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
             Info.Index = Index
 
@@ -57,11 +57,11 @@ Friend Class X_myfritzSCPD
     End Function
 
     Public Function SetServiceByIndex(NumberOfServices As Integer, ByRef Info As MyFritzInfo) As Boolean Implements IX_myfritzSCPD.SetServiceByIndex
-        Return Not TR064Start(ServiceFile, "SetServiceByIndex", New Dictionary(Of String, String) From {{"NewIndex", NumberOfServices},
+        Return Not TR064Start(ServiceFile, "SetServiceByIndex", New Dictionary(Of String, String) From {{"NewIndex", NumberOfServices.ToString},
                                                                                                         {"NewEnabled", Info.Enabled},
                                                                                                         {"NewName", Info.Name},
                                                                                                         {"NewScheme", Info.Scheme},
-                                                                                                        {"NewPort", Info.Port},
+                                                                                                        {"NewPort", Info.Port.ToString},
                                                                                                         {"NewURLPath", Info.URLPath},
                                                                                                         {"NewIPv4Address", Info.IPv4Addresses},
                                                                                                         {"NewIPv6Address", Info.IPv6Addresses},
@@ -71,6 +71,6 @@ Friend Class X_myfritzSCPD
     End Function
 
     Public Function DeleteServiceByIndex(NumberOfServices As Integer) As Boolean Implements IX_myfritzSCPD.DeleteServiceByIndex
-        Return Not TR064Start(ServiceFile, "DeleteServiceByIndex", New Dictionary(Of String, String) From {{"NewIndex", NumberOfServices}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "DeleteServiceByIndex", New Dictionary(Of String, String) From {{"NewIndex", NumberOfServices.ToString}}).ContainsKey("Error")
     End Function
 End Class

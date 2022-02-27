@@ -10,10 +10,10 @@ Friend Class X_filelinksSCPD
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_filelinksSCPD Implements IX_filelinksSCPD.Servicefile
     Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), XMLSerializer As Serializer)
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)),
+                   XMLSerializer As Serializer)
 
         TR064Start = Start
-
         XML = XMLSerializer
 
     End Sub
@@ -25,7 +25,7 @@ Friend Class X_filelinksSCPD
     Public Function GetGenericFilelinkEntry(Index As Integer, ByRef Entry As FileLinkEntry) As Boolean Implements IX_filelinksSCPD.GetGenericFilelinkEntry
         If Entry Is Nothing Then Entry = New FileLinkEntry
 
-        With TR064Start(ServiceFile, "GetGenericFilelinkEntry", New Dictionary(Of String, String) From {{"NewIndex", Index}})
+        With TR064Start(ServiceFile, "GetGenericFilelinkEntry", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
             Entry.Index = Index
 
@@ -65,14 +65,14 @@ Friend Class X_filelinksSCPD
     Public Function NewFilelinkEntry(Path As String, AccessCountLimit As Integer, Expire As Integer, ByRef ID As String) As Boolean Implements IX_filelinksSCPD.NewFilelinkEntry
         Return TR064Start(ServiceFile, "NewFilelinkEntry",
                           New Dictionary(Of String, String) From {{"NewPath", Path},
-                                                                  {"NewAccessCountLimit", AccessCountLimit},
-                                                                  {"NewExpire", Expire}}).TryGetValueEx("NewID", ID)
+                                                                  {"NewAccessCountLimit", AccessCountLimit.ToString},
+                                                                  {"NewExpire", Expire.ToString}}).TryGetValueEx("NewID", ID)
     End Function
 
     Public Function SetFilelinkEntry(ID As String, AccessCountLimit As Integer, Expire As Integer) As Boolean Implements IX_filelinksSCPD.SetFilelinkEntry
         Return Not TR064Start(ServiceFile, "SetFilelinkEntry", New Dictionary(Of String, String) From {{"NewID", ID},
-                                                                                                       {"NewAccessCountLimit", AccessCountLimit},
-                                                                                                       {"NewExpire", Expire}}).ContainsKey("Error")
+                                                                                                       {"NewAccessCountLimit", AccessCountLimit.ToString},
+                                                                                                       {"NewExpire", Expire.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function DeleteFilelinkEntry(ID As String) As Boolean Implements IX_filelinksSCPD.DeleteFilelinkEntry
@@ -86,5 +86,14 @@ Friend Class X_filelinksSCPD
     Public Function GetFilelinkList(ByRef List As FileLinkList) As Boolean Implements IX_filelinksSCPD.GetFilelinkList
         Dim LuaPath As String = String.Empty
         Return GetFilelinkListPath(LuaPath) AndAlso XML.Deserialize($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}{LuaPath}", True, List)
+    End Function
+
+    Public Async Function GetFilelinkList() As Task(Of FileLinkList) Implements IX_filelinksSCPD.GetFilelinkList
+        ' Ermittle den Pfad zu AssociatedDevices und deserialisiere die Daten
+        ' GetFilelinkListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
+        Return Await XML.DeserializeAsyncFromPath(Of FileLinkList)($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}" &
+                                                                   TR064Start(ServiceFile,
+                                                                               "GetFilelinkListPath",
+                                                                               Nothing).TryGetValueEx(Of String)("NewFilelinkListPath"))
     End Function
 End Class

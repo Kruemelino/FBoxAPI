@@ -51,7 +51,7 @@ Friend Class WANIPConnectionSCPD
     End Function
 
     Public Function SetConnectionType(ConnectionType As ConnectionTypeEnum) As Boolean Implements IWANIPConnectionSCPD.SetConnectionType
-        Return Not TR064Start(ServiceFile, "SetConnectionType", New Dictionary(Of String, String) From {{"NewConnectionType", ConnectionType}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetConnectionType", New Dictionary(Of String, String) From {{"NewConnectionType", ConnectionType.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetStatusInfo(ByRef ConnectionStatus As ConnectionStatusEnum, ByRef LastConnectionError As LastConnectionErrorEnum, ByRef NewUptime As Integer) As Boolean Implements IWANIPConnectionSCPD.GetStatusInfo
@@ -94,7 +94,7 @@ Friend Class WANIPConnectionSCPD
     Public Function GetGenericPortMappingEntry(PortMappingIndex As Integer, ByRef GenericPortMappingEntry As PortMappingEntry) As Boolean Implements IWANIPConnectionSCPD.GetGenericPortMappingEntry
         If GenericPortMappingEntry Is Nothing Then GenericPortMappingEntry = New PortMappingEntry
 
-        With TR064Start(ServiceFile, "GetGenericPortMappingEntry", New Dictionary(Of String, String) From {{"NewPortMappingIndex", PortMappingIndex}})
+        With TR064Start(ServiceFile, "GetGenericPortMappingEntry", New Dictionary(Of String, String) From {{"NewPortMappingIndex", PortMappingIndex.ToString}})
 
             Return .TryGetValueEx("NewRemoteHost", GenericPortMappingEntry.RemoteHost) And
                    .TryGetValueEx("NewExternalPort", GenericPortMappingEntry.ExternalPort) And
@@ -112,8 +112,8 @@ Friend Class WANIPConnectionSCPD
 
         With TR064Start(ServiceFile, "GetSpecificPortMappingEntry",
                         New Dictionary(Of String, String) From {{"NewRemoteHost", RemoteHost},
-                                                                {"NewExternalPort", ExternalPort},
-                                                                {"NewProtocol", PortMappingProtocol}})
+                                                                {"NewExternalPort", ExternalPort.ToString},
+                                                                {"NewProtocol", PortMappingProtocol.ToString}})
 
             GenericPortMappingEntry.RemoteHost = RemoteHost
             GenericPortMappingEntry.ExternalPort = ExternalPort
@@ -132,13 +132,13 @@ Friend Class WANIPConnectionSCPD
             With NewPortMappingEntry
                 Return Not TR064Start(ServiceFile, "AddPortMapping",
                                       New Dictionary(Of String, String) From {{"NewRemoteHost", .RemoteHost},
-                                                                              {"NewExternalPort", .ExternalPort},
-                                                                              {"NewProtocol", .PortMappingProtocol},
-                                                                              {"NewInternalPort", .InternalPort},
+                                                                              {"NewExternalPort", .ExternalPort.ToString},
+                                                                              {"NewProtocol", .PortMappingProtocol.ToString},
+                                                                              {"NewInternalPort", .InternalPort.ToString},
                                                                               {"NewInternalClient", .InternalClient},
                                                                               {"NewEnabled", .PortMappingEnabled.ToBoolStr},
                                                                               {"NewPortMappingDescription", .PortMappingDescription},
-                                                                              {"NewLeaseDuration", .PortMappingLeaseDuration}}).
+                                                                              {"NewLeaseDuration", .PortMappingLeaseDuration.ToString}}).
                                                                               ContainsKey("Error")
             End With
         Else
@@ -149,8 +149,8 @@ Friend Class WANIPConnectionSCPD
     Public Function DeletePortMapping(RemoteHost As String, ExternalPort As Integer, PortMappingProtocol As PortMappingProtocolEnum) As Boolean Implements IWANIPConnectionSCPD.DeletePortMapping
         Return TR064Start(ServiceFile, "DeletePortMapping",
                         New Dictionary(Of String, String) From {{"NewRemoteHost", RemoteHost},
-                                                                {"NewExternalPort", ExternalPort},
-                                                                {"NewProtocol", PortMappingProtocol}}).ContainsKey("Error")
+                                                                {"NewExternalPort", ExternalPort.ToString},
+                                                                {"NewProtocol", PortMappingProtocol.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetExternalIPAddress(ByRef ExternalIPAddress As String) As Boolean Implements IWANIPConnectionSCPD.GetExternalIPAddress
@@ -162,6 +162,6 @@ Friend Class WANIPConnectionSCPD
     End Function
 
     Public Function SetIdleDisconnectTime(IdleDisconnectTime As Integer) As Boolean Implements IWANIPConnectionSCPD.SetIdleDisconnectTime
-        Return Not TR064Start(ServiceFile, "SetIdleDisconnectTime", New Dictionary(Of String, String) From {{"NewIdleDisconnectTime", IdleDisconnectTime}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetIdleDisconnectTime", New Dictionary(Of String, String) From {{"NewIdleDisconnectTime", IdleDisconnectTime.ToString}}).ContainsKey("Error")
     End Function
 End Class

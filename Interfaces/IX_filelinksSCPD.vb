@@ -50,8 +50,6 @@ Public Interface IX_filelinksSCPD
     ''' <remarks>Required rights: NASRight, ConfigRight</remarks>
     Function GetFilelinkListPath(ByRef FilelinkListPath As String) As Boolean
 
-    ''' <summary>
-    ''' Inoffizielle Action: GetFilelinkListPath wird als <see cref="FileLinkList"/> deserialisiert zurückgegeben.
-    ''' </summary>
     Function GetFilelinkList(ByRef List As FileLinkList) As Boolean
+    Function GetFilelinkList() As Task(Of FileLinkList)
 End Interface

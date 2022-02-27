@@ -64,7 +64,7 @@ Friend Class WANPPPConnectionSCPD
     End Function
 
     Public Function SetConnectionType(ConnectionType As ConnectionTypeEnum) As Boolean Implements IWANPPPConnectionSCPD.SetConnectionType
-        Return Not TR064Start(ServiceFile, "SetConnectionType", New Dictionary(Of String, String) From {{"NewConnectionType", ConnectionType}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetConnectionType", New Dictionary(Of String, String) From {{"NewConnectionType", ConnectionType.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetStatusInfo(ByRef ConnectionStatus As ConnectionStatusEnum, ByRef LastConnectionError As LastConnectionErrorEnum, ByRef NewUptime As Integer) As Boolean Implements IWANPPPConnectionSCPD.GetStatusInfo
@@ -127,7 +127,7 @@ Friend Class WANPPPConnectionSCPD
     Public Function GetGenericPortMappingEntry(PortMappingIndex As Integer, ByRef GenericPortMappingEntry As PortMappingEntry) As Boolean Implements IWANPPPConnectionSCPD.GetGenericPortMappingEntry
         If GenericPortMappingEntry Is Nothing Then GenericPortMappingEntry = New PortMappingEntry
 
-        With TR064Start(ServiceFile, "GetGenericPortMappingEntry", New Dictionary(Of String, String) From {{"NewPortMappingIndex", PortMappingIndex}})
+        With TR064Start(ServiceFile, "GetGenericPortMappingEntry", New Dictionary(Of String, String) From {{"NewPortMappingIndex", PortMappingIndex.ToString}})
 
             Return .TryGetValueEx("NewRemoteHost", GenericPortMappingEntry.RemoteHost) And
                    .TryGetValueEx("NewExternalPort", GenericPortMappingEntry.ExternalPort) And
@@ -145,8 +145,8 @@ Friend Class WANPPPConnectionSCPD
 
         With TR064Start(ServiceFile, "GetSpecificPortMappingEntry",
                         New Dictionary(Of String, String) From {{"NewRemoteHost", RemoteHost},
-                                                                {"NewExternalPort", ExternalPort},
-                                                                {"NewProtocol", PortMappingProtocol}})
+                                                                {"NewExternalPort", ExternalPort.ToString},
+                                                                {"NewProtocol", PortMappingProtocol.ToString}})
 
             GenericPortMappingEntry.RemoteHost = RemoteHost
             GenericPortMappingEntry.ExternalPort = ExternalPort
@@ -165,13 +165,13 @@ Friend Class WANPPPConnectionSCPD
             With NewPortMappingEntry
                 Return Not TR064Start(ServiceFile, "AddPortMapping",
                                       New Dictionary(Of String, String) From {{"NewRemoteHost", .RemoteHost},
-                                                                              {"NewExternalPort", .ExternalPort},
-                                                                              {"NewProtocol", .PortMappingProtocol},
-                                                                              {"NewInternalPort", .InternalPort},
+                                                                              {"NewExternalPort", .ExternalPort.ToString},
+                                                                              {"NewProtocol", .PortMappingProtocol.ToString},
+                                                                              {"NewInternalPort", .InternalPort.ToString},
                                                                               {"NewInternalClient", .InternalClient},
                                                                               {"NewEnabled", .PortMappingEnabled.ToBoolStr},
                                                                               {"NewPortMappingDescription", .PortMappingDescription},
-                                                                              {"NewLeaseDuration", .PortMappingLeaseDuration}}).
+                                                                              {"NewLeaseDuration", .PortMappingLeaseDuration.ToString}}).
                                                                               ContainsKey("Error")
             End With
         Else
@@ -182,8 +182,8 @@ Friend Class WANPPPConnectionSCPD
     Public Function DeletePortMapping(RemoteHost As String, ExternalPort As Integer, PortMappingProtocol As PortMappingProtocolEnum) As Boolean Implements IWANPPPConnectionSCPD.DeletePortMapping
         Return TR064Start(ServiceFile, "DeletePortMapping",
                         New Dictionary(Of String, String) From {{"NewRemoteHost", RemoteHost},
-                                                                {"NewExternalPort", ExternalPort},
-                                                                {"NewProtocol", PortMappingProtocol}}).ContainsKey("Error")
+                                                                {"NewExternalPort", ExternalPort.ToString},
+                                                                {"NewProtocol", PortMappingProtocol.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetExternalIPAddress(ByRef ExternalIPAddress As String) As Boolean Implements IWANPPPConnectionSCPD.GetExternalIPAddress
@@ -195,7 +195,7 @@ Friend Class WANPPPConnectionSCPD
     End Function
 
     Public Function SetIdleDisconnectTime(IdleDisconnectTime As Integer) As Boolean Implements IWANPPPConnectionSCPD.SetIdleDisconnectTime
-        Return Not TR064Start(ServiceFile, "SetIdleDisconnectTime", New Dictionary(Of String, String) From {{"NewIdleDisconnectTime", IdleDisconnectTime}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetIdleDisconnectTime", New Dictionary(Of String, String) From {{"NewIdleDisconnectTime", IdleDisconnectTime.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function X_AVM_DE_GetAutoDisconnectTimeSpan(ByRef DisconnectPreventionEnable As Boolean, ByRef DisconnectPreventionHour As Integer) As Boolean Implements IWANPPPConnectionSCPD.X_AVM_DE_GetAutoDisconnectTimeSpan
@@ -209,7 +209,7 @@ Friend Class WANPPPConnectionSCPD
     Public Function X_AVM_DE_SetAutoDisconnectTimeSpan(DisconnectPreventionEnable As Boolean, DisconnectPreventionHour As Integer) As Boolean Implements IWANPPPConnectionSCPD.X_AVM_DE_SetAutoDisconnectTimeSpan
         Return TR064Start(ServiceFile, "X_AVM_DE_SetAutoDisconnectTimeSpan",
                 New Dictionary(Of String, String) From {{"NewX_AVM-DE_DisconnectPreventionEnable", DisconnectPreventionEnable.ToBoolStr},
-                                                        {"NewX_AVM-DE_DisconnectPreventionHour", DisconnectPreventionHour}}).ContainsKey("Error")
+                                                        {"NewX_AVM-DE_DisconnectPreventionHour", DisconnectPreventionHour.ToString}}).ContainsKey("Error")
 
     End Function
 End Class

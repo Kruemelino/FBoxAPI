@@ -35,6 +35,11 @@ Public Interface IX_tamSCPD
     Function GetMessageList(ByRef GetMessageListURL As String, i As Integer) As Boolean
 
     ''' <summary>
+    ''' Inoffizielle asynchrone Action: <see cref="GetMessageList(ByRef String, Integer)"/> wird als <see cref="MessageList"/> deserialisiert zurückgegeben.
+    ''' </summary>
+    Function GetMessageList(i As Integer) As Task(Of MessageList)
+
+    ''' <summary>
     ''' Mark a specified message as read. A specific TAM is selected by Index.
     ''' The Index field from a message in the MessageList should be taken for the MessageIndex
     ''' to select a specific message. If the MarkedAsRead state variable is set to 1, the message
@@ -62,7 +67,14 @@ Public Interface IX_tamSCPD
     Function GetList(ByRef List As String) As Boolean
 
     ''' <summary>
+    ''' Returns the global information and the specific answering machine information as deserialized <see cref="TAMList"/>.
+    ''' </summary>
+    ''' <param name="List">Represents the list of all tam.</param>
+    Function GetList() As Task(Of TAMList)
+
+    ''' <summary>
     ''' Inoffizielle Action: GetList wird als <see cref="TAMList"/> deserialisiert zurückgegeben.
     ''' </summary>
     Function GetList(ByRef List As TAMList) As Boolean
+
 End Interface

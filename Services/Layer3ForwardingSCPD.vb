@@ -35,7 +35,7 @@ Friend Class Layer3ForwardingSCPD
                                                                    {"NewSourceSubnetMask", Entry.SourceSubnetMask},
                                                                    {"NewGatewayIPAddress", Entry.GatewayIPAddress},
                                                                    {"NewInterface", Entry.Interface},
-                                                                   {"NewForwardingMetric", Entry.ForwardingMetric}}).ContainsKey("Error")
+                                                                   {"NewForwardingMetric", Entry.ForwardingMetric.ToString}}).ContainsKey("Error")
 
     End Function
 
@@ -76,7 +76,7 @@ Friend Class Layer3ForwardingSCPD
     Public Function GetGenericForwardingEntry(Index As Integer, ByRef Entry As ForwardingEntry) As Boolean Implements ILayer3ForwardingSCPD.GetGenericForwardingEntry
         If Entry Is Nothing Then Entry = New ForwardingEntry
 
-        With TR064Start(ServiceFile, "GetGenericForwardingEntry", New Dictionary(Of String, String) From {{"NewForwardingIndex", Index}})
+        With TR064Start(ServiceFile, "GetGenericForwardingEntry", New Dictionary(Of String, String) From {{"NewForwardingIndex", Index.ToString}})
 
             Return .TryGetValueEx("NewEnable", Entry.Enable) And
                    .TryGetValueEx("NewStatus", Entry.Status) And

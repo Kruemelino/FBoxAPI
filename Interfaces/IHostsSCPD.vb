@@ -5,7 +5,6 @@
 ''' </summary>
 Public Interface IHostsSCPD
     Inherits IServiceBase
-
     Function GetHostNumberOfEntries(ByRef HostNumberOfEntries As Integer) As Boolean
     Function GetSpecificHostEntry(MACAddress As String, ByRef Host As HostEntry) As Boolean
     Function GetGenericHostEntry(HostNumberOfEntries As Integer, ByRef Host As HostEntry) As Boolean
@@ -31,7 +30,13 @@ Public Interface IHostsSCPD
     ''' <summary>
     ''' Inoffizielle Action: X_AVM-DE_GetHostListPath wird als <see cref="HostList"/> deserialisiert zurückgegeben.
     ''' </summary>
+    <Obsolete("This function is obsolete and will be removed in a future version. Use the Function GetHostList() As Task(Of HostList) instead.")>
     Function GetHostList(ByRef Hosts As HostList) As Boolean
+
+    ''' <summary>
+    ''' Inoffizielle Action: X_AVM-DE_GetHostListPath wird als <see cref="HostList"/> deserialisiert zurückgegeben.
+    ''' </summary>
+    Function GetHostList() As Task(Of HostList)
 
     ''' <summary>
     ''' Gets a path to a lua script file, which generates an json structured list with mesh topology information

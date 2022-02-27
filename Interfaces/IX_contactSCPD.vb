@@ -6,15 +6,17 @@
 Public Interface IX_contactSCPD
     Inherits IServiceBase
 
+    <Obsolete("This function is obsolete and will be removed in a future version. Use the function GetInfoByIndex(Index As Integer, ByRef Info As OnTelInfo) instead.")>
     Function GetInfoByIndex(Index As Integer,
-                            Optional ByRef Enable As Boolean = False,
-                            Optional ByRef Status As String = "",
-                            Optional ByRef LastConnect As String = "",
-                            Optional ByRef Url As String = "",
-                            Optional ByRef ServiceId As String = "",
-                            Optional ByRef Username As String = "",
-                            Optional ByRef Name As String = "") As Boolean
+                                       Optional ByRef Enable As Boolean = False,
+                                       Optional ByRef Status As String = "",
+                                       Optional ByRef LastConnect As String = "",
+                                       Optional ByRef Url As String = "",
+                                       Optional ByRef ServiceId As String = "",
+                                       Optional ByRef Username As String = "",
+                                       Optional ByRef Name As String = "") As Boolean
 
+    Function GetInfoByIndex(Index As Integer, ByRef Info As OnTelInfo) As Boolean
     ''' <summary>
     ''' The action is used to trigger the telephone book synchronization manually. The
     ''' synchronization starts if switching from false to true. After enabling, the synchronization is
@@ -59,10 +61,17 @@ Public Interface IX_contactSCPD
     '''     </list>
     '''     The parameters timestamp and id have to be used in combination. If only one of both is used, the feature Is Not supported. 
     ''' </param>
-
-    ''' <remarks> 
-    ''' </remarks>
     Function GetCallList(ByRef CallListURL As String) As Boolean
+
+    '''' <summary>
+    '''' Inoffizielle asynchrone Action: Ermittelt die URL zum Herunterladen des Anrufliste.
+    '''' </summary>
+    'Function GetCallListAsync() As Task(Of String)
+
+    ''' <summary>
+    ''' Inoffizielle asynchrone Action: Ermittelt die Anrufliste als deserialisiertes Datenobjekt vom Typ <see cref="CallList"/>.
+    ''' </summary>
+    Function GetCallList() As Task(Of CallList)
 
 #Region "Phonebook"
     ''' <summary>
@@ -88,18 +97,21 @@ Public Interface IX_contactSCPD
     ''' <param name="PhonebookID">ID of the phonebook.</param>
     ''' <param name="PhonebookName">Name of the phonebook.</param>
     ''' <param name="PhonebookExtraID">The value of <paramref name="PhonebookExtraID"/> may be an empty string. </param>
-
     Function GetPhonebook(PhonebookID As Integer,
-                                 ByRef PhonebookURL As String,
-                                 Optional ByRef PhonebookName As String = "",
-                                 Optional ByRef PhonebookExtraID As String = "") As Boolean
+                          ByRef PhonebookURL As String,
+                          Optional ByRef PhonebookName As String = "",
+                          Optional ByRef PhonebookExtraID As String = "") As Boolean
+
+    ''' <summary>
+    ''' Inoffizielle asynchrone Action: Ermittelt das Telefonbuches als deserialisiertes Datenobjekt vom Typ <see cref="PhonebooksType"/>.
+    ''' </summary>
+    Function GetPhonebook(PhonebookID As Integer) As Task(Of PhonebooksType)
 
     ''' <summary>
     ''' Fügt ein neues Telefonbuch hinzu.
     ''' </summary>
     ''' <param name="PhonebookName">Name des neuen Telefonbuches.</param>
     ''' <param name="PhonebookExtraID">ExtraID des neuen Telefonbuches. (Optional)</param>
-
     Function AddPhonebook(PhonebookName As String, Optional PhonebookExtraID As String = "") As Boolean
 
     ''' <summary>
@@ -108,7 +120,6 @@ Public Interface IX_contactSCPD
     ''' <remarks>The default phonebook (PhonebookID = 0) is not deletable, but therefore, each entry will be deleted And the phonebook will be empty afterwards.</remarks>
     ''' <param name="NewPhonebookID">ID of the phonebook.</param>
     ''' <param name="PhonebookExtraID">Optional parameter to make a phonebook unique.</param>
-
     Function DeletePhonebook(NewPhonebookID As Integer, Optional PhonebookExtraID As String = "") As Boolean
 #End Region
 
@@ -177,23 +188,39 @@ Public Interface IX_contactSCPD
     ''' Returns a call barring entry by its PhonebookEntryID of the specific call barring phonebook. 
     ''' </summary>
     ''' <param name="PhonebookEntryID">ID of the specific call barring phonebook.</param>
-    ''' <param name="PhonebookEntryData">A call barring entry</param>
+    ''' <param name="PhonebookEntryData">>XML string with a call barring entry</param>
     Function GetCallBarringEntry(PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean
+
+    ''' <summary>
+    ''' Inoffizielle asynchrone Action: Ermittelt das den zugehörigen Sperrlisteneintrag als deserialisiertes Datenobjekt vom Typ <see cref="Contact"/>.
+    ''' </summary>
+    ''' <param name="PhonebookEntryID">ID of the specific call barring phonebook.</param>
+    Function GetCallBarringEntry(PhonebookEntryID As Integer) As Task(Of Contact)
 
     ''' <summary>
     ''' Returns a call barring entry by its number. If the number exists in the internal phonebook 
     ''' but not in the specific call barring phonebook, error code 714 is returned.
     ''' </summary>
     ''' <param name="Number">phone number</param>
-    ''' <param name="PhonebookEntryData">XML document with a single call barring entry.</param>
+    ''' <param name="PhonebookEntryData">XML string with a call barring entry.</param>
     Function GetCallBarringEntryByNum(Number As String, ByRef PhonebookEntryData As String) As Boolean
+
+    ''' <summary>
+    ''' Inoffizielle asynchrone Action: Ermittelt das den zugehörigen Sperrlisteneintrag als deserialisiertes Datenobjekt vom Typ <see cref="Contact"/>.
+    ''' </summary>
+    ''' <param name="Number">phone number</param>
+    Function GetCallBarringEntryByNum(Number As String) As Task(Of Contact)
 
     ''' <summary>
     ''' Returns a url which leads to an xml formatted file which contains all entries of the call barring phonebook.
     ''' </summary>
     ''' <param name="PhonebookURL">Url of the call barring phonebook</param>
-
     Function GetCallBarringList(ByRef PhonebookURL As String) As Boolean
+
+    ''' <summary>
+    ''' Inoffizielle asynchrone Action: Ermittelt das die Sperrlisten als deserialisiertes Datenobjekt vom Typ <see cref="PhonebooksType"/>.
+    ''' </summary>
+    Function GetCallBarringList() As Task(Of PhonebooksType)
 
     ''' <summary>
     ''' Add a phonebook entry to the specific call barring phonebook. When no uniqueid is given 
@@ -249,6 +276,8 @@ Public Interface IX_contactSCPD
     ''' Inoffizielle Action: GetDeflections wird als <see cref="DeflectionList"/> deserialisiert zurückgegeben.
     ''' </summary>
     Function GetDeflections(ByRef DeflectionList As DeflectionList) As Boolean
+
+    Function GetDeflections() As Task(Of DeflectionList)
 
     ''' <summary>
     ''' Enable or disable a deflection.

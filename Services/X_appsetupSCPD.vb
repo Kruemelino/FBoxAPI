@@ -94,16 +94,16 @@ Friend Class X_appsetupSCPD
                                                                    {"NewAppDeviceMAC", App.AppDeviceMAC},
                                                                    {"NewAppUsername", App.AppUsername},
                                                                    {"NewAppPassword", App.AppPassword},
-                                                                   {"NewAppRight", App.AppRight},
-                                                                   {"NewNasRight", App.NasRight},
-                                                                   {"NewPhoneRight", App.PhoneRight},
-                                                                   {"NewHomeautoRight", App.HomeautoRight},
+                                                                   {"NewAppRight", App.AppRight.ToString},
+                                                                   {"NewNasRight", App.NasRight.ToString},
+                                                                   {"NewPhoneRight", App.PhoneRight.ToString},
+                                                                   {"NewHomeautoRight", App.HomeautoRight.ToString},
                                                                    {"NewAppInternetRights", App.AppInternetRights.ToBoolStr}}).ContainsKey("Error")
 
     End Function
 
     Public Function ResetEvent(EventId As Integer) As Boolean Implements IX_appsetupSCPD.ResetEvent
-        Return Not TR064Start(ServiceFile, "ResetEvent", New Dictionary(Of String, String) From {{"NewEventId", EventId}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "ResetEvent", New Dictionary(Of String, String) From {{"NewEventId", EventId.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function SetAppMessageFilter(AppId As String, Type As String, Filter As String) As Boolean Implements IX_appsetupSCPD.SetAppMessageFilter

@@ -34,7 +34,7 @@ Friend Class AuraSCPD
 
         With TR064Start(ServiceFile,
                         "GetDeviceByIndex",
-                        New Dictionary(Of String, String) From {{"NewIndex", Index}})
+                        New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
             Return .TryGetValueEx("NewDeviceHandle", Info.DeviceHandle) And
                    .TryGetValueEx("NewName", Info.Name) And
@@ -50,13 +50,11 @@ Friend Class AuraSCPD
     End Function
 
     Public Function GetDeviceByHandle(DeviceHandle As Integer, ByRef Info As AuraInfo) As Boolean Implements IAuraSCPD.GetDeviceByHandle
-        If Info Is Nothing Then Info = New AuraInfo
+        If Info Is Nothing Then Info = New AuraInfo With {.DeviceHandle = DeviceHandle}
 
         With TR064Start(ServiceFile,
                         "GetDeviceByHandle",
-                        New Dictionary(Of String, String) From {{"NewDeviceHandle", DeviceHandle}})
-
-            Info.DeviceHandle = DeviceHandle
+                        New Dictionary(Of String, String) From {{"NewDeviceHandle", DeviceHandle.ToString}})
 
             Return .TryGetValueEx("NewName", Info.Name) And
                    .TryGetValueEx("NewHardwareId", Info.HardwareId) And
@@ -71,10 +69,10 @@ Friend Class AuraSCPD
     End Function
 
     Public Function ConnectDevice(DeviceHandle As Integer) As Boolean Implements IAuraSCPD.ConnectDevice
-        Return Not TR064Start(ServiceFile, "ConnectDevice", New Dictionary(Of String, String) From {{"NewDeviceHandle", DeviceHandle}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "ConnectDevice", New Dictionary(Of String, String) From {{"NewDeviceHandle", DeviceHandle.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function DisconnectDevice(DeviceHandle As Integer) As Boolean Implements IAuraSCPD.DisconnectDevice
-        Return Not TR064Start(ServiceFile, "DisconnectDevice", New Dictionary(Of String, String) From {{"NewDeviceHandle", DeviceHandle}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "DisconnectDevice", New Dictionary(Of String, String) From {{"NewDeviceHandle", DeviceHandle.ToString}}).ContainsKey("Error")
     End Function
 End Class

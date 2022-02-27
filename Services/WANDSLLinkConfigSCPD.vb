@@ -36,7 +36,7 @@ Friend Class WANDSLLinkConfigSCPD
     End Function
 
     Public Function SetDSLLinkType(LinkType As LinkTypeEnum) As Boolean Implements IWANDSLLinkConfigSCPD.SetDSLLinkType
-        Return Not TR064Start(ServiceFile, "SetDSLLinkType", New Dictionary(Of String, String) From {{"NewLinkType", LinkType}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetDSLLinkType", New Dictionary(Of String, String) From {{"NewLinkType", LinkType.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetDSLLinkInfo(ByRef LinkType As LinkTypeEnum, ByRef LinkStatus As LinkStatusEnum) As Boolean Implements IWANDSLLinkConfigSCPD.GetDSLLinkInfo

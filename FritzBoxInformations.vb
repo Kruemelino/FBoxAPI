@@ -1,33 +1,9 @@
 ﻿Imports System.ComponentModel
-Imports System.Xml.Schema
 Public Module FritzBoxInformations
 
-#Region "Properties"
-#Region "Fritz!Box SOAP/TR64"
-    Friend Const PropertyDfltFritzBoxAdress As String = "192.168.178.1"
-    Friend Const DfltFritzBoxHostName As String = "fritz.box"
-    Friend Const DfltFritzBoxSessionID As String = "0000000000000000"
-    Friend Const DfltCodePageFritzBox As Integer = 65001
-    Friend Const TR064ContentType As String = "text/xml; charset=""utf-8"""
-    Friend Const TR064UserAgent As String = "AVM UPnP/1.0 Client 1.0"
+#Region "Fritz!Box SOAP/TR-064"
     Friend Const DfltTR064Port As Integer = 49000
     Friend Const DfltTR064PortSSL As Integer = 49443
-    Friend Const DfltTR064RequestNameSpaceEnvelope As String = "http://schemas.xmlsoap.org/soap/envelope/"
-    Friend Const DfltTR064RequestNameSpaceEncoding As String = "http://schemas.xmlsoap.org/soap/encoding/"
-    Friend ReadOnly Property DfltSOAPRequestSchema As XmlSchema
-        Get
-            Dim XMLSOAPSchema As New XmlSchema
-
-            With XMLSOAPSchema.Namespaces
-                .Add("s", DfltTR064RequestNameSpaceEnvelope)
-                .Add("u", DfltTR064RequestNameSpaceEncoding)
-            End With
-
-            Return XMLSOAPSchema
-        End Get
-    End Property
-#End Region
-
 #End Region
 
 #Region "Fritz!Box UPnP/TR-064 Files"

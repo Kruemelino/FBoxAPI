@@ -1,0 +1,28 @@
+﻿''' <summary>
+''' Schnittstelle für verschiedene Funktionen, die von der Fritz!Box via http abgerufen werden können.<br/>
+''' Herunterladen von Kontaktbildern, TAM-Messages, Fax-Nachrichten.<br/>
+''' Starten von Lua-Abfragen
+''' </summary>
+Public Interface IFBoxHttpTransfer
+
+    ''' <summary>
+    ''' Startet eine Lua Abfrage
+    ''' </summary>
+    ''' <param name="SessionID">Übergabe einer SessionID in der Form: sid=0000000000000000</param>
+    ''' <param name="Abfrage">Auflistung der einzelnen Abfragen.</param>
+    Function GetLuaResponse(SessionID As String, Abfrage As IEnumerable(Of String)) As Task(Of String)
+
+    ''' <summary>
+    ''' Lädt eine Datei von der Fritz!Box auf das Dateisystem herunter.
+    ''' </summary>
+    ''' <param name="UniformResourceIdentifier">Uri zur Datei auf der Fritz!Box.</param>
+    ''' <param name="DateiPfad">Dateipfad auf dem Dateisystem.</param>
+    Function DownloadToFileSystem(UniformResourceIdentifier As Uri, DateiPfad As String) As Task(Of Boolean)
+
+    ''' <summary>
+    ''' Lädt eine Datei von der Fritz!Box auf in ein Byte-Array.
+    ''' </summary>
+    ''' <param name="UniformResourceIdentifier">Uri zur Datei auf der Fritz!Box.</param>
+    Function GetData(UniformResourceIdentifier As Uri) As Task(Of Byte())
+
+End Interface

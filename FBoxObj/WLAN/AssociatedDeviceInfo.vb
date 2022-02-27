@@ -1,6 +1,6 @@
 ﻿Imports System.Xml.Serialization
 <Serializable()> Public Class AssociatedDevice
-    <XmlElement("AssociatedDeviceIndex")> Public Property AssociatedDeviceIndex As String
+    <XmlElement("AssociatedDeviceIndex")> Public Property AssociatedDeviceIndex As Integer
     <XmlElement("AssociatedDeviceMACAddress")> Public Property AssociatedDeviceMACAddress As String
     <XmlElement("AssociatedDeviceIPAddress")> Public Property AssociatedDeviceIPAddress As String
     <XmlElement("AssociatedDeviceAuthState")> Public Property AssociatedDeviceAuthState As Boolean

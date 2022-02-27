@@ -5,7 +5,6 @@
 ''' </summary>
 Public Interface IDeviceconfigSCPD
     Inherits IServiceBase
-
     Function GetPersistentData(ByRef PersistentData As String) As Boolean
     Function SetPersistentData(PersistentData As String) As Boolean
     Function ConfigurationStarted(SessionID As String) As Boolean
@@ -52,7 +51,6 @@ Public Interface IDeviceconfigSCPD
     ''' </summary>
     ''' <param name="SessionID">Represents the temporary URL session ID.</param>
     Function GetSessionID(ByRef SessionID As String) As Boolean
-
     ''' <summary>
     ''' X_AVM-DE_GetSupportDataInfo<br/>
     ''' Returns information about the current / last support data process. ID, timestamp, mode

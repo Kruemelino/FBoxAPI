@@ -7,9 +7,9 @@ Public Class Argument
     <XmlElement("relatedStateVariable")> Public Property RelatedStateVariable As String
 End Class
 
-Friend Structure ArgumentDirection
-    Friend Shared [IN] As String = "in"
-    Friend Shared OUT As String = "out"
-End Structure
+'Friend Structure Direction
+'    Friend Shared [IN] As String = "in"
+'    Friend Shared OUT As String = "out"
+'End Structure
 
 

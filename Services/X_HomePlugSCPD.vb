@@ -22,7 +22,7 @@ Friend Class X_homePlugSCPD
     Public Function GetNumberOfDeviceEntries(Index As Integer, ByRef Device As HomePlugDevice) As Boolean Implements IX_homeplugSCPD.GetNumberOfDeviceEntries
         If Device Is Nothing Then Device = New HomePlugDevice
 
-        With TR064Start(ServiceFile, "GetGenericDeviceEntry", New Dictionary(Of String, String) From {{"NewIndex", Index}})
+        With TR064Start(ServiceFile, "GetGenericDeviceEntry", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
             Device.Index = Index
 

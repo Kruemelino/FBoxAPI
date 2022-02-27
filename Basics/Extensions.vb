@@ -2,7 +2,7 @@
 Imports System.Runtime.CompilerServices
 
 <DebuggerStepThrough()>
-Public Module Extensions
+Friend Module Extensions
 
 #Region "Extensions für Verarbeitung von Zahlen: Double, Integer, Long"
 
@@ -73,11 +73,6 @@ Public Module Extensions
         End If
     End Function
 
-    <Extension()>
-    Friend Function SerializeDictionary(dictionary As Dictionary(Of String, String), Name As String) As String
-        Return $"{{ ""{Name}"" : {{ {String.Join(", ", dictionary.Select(Function(kvp) $"""{kvp.Key}"" : ""{kvp.Value}"""))} }}"
-    End Function
-
     ''' <summary>
     ''' Eigene Funktion, die das GetKeyValue zumindest etwas typsicherer macht. Der Standardwert ist bei einem <see cref="Dictionary(Of String, String)"/> "". Dies kann jedoch nicht in Boolean umgewandelt werden.
     ''' </summary>
@@ -96,9 +91,9 @@ Public Module Extensions
                     ' "0" und "1" können nicht in Boolean umgewandelt werden.
                     If GetType(T) Is GetType(Boolean) AndAlso
                         (.Item(key).Equals("0") Or .Item(key).Equals("1")) Then
-                        value = Convert.ChangeType(CInt(.Item(key)), GetType(T))
+                        value = CType(Convert.ChangeType(CInt(.Item(key)), GetType(T)), T)
                     Else
-                        value = Convert.ChangeType(.Item(key), GetType(T))
+                        value = CType(Convert.ChangeType(.Item(key), GetType(T)), T)
                     End If
 
                     ' Erfolg
@@ -111,4 +106,29 @@ Public Module Extensions
         Return False
     End Function
 
+    <Extension()>
+    Public Function TryGetValueEx(Of T)(dictionary As Dictionary(Of String, String), key As String) As T
+
+        With dictionary
+            ' prüfe, der Key vorhanden ist.
+            If .ContainsKey(key) Then
+                Try
+                    ' Typumwandlung
+
+                    ' Bei Boolean muss momentan ein Sonderweg gegangen werden.
+                    ' "0" und "1" können nicht in Boolean umgewandelt werden.
+                    If GetType(T) Is GetType(Boolean) AndAlso
+                        (.Item(key).Equals("0") Or .Item(key).Equals("1")) Then
+                        Return CType(Convert.ChangeType(CInt(.Item(key)), GetType(T)), T)
+                    Else
+                        Return CType(Convert.ChangeType(.Item(key), GetType(T)), T)
+                    End If
+
+                Catch ex As Exception
+                    ' ToDo Log?
+                End Try
+            End If
+        End With
+        Return Nothing
+    End Function
 End Module

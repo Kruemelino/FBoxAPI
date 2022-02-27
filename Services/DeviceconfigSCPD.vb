@@ -9,9 +9,7 @@ Friend Class DeviceconfigSCPD
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.deviceconfigSCPD Implements IDeviceconfigSCPD.Servicefile
 
     Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
-
         TR064Start = Start
-
     End Sub
 
 
@@ -90,9 +88,7 @@ Friend Class DeviceconfigSCPD
     End Function
 
     Public Function LoginTest() As Boolean Implements IDeviceconfigSCPD.LoginTest
-        With TR064Start(ServiceFile, "X_AVM-DE_CreateUrlSID", Nothing)
-            Return .ContainsKey("NewX_AVM-DE_UrlSID") AndAlso Not .Item("NewX_AVM-DE_UrlSID").AreEqual(DfltFritzBoxSessionID)
-        End With
+        Return TR064Start(ServiceFile, "X_AVM-DE_CreateUrlSID", Nothing).ContainsKey("NewX_AVM-DE_UrlSID")
     End Function
 #End Region
 

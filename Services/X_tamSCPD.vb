@@ -10,10 +10,10 @@ Friend Class X_tamSCPD
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_tamSCPD Implements IX_tamSCPD.Servicefile
     Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), XMLSerializer As Serializer)
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)),
+                   XMLSerializer As Serializer)
 
         TR064Start = Start
-
         XML = XMLSerializer
 
     End Sub
@@ -22,11 +22,11 @@ Friend Class X_tamSCPD
 
         If TAMInfo Is Nothing Then TAMInfo = New TAMInfo
 
-        With TR064Start(ServiceFile, "GetInfo", New Dictionary(Of String, String) From {{"NewIndex", i}})
+        With TR064Start(ServiceFile, "GetInfo", New Dictionary(Of String, String) From {{"NewIndex", i.ToString}})
 
             If .ContainsKey("NewPhoneNumbers") Then
 
-                TAMInfo.PhoneNumbers = .Item("NewPhoneNumbers").Split(",")
+                TAMInfo.PhoneNumbers = .Item("NewPhoneNumbers").Split(","c)
 
                 Return .TryGetValueEx("NewEnable", TAMInfo.Enable) And
                        .TryGetValueEx("NewName", TAMInfo.Name) And
@@ -44,29 +44,45 @@ Friend Class X_tamSCPD
     End Function
 
     Public Function SetEnable(Index As Integer, Enable As Boolean) As Boolean Implements IX_tamSCPD.SetEnable
-        Return Not TR064Start(ServiceFile, "SetEnable", New Dictionary(Of String, String) From {{"NewIndex", Index},
+        Return Not TR064Start(ServiceFile, "SetEnable", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString},
                                                                                                 {"NewEnable", Enable.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetMessageList(ByRef GetMessageListURL As String, i As Integer) As Boolean Implements IX_tamSCPD.GetMessageList
         Return TR064Start(ServiceFile, "GetMessageList",
-                          New Dictionary(Of String, String) From {{"NewIndex", i}}).
+                          New Dictionary(Of String, String) From {{"NewIndex", i.ToString}}).
                           TryGetValueEx("NewURL", GetMessageListURL)
     End Function
 
+    Public Async Function GetMessageList(i As Integer) As Task(Of MessageList) Implements IX_tamSCPD.GetMessageList
+        'Ermittle den Pfad zum Telefonbuch und deserialisiere die Daten
+        Dim url As String = String.Empty
+
+        Return Await XML.DeserializeAsyncFromPath(Of MessageList)((TR064Start(ServiceFile,
+                                                                              "GetMessageList",
+                                                                              New Dictionary(Of String, String) From {{"NewIndex", i.ToString}}).TryGetValueEx(Of String)("NewURL")))
+    End Function
+
     Public Function MarkMessage(Index As Integer, MessageIndex As Integer, MarkedAsRead As Boolean) As Boolean Implements IX_tamSCPD.MarkMessage
-        Return Not TR064Start(ServiceFile, "MarkMessage", New Dictionary(Of String, String) From {{"NewIndex", Index},
-                                                                                                  {"NewMessageIndex", MessageIndex},
+        Return Not TR064Start(ServiceFile, "MarkMessage", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString},
+                                                                                                  {"NewMessageIndex", MessageIndex.ToString},
                                                                                                   {"NewMarkedAsRead", MarkedAsRead.ToBoolStr}}).ContainsKey("Error")
 
     End Function
 
     Public Function DeleteMessage(Index As Integer, MessageIndex As Integer) As Boolean Implements IX_tamSCPD.DeleteMessage
-        Return Not TR064Start(ServiceFile, "DeleteMessage", New Dictionary(Of String, String) From {{"NewIndex", Index}, {"NewMessageIndex", MessageIndex}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "DeleteMessage", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString},
+                                                                                                    {"NewMessageIndex", MessageIndex.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetList(ByRef List As String) As Boolean Implements IX_tamSCPD.GetList
         Return TR064Start(ServiceFile, "GetList", Nothing).TryGetValueEx("NewTAMList", List)
+    End Function
+
+    Public Async Function GetList() As Task(Of TAMList) Implements IX_tamSCPD.GetList
+        Return Await XML.DeserializeAsyncData(Of TAMList)((TR064Start(ServiceFile,
+                                                                      "GetList",
+                                                                      Nothing)).TryGetValueEx(Of String)("NewTAMList"))
     End Function
 
     Public Function GetList(ByRef List As TAMList) As Boolean Implements IX_tamSCPD.GetList

@@ -24,7 +24,7 @@ Friend Class DECT_SCPD
 
         With TR064Start(ServiceFile,
                         "GetGenericDectEntry",
-                        New Dictionary(Of String, String) From {{"NewIndex", NumberOfEntries}})
+                        New Dictionary(Of String, String) From {{"NewIndex", NumberOfEntries.ToString}})
 
             Return .TryGetValueEx("NewID", GenericDectEntry.ID) And
                    .TryGetValueEx("NewActive", GenericDectEntry.Active) And

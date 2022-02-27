@@ -28,7 +28,7 @@ Friend Class X_voipSCPD
     End Function
 
     Public Function SetConfig(T38FaxEnable As Boolean, VoiceCoding As VoiceCodingEnum) As Boolean Implements IX_voipSCPD.SetConfig
-        Return Not TR064Start(ServiceFile, "SetConfig", New Dictionary(Of String, String) From {{"NewT38FaxEnable", T38FaxEnable.ToBoolStr}, {"NewVoiceCoding", VoiceCoding}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetConfig", New Dictionary(Of String, String) From {{"NewT38FaxEnable", T38FaxEnable.ToBoolStr}, {"NewVoiceCoding", VoiceCoding.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetInfoEx(ByRef InfoEx As VoIPInfoEx) As Boolean Implements IX_voipSCPD.GetInfoEx
@@ -90,18 +90,18 @@ Friend Class X_voipSCPD
 #Region "AreaCode / CountryCode"
     Public Function GetVoIPEnableAreaCode(ByRef VoIPEnableAreaCode As Boolean, VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.GetVoIPEnableAreaCode
         Return TR064Start(ServiceFile, "GetVoIPEnableAreaCode",
-                          New Dictionary(Of String, String) From {{"NewVoIPEnableAreaCode", VoIPAccountIndex}}).
+                          New Dictionary(Of String, String) From {{"NewVoIPEnableAreaCode", VoIPAccountIndex.ToString}}).
                           TryGetValueEx("NewVoIPEnableAreaCode", VoIPEnableAreaCode)
     End Function
 
     Public Function SetVoIPEnableAreaCode(VoIPEnableAreaCode As Boolean, VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.SetVoIPEnableAreaCode
-        Return Not TR064Start(ServiceFile, "SetVoIPEnableAreaCode", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", VoIPAccountIndex},
+        Return Not TR064Start(ServiceFile, "SetVoIPEnableAreaCode", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", VoIPAccountIndex.ToString},
                                                                                                             {"NewVoIPEnableAreaCode", VoIPEnableAreaCode.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetVoIPEnableCountryCode(ByRef VoIPEnableCountryCode As Boolean, VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.GetVoIPEnableCountryCode
         Return TR064Start(ServiceFile, "GetVoIPEnableCountryCode",
-                          New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", VoIPAccountIndex}}).
+                          New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", VoIPAccountIndex.ToString}}).
                           TryGetValueEx("NewVoIPEnableCountryCode", VoIPEnableCountryCode)
     End Function
 
@@ -147,7 +147,7 @@ Friend Class X_voipSCPD
                                    VoIPSTUNServer As String) As Boolean Implements IX_voipSCPD.AddVoIPAccount
 
 
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_AddVoIPAccount", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", VoIPAccountIndex},
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_AddVoIPAccount", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", VoIPAccountIndex.ToString},
                                                                                                               {"NewVoIPRegistrar", VoIPRegistrar},
                                                                                                               {"NewVoIPNumber", VoIPNumber},
                                                                                                               {"NewVoIPUsername", VoIPUsername},
@@ -157,13 +157,13 @@ Friend Class X_voipSCPD
     End Function
 
     Public Function DelVoIPAccount(VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.DelVoIPAccount
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_DelVoIPAccount", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex ", VoIPAccountIndex}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_DelVoIPAccount", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex ", VoIPAccountIndex.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetVoIPAccount(ByRef Account As VoIPAccount, AccountIndex As Integer) As Boolean Implements IX_voipSCPD.GetVoIPAccount
         If Account Is Nothing Then Account = New VoIPAccount
 
-        With TR064Start(ServiceFile, "X_AVM-DE_GetVoIPAccount", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", AccountIndex}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetVoIPAccount", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", AccountIndex.ToString}})
 
             Account.VoIPAccountIndex = AccountIndex
 
@@ -179,7 +179,7 @@ Friend Class X_voipSCPD
 
 #Region "Client"
     Public Function DeleteClient(ClientIndex As Integer) As Boolean Implements IX_voipSCPD.DeleteClient
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_DeleteClient", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_DeleteClient", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetNumberOfClients(ByRef NumberOfClients As Integer) As Boolean Implements IX_voipSCPD.GetNumberOfClients
@@ -189,7 +189,7 @@ Friend Class X_voipSCPD
     Public Function GetClient2(ByRef Client As SIPClient, ClientIndex As Integer) As Boolean Implements IX_voipSCPD.GetClient2
         If Client Is Nothing Then Client = New SIPClient
 
-        With TR064Start(ServiceFile, "X_AVM-DE_GetClient2", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetClient2", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex.ToString}})
 
             Client.ClientIndex = ClientIndex
 
@@ -207,7 +207,7 @@ Friend Class X_voipSCPD
     Public Function GetClient3(ByRef Client As SIPClient, ClientIndex As Integer) As Boolean Implements IX_voipSCPD.GetClient3
         If Client Is Nothing Then Client = New SIPClient
 
-        With TR064Start(ServiceFile, "X_AVM-DE_GetClient3", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetClient3", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex.ToString}})
 
             Client.ClientIndex = ClientIndex
 
@@ -273,7 +273,7 @@ Friend Class X_voipSCPD
                                ClientId As String,
                                OutGoingNumber As String) As Boolean Implements IX_voipSCPD.SetClient2
 
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetClient2", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex},
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetClient2", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex.ToString},
                                                                                                           {"NewX_AVM-DE_ClientPassword", ClientPassword},
                                                                                                           {"NewX_AVM-DE_PhoneName", PhoneName},
                                                                                                           {"NewX_AVM-DE_ClientId", ClientId},
@@ -288,7 +288,7 @@ Friend Class X_voipSCPD
                                InComingNumbers As String,
                                ExternalRegistration As String) As Boolean Implements IX_voipSCPD.SetClient3
 
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetClient3", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex},
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetClient3", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex.ToString},
                                                                                                           {"NewX_AVM-DE_ClientPassword", ClientPassword},
                                                                                                           {"NewX_AVM-DE_PhoneName", PhoneName},
                                                                                                           {"NewX_AVM-DE_ClientId", ClientId},
@@ -321,7 +321,7 @@ Friend Class X_voipSCPD
                                OutGoingNumber As String,
                                InComingNumbers As String,
                                InternalNumber As String) As Boolean Implements IX_voipSCPD.SetClient4
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetClient4", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex},
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetClient4", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex.ToString},
                                                                                                           {"NewX_AVM-DE_ClientPassword", ClientPassword},
                                                                                                           {"NewX_AVM-DE_PhoneName", PhoneName},
                                                                                                           {"NewX_AVM-DE_ClientId", ClientId},
@@ -349,7 +349,7 @@ Friend Class X_voipSCPD
     End Function
 
     Public Function SetDelayedCallNotification(ClientIndex As Integer, DelayedCallNotification As Boolean) As Boolean Implements IX_voipSCPD.SetDelayedCallNotification
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetDelayedCallNotification", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex},
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetDelayedCallNotification", New Dictionary(Of String, String) From {{"NewX_AVM-DE_ClientIndex", ClientIndex.ToString},
                                                                                                                           {"NewX_AVM-DE_DelayedCallNotification", DelayedCallNotification.ToBoolStr}}).ContainsKey("Error")
     End Function
 #End Region
@@ -368,7 +368,7 @@ Friend Class X_voipSCPD
 
 #Region "Dialing"
     Public Function GetPhonePort(ByRef PhoneName As String, i As Integer) As Boolean Implements IX_voipSCPD.GetPhonePort
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetPhonePort", New Dictionary(Of String, String) From {{"NewIndex", i}}).TryGetValueEx("NewX_AVM-DE_PhoneName", PhoneName)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetPhonePort", New Dictionary(Of String, String) From {{"NewIndex", i.ToString}}).TryGetValueEx("NewX_AVM-DE_PhoneName", PhoneName)
     End Function
 
     Public Function DialGetConfig(ByRef PhoneName As String) As Boolean Implements IX_voipSCPD.DialGetConfig
@@ -392,11 +392,11 @@ Friend Class X_voipSCPD
     Public Function GetAlarmClock(ByRef AlarmClock As AlarmClock, Index As Integer) As Boolean Implements IX_voipSCPD.GetAlarmClock
         If AlarmClock Is Nothing Then AlarmClock = New AlarmClock
 
-        With TR064Start(ServiceFile, "X_AVM-DE_GetAlarmClock", New Dictionary(Of String, String) From {{"NewIndex", Index}})
+        With TR064Start(ServiceFile, "X_AVM-DE_GetAlarmClock", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
             If .ContainsKey("NewX_AVM-DE_AlarmClockWeekdays") Then
 
-                AlarmClock.AlarmClockWeekdays = .Item("NewX_AVM-DE_AlarmClockWeekdays").Split(",")
+                AlarmClock.AlarmClockWeekdays = .Item("NewX_AVM-DE_AlarmClockWeekdays").Split(","c)
 
                 Return .TryGetValueEx("NewX_AVM-DE_AlarmClockEnable", AlarmClock.AlarmClockEnable) And
                        .TryGetValueEx("NewX_AVM-DE_AlarmClockName", AlarmClock.AlarmClockName) And
@@ -413,7 +413,7 @@ Friend Class X_voipSCPD
     End Function
 
     Public Function SetAlarmClockEnable(Index As Integer, AlarmClockEnable As Boolean) As Boolean Implements IX_voipSCPD.SetAlarmClockEnable
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetAlarmClockEnable", New Dictionary(Of String, String) From {{"NewIndex", Index},
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetAlarmClockEnable", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString},
                                                                                                                    {"NewX_AVM-DE_AlarmClockEnable", AlarmClockEnable.ToBoolStr}}).ContainsKey("Error")
     End Function
 #End Region
