@@ -210,6 +210,7 @@ Friend Class TR064WebFunctions
                     Else
                         PushStatus?.Invoke(CreateLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message}; RequestContent: {vbCrLf}{PostData} "))
                     End If
+                    ' Prüfen: Potentieller Fehler beim Debuggen: ServerCertificateValidationCallback bereits auf Nothing gesetzt.
                     .Close()
                 End With
             Finally

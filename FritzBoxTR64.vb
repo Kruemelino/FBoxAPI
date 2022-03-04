@@ -74,7 +74,7 @@ Public Class FritzBoxTR64
         InitServices()
 
         ' Lade alle relevanten Daten von der Fritz!Box und initialisiere die Services
-        ConnectTR064()
+        Ready = ConnectTR064()
 
     End Sub
 #End Region
@@ -83,7 +83,7 @@ Public Class FritzBoxTR64
     ''' <summary>
     ''' Lädt alle TR-064Description herunter und initialisiert die Services
     ''' </summary>
-    Private Async Sub ConnectTR064()
+    Private Async Function ConnectTR064Async() As Task(Of Boolean)
 
         If Client.Ping(FBoxIPAdresse) Then
 
@@ -101,7 +101,7 @@ Public Class FritzBoxTR64
                     PushStatus(CreateLog(LogLevel.Info, $"Fritz!Box TR064 API mit {Services.Count} Services erfolgreich initialisiert."))
 
                     ' Füge das Flag hinzu, dass die TR064-Schnittstelle bereit ist.
-                    Ready = True
+                    Return True
                 Else
                     PushStatus(CreateLog(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc."))
                 End If
@@ -111,8 +111,14 @@ Public Class FritzBoxTR64
         Else
             PushStatus(CreateLog(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fritz!Box unter {FBoxIPAdresse} nicht verfügbar."))
         End If
+        Return False
+    End Function
 
-    End Sub
+    Private Function ConnectTR064() As Boolean
+        Dim T As Task(Of Boolean) = Task.Run(Function() ConnectTR064Async())
+        T.Wait()
+        Return T.Result
+    End Function
 
     ''' <summary>
     ''' Fügt den Aura-Service hinzu. Der Zugriff auf die ServiceDefinition wird durch die Fritz!Box blockiert, wenn der Fernzugriff nicht aktiviert wurde.
