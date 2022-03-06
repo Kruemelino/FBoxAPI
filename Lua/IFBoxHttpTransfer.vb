@@ -10,7 +10,16 @@ Public Interface IFBoxHttpTransfer
     ''' </summary>
     ''' <param name="SessionID">Übergabe einer SessionID in der Form: sid=0000000000000000</param>
     ''' <param name="Abfrage">Auflistung der einzelnen Abfragen.</param>
+    ''' <returns><see cref="String"/></returns>
     Function GetLuaResponse(SessionID As String, Abfrage As IEnumerable(Of String)) As Task(Of String)
+
+    ''' <summary>
+    ''' Startet eine Lua Abfrage
+    ''' </summary>
+    ''' <param name="SessionID">Übergabe einer SessionID in der Form: sid=0000000000000000</param>
+    ''' <param name="Abfrage">Auflistung der einzelnen Abfragen.</param>
+    ''' <returns><see cref="IO.Stream"/></returns>
+    Function GetLuaResponseStream(SessionID As String, Abfrage As IEnumerable(Of String)) As Task(Of IO.Stream)
 
     ''' <summary>
     ''' Lädt eine Datei von der Fritz!Box auf das Dateisystem herunter.

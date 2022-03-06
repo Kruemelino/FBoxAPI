@@ -99,6 +99,48 @@ Friend Class TR064WebFunctions
 
         Return ReturnString
     End Function
+
+    Friend Async Function GetStreamWebClientAsync(UniformResourceIdentifier As Uri) As Task(Of IO.Stream)
+        Dim ReturnStream As IO.Stream = Nothing
+
+        Using Client As WebClient = CreateWebClient(UniformResourceIdentifier)
+
+            Try
+
+                ReturnStream = Await Client.OpenReadTaskAsync(UniformResourceIdentifier)
+
+                'PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Response:{vbCrLf}{ReturnString}"))
+
+            Catch ex As ArgumentNullException
+                PushStatus?.Invoke(CreateLog(LogLevel.Error, ex))
+
+            Catch ex As WebException
+                ' Gib die Antwort des Servers zurück
+                With CType(ex.Response, HttpWebResponse)
+                    If ex.Status = WebExceptionStatus.ProtocolError AndAlso .StatusCode = HttpStatusCode.InternalServerError Then
+                        Using DataStream As IO.Stream = .GetResponseStream()
+                            Using reader = New IO.StreamReader(DataStream)
+                                PushStatus?.Invoke(CreateLog(LogLevel.Error, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response: {reader.ReadToEnd()} "))
+                            End Using
+                        End Using
+                    Else
+                        PushStatus?.Invoke(CreateLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} "))
+                    End If
+                    .Close()
+                End With
+
+            Finally
+                ' Restore SSL Certificate Validation Checking
+                ServicePointManager.ServerCertificateValidationCallback = Nothing
+
+                ' Releases the resources used by the WebClient.
+                Client.Dispose()
+            End Try
+
+        End Using
+
+        Return ReturnStream
+    End Function
 #End Region
 
 #Region "Data - Byte()"
