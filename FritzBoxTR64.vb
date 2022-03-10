@@ -4,6 +4,7 @@ Public Class FritzBoxTR64
     Inherits LogBase
     Implements IDisposable
 
+    <Obsolete("This event is obsolete and will be removed in a future version. Use the property LogWriter As ILogWriter of this class instead.")>
     Public Event Status As EventHandler(Of NotifyEventArgs(Of LogMessage))
     Public Property Ready As Boolean = False
     Friend Shared Property FBoxIPAdresse As String
@@ -11,6 +12,13 @@ Public Class FritzBoxTR64
     Private Property XML As Serializer
     Private Property Client As TR064WebFunctions
     Private Property Services As List(Of Service)
+
+    Friend Shared _LogWriter As ILogWriter
+    Public WriteOnly Property LogWriter As ILogWriter
+        Set
+            _LogWriter = Value
+        End Set
+    End Property
 
 #Region "Services"
     Public Property AURA As IAuraSCPD
@@ -60,15 +68,20 @@ Public Class FritzBoxTR64
     ''' </summary>
     ''' <param name="FritzBoxAdresse">Die IP Adresse der Fritz!Box.</param>
     ''' <param name="Anmeldeinformationen">Die Anmeldeinformationen (Benutzername und Passwort) als <see cref="NetworkCredential"/>.</param>
-    Public Sub New(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential)
+    ''' <param name="LogWriter">Eine Klasse, die die Schnittstelle <see cref="ILogWriter"/> implementiert und das Logging realisiert.</param>
+    Public Sub New(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential, Optional LogWriter As ILogWriter = Nothing)
+
+        ' Setze die Verknüpfung zum LogWriter
+        _LogWriter = LogWriter
+
         ' IP Adresse der Fritz!Box setzen
         _FBoxIPAdresse = FritzBoxAdresse
 
         ' Lade die Klasse für die http-Funktionalitäten.
-        _Client = New TR064WebFunctions(AddressOf PushStatus, Anmeldeinformationen)
+        _Client = New TR064WebFunctions(Anmeldeinformationen)
 
         ' XML initialisieren
-        _XML = New Serializer(AddressOf PushStatus, Client)
+        _XML = New Serializer(Client)
 
         ' Lade die TR064 Services, LUA und UserMode
         InitServices()
@@ -98,18 +111,18 @@ Public Class FritzBoxTR64
                     ' Ermittle alle vorhandenen Services
                     Services = FBTR64Desc.Device.GetAllServices()
 
-                    PushStatus(CreateLog(LogLevel.Info, $"Fritz!Box TR064 API mit {Services.Count} Services erfolgreich initialisiert."))
+                    SendLog(LogLevel.Info, $"Fritz!Box TR064 API mit {Services.Count} Services erfolgreich initialisiert.")
 
                     ' Füge das Flag hinzu, dass die TR064-Schnittstelle bereit ist.
                     Return True
                 Else
-                    PushStatus(CreateLog(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc."))
+                    SendLog(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc.")
                 End If
             Else
-                PushStatus(CreateLog(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Herunterladen der FBTR64Desc."))
+                SendLog(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Herunterladen der FBTR64Desc.")
             End If
         Else
-            PushStatus(CreateLog(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fritz!Box unter {FBoxIPAdresse} nicht verfügbar."))
+            SendLog(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fritz!Box unter {FBoxIPAdresse} nicht verfügbar.")
         End If
         Return False
     End Function
@@ -135,7 +148,7 @@ Public Class FritzBoxTR64
                     ' Ermittle alle vorhandenen Services und hänge sie an
                     Services.AddRange(AuraDesc.Device.GetAllServices)
 
-                    PushStatus(CreateLog(LogLevel.Debug, $"Fritz!Box AURA Services geladen."))
+                    SendLog(LogLevel.Trace, $"Fritz!Box AURA Services geladen.")
                     Return True
                 End If
             End If
@@ -206,17 +219,11 @@ Public Class FritzBoxTR64
             ' Aktualisiere die Klasse für die http-Funktionalitäten.
             Client.UpdateCredential(Anmeldeinformationen)
 
-            PushStatus(CreateLog(LogLevel.Info, $"Anmeldeinformationen aktualisiert. Login für {Anmeldeinformationen.UserName}:{If(Deviceconfig.LoginTest, String.Empty, " nicht")} erfolgreich"))
+            SendLog(LogLevel.Info, $"Anmeldeinformationen aktualisiert. Login für {Anmeldeinformationen.UserName}:{If(Deviceconfig.LoginTest, String.Empty, " nicht")} erfolgreich")
         End If
 
     End Sub
 #End Region
-
-    <DebuggerStepThrough>
-    Private Sub PushStatus(LMsg As LogMessage)
-        RaiseEvent Status(Me, New NotifyEventArgs(Of LogMessage)(LMsg))
-    End Sub
-
     Private Function TR064Start(SCPDURL As SCPDFiles, ActionName As String, Optional InputArguments As Dictionary(Of String, String) = Nothing) As Dictionary(Of String, String)
         ' Versuche einen Start, falls noch nicht geschehen
         If Not Ready Then ConnectTR064()
@@ -240,15 +247,15 @@ Public Class FritzBoxTR64
             ' Weise die Fritz!Box IP-Adresse zu
             If FBoxService IsNot Nothing Then
                 ' Prüfe, ob der Service bereits initialisiert wurde
-                If Not FBoxService.Initialized Then FBoxService.Init(XML, Client, AddressOf PushStatus)
+                If Not FBoxService.Initialized Then FBoxService.Init(XML, Client)
 
             Else
-                PushStatus(CreateLog(LogLevel.Error, $"Service für {SCPDURL} nicht vorhanden."))
+                SendLog(LogLevel.Error, $"Service für {SCPDURL} nicht vorhanden.")
             End If
 
             Return FBoxService
         Else
-            PushStatus(CreateLog(LogLevel.Error, $"Keine Services geladen."))
+            SendLog(LogLevel.Error, $"Keine Services geladen.")
             Return Nothing
         End If
 
@@ -271,7 +278,7 @@ Public Class FritzBoxTR64
     ''' </summary>
     Public ReadOnly Property HardwareVersion As Integer
         Get
-            PushStatus(CreateLog(LogLevel.Trace, $"Fritz!Box Hardware: {FBTR64Desc.SystemVersion.HW}"))
+            SendLog(LogLevel.Trace, $"Fritz!Box Hardware: {FBTR64Desc.SystemVersion.HW}")
             Return FBTR64Desc.SystemVersion.HW
         End Get
     End Property
@@ -281,7 +288,7 @@ Public Class FritzBoxTR64
     ''' </summary>
     Public ReadOnly Property Major As Integer
         Get
-            PushStatus(CreateLog(LogLevel.Trace, $"Fritz!Box Major: {FBTR64Desc.SystemVersion.Major}"))
+            SendLog(LogLevel.Trace, $"Fritz!Box Major: {FBTR64Desc.SystemVersion.Major}")
             Return FBTR64Desc.SystemVersion.Major
         End Get
     End Property
@@ -291,7 +298,7 @@ Public Class FritzBoxTR64
     ''' </summary>
     Public ReadOnly Property Minor As Integer
         Get
-            PushStatus(CreateLog(LogLevel.Trace, $"Fritz!Box Minor: {FBTR64Desc.SystemVersion.Minor}"))
+            SendLog(LogLevel.Trace, $"Fritz!Box Minor: {FBTR64Desc.SystemVersion.Minor}")
             Return FBTR64Desc.SystemVersion.Minor
         End Get
     End Property

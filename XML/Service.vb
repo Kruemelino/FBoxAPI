@@ -15,17 +15,15 @@ Imports System.Xml.Serialization
     <XmlIgnore> Private Property SCPD As ServiceControlProtocolDefinition
     <XmlIgnore> Private Property XML As Serializer
     <XmlIgnore> Private Property Client As TR064WebFunctions
-    <XmlIgnore> Private Property PushStatus As Action(Of LogMessage)
     <XmlIgnore> Friend ReadOnly Property Initialized As Boolean
         Get
             Return SCPD IsNot Nothing
         End Get
     End Property
 
-    Friend Sub Init(XML As Serializer, Client As TR064WebFunctions, PushStatus As Action(Of LogMessage))
+    Friend Sub Init(XML As Serializer, Client As TR064WebFunctions)
         _XML = XML
         _Client = Client
-        _PushStatus = PushStatus
     End Sub
 
     ''' <summary>
@@ -44,7 +42,7 @@ Imports System.Xml.Serialization
             ' Wenn ServiceControlProtocolDefinition noch nicht geladen wurde, dann lade sie von der Fritz!Box
             If Not XML.Deserialize($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}{SCPDURL}", True, SCPD) Then
                 ' Fehlerfall
-                PushStatus?.Invoke(CreateLog(LogLevel.Error, New Exception($"ServiceControlProtocolDefinition nicht geladen.")))
+                SendLog(LogLevel.Error, New Exception($"ServiceControlProtocolDefinition nicht geladen."))
             End If
         End If
 

@@ -7,15 +7,12 @@ Friend Class TR064WebFunctions
     Implements IDisposable
 
     Private disposedValue As Boolean
-    Private ReadOnly Property PushStatus As Action(Of LogMessage)
     Private Property NetworkCredentials As NetworkCredential
 
-    Public Sub New(Status As Action(Of LogMessage), credentials As NetworkCredential)
+    Public Sub New(credentials As NetworkCredential)
 
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
 
-        ' Setze Klasse für Logging
-        _PushStatus = Status
 
         _NetworkCredentials = credentials
 
@@ -67,10 +64,10 @@ Friend Class TR064WebFunctions
 
                 ReturnString = Await Client.DownloadStringTaskAsync(UniformResourceIdentifier)
 
-                PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Response:{vbCrLf}{ReturnString}"))
+                SendLog(LogLevel.Trace, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Response:{vbCrLf}{ReturnString}")
 
             Catch ex As ArgumentNullException
-                PushStatus?.Invoke(CreateLog(LogLevel.Error, ex))
+                SendLog(LogLevel.Error, ex)
 
             Catch ex As WebException
                 ' Gib die Antwort des Servers zurück
@@ -78,11 +75,11 @@ Friend Class TR064WebFunctions
                     If ex.Status = WebExceptionStatus.ProtocolError AndAlso .StatusCode = HttpStatusCode.InternalServerError Then
                         Using DataStream As IO.Stream = .GetResponseStream()
                             Using reader = New IO.StreamReader(DataStream)
-                                PushStatus?.Invoke(CreateLog(LogLevel.Error, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response: {reader.ReadToEnd()} "))
+                                SendLog(LogLevel.Warning, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response: {reader.ReadToEnd()} ")
                             End Using
                         End Using
                     Else
-                        PushStatus?.Invoke(CreateLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} "))
+                        SendLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} ")
                     End If
                     .Close()
                 End With
@@ -109,10 +106,8 @@ Friend Class TR064WebFunctions
 
                 ReturnStream = Await Client.OpenReadTaskAsync(UniformResourceIdentifier)
 
-                'PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Response:{vbCrLf}{ReturnString}"))
-
             Catch ex As ArgumentNullException
-                PushStatus?.Invoke(CreateLog(LogLevel.Error, ex))
+                SendLog(LogLevel.Error, ex)
 
             Catch ex As WebException
                 ' Gib die Antwort des Servers zurück
@@ -120,11 +115,11 @@ Friend Class TR064WebFunctions
                     If ex.Status = WebExceptionStatus.ProtocolError AndAlso .StatusCode = HttpStatusCode.InternalServerError Then
                         Using DataStream As IO.Stream = .GetResponseStream()
                             Using reader = New IO.StreamReader(DataStream)
-                                PushStatus?.Invoke(CreateLog(LogLevel.Error, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response: {reader.ReadToEnd()} "))
+                                SendLog(LogLevel.Warning, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response: {reader.ReadToEnd()} ")
                             End Using
                         End Using
                     Else
-                        PushStatus?.Invoke(CreateLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} "))
+                        SendLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} ")
                     End If
                     .Close()
                 End With
@@ -152,7 +147,7 @@ Friend Class TR064WebFunctions
             Try
                 ReturnByte = Await Client.DownloadDataTaskAsync(UniformResourceIdentifier)
             Catch ex As ArgumentNullException
-                PushStatus?.Invoke(CreateLog(LogLevel.Error, ex))
+                SendLog(LogLevel.Error, ex)
 
             Catch ex As WebException
                 ' Gib die Antwort des Servers zurück
@@ -160,11 +155,11 @@ Friend Class TR064WebFunctions
                     If ex.Status = WebExceptionStatus.ProtocolError AndAlso .StatusCode = HttpStatusCode.InternalServerError Then
                         Using DataStream As IO.Stream = .GetResponseStream()
                             Using reader = New IO.StreamReader(DataStream)
-                                PushStatus?.Invoke(CreateLog(LogLevel.Error, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response:{vbCrLf}{reader.ReadToEnd()}"))
+                                SendLog(LogLevel.Warning, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response:{vbCrLf}{reader.ReadToEnd()}")
                             End Using
                         End Using
                     Else
-                        PushStatus?.Invoke(CreateLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} "))
+                        SendLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} ")
                     End If
                     .Close()
                 End With
@@ -192,11 +187,11 @@ Friend Class TR064WebFunctions
             Try
                 Await Client.DownloadFileTaskAsync(UniformResourceIdentifier, DateiPfad)
 
-                PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Dateipfad: {DateiPfad} "))
+                SendLog(LogLevel.Debug, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; Dateipfad: {DateiPfad} ")
 
                 ReturnBoolean = True
             Catch ex As ArgumentNullException
-                PushStatus?.Invoke(CreateLog(LogLevel.Error, ex))
+                SendLog(LogLevel.Error, ex)
 
             Catch ex As WebException
                 ' Gib die Antwort des Servers zurück
@@ -204,11 +199,11 @@ Friend Class TR064WebFunctions
                     If ex.Status = WebExceptionStatus.ProtocolError AndAlso .StatusCode = HttpStatusCode.InternalServerError Then
                         Using DataStream As IO.Stream = .GetResponseStream()
                             Using reader = New IO.StreamReader(DataStream)
-                                PushStatus?.Invoke(CreateLog(LogLevel.Error, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response:{vbCrLf}{reader.ReadToEnd()}"))
+                                SendLog(LogLevel.Warning, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response:{vbCrLf}{reader.ReadToEnd()}")
                             End Using
                         End Using
                     Else
-                        PushStatus?.Invoke(CreateLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} "))
+                        SendLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} ")
                     End If
                     .Close()
                 End With
@@ -240,17 +235,17 @@ Friend Class TR064WebFunctions
             Try
                 ReturnString = Await Client.UploadStringTaskAsync(UniformResourceIdentifier, PostData)
 
-                PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; RequestContent: {vbCrLf}{PostData}{vbCrLf}Response: {vbCrLf}{ReturnString}"))
+                SendLog(LogLevel.Debug, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; RequestContent: {vbCrLf}{PostData}{vbCrLf}Response: {vbCrLf}{ReturnString}")
             Catch ex As WebException
                 With CType(ex.Response, HttpWebResponse)
                     If ex.Status = WebExceptionStatus.ProtocolError AndAlso .StatusCode = HttpStatusCode.InternalServerError Then
                         Using DataStream As IO.Stream = .GetResponseStream()
                             Using reader = New IO.StreamReader(DataStream)
-                                PushStatus?.Invoke(CreateLog(LogLevel.Error, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; RequestContent: {vbCrLf}{PostData}{vbCrLf}Response:{vbCrLf}{reader.ReadToEnd()}"))
+                                SendLog(LogLevel.Warning, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; RequestContent: {vbCrLf}{PostData}{vbCrLf}Response:{vbCrLf}{reader.ReadToEnd()}")
                             End Using
                         End Using
                     Else
-                        PushStatus?.Invoke(CreateLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message}; RequestContent: {vbCrLf}{PostData} "))
+                        SendLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message}; RequestContent: {vbCrLf}{PostData} ")
                     End If
                     ' Prüfen: Potentieller Fehler beim Debuggen: ServerCertificateValidationCallback bereits auf Nothing gesetzt.
                     .Close()
@@ -470,7 +465,7 @@ Friend Class TR064WebFunctions
             PingReply = PingSender.Send(IPAdresse, 100, buffer, Options)
 
         Catch ex As Exception
-            PushStatus?.Invoke(CreateLog(LogLevel.Warn, $"Ping zu {IPAdresse} nicht erfolgreich (timeout: {100}).", ex))
+            SendLog(LogLevel.Warning, $"Ping zu {IPAdresse} nicht erfolgreich (timeout: {100}).", ex)
         End Try
 
         Return PingReply IsNot Nothing AndAlso PingReply.Status = NetworkInformation.IPStatus.Success

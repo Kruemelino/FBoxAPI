@@ -3,45 +3,50 @@ Imports System.Runtime.CompilerServices
 
 <DebuggerStepThrough>
 Public MustInherit Class LogBase
-    Protected Function CreateLog(l As LogLevel, m As String, e As Exception,
-                                 <CallerMemberName> Optional propertyName As String = Nothing,
-                                 <CallerFilePath> Optional sourcefilePath As String = Nothing,
-                                 <CallerLineNumber> Optional sourceLineNumber As Integer = 0) As LogMessage
 
-        Return New LogMessage With {.Level = l,
-                                    .Message = m,
-                                    .Ex = e,
-                                    .CallerMemberName = propertyName,
-                                    .CallerFilePath = sourcefilePath,
-                                    .CallerClassName = NameOfCallingClass(),
-                                    .CallerLineNumber = sourceLineNumber}
-    End Function
+    Protected Sub SendLog(l As LogLevel,
+                          m As String,
+                          e As Exception,
+                          <CallerMemberName> Optional propertyName As String = Nothing,
+                          <CallerFilePath> Optional sourcefilePath As String = Nothing,
+                          <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
 
-    Protected Function CreateLog(l As LogLevel, m As String,
-                                 <CallerMemberName> Optional propertyName As String = Nothing,
-                                 <CallerFilePath> Optional sourcefilePath As String = Nothing,
-                                 <CallerLineNumber> Optional sourceLineNumber As Integer = 0) As LogMessage
+        FritzBoxTR64._LogWriter?.LogMessage(New LogMessage With {.Level = l,
+                                                                 .Message = m,
+                                                                 .Ex = e,
+                                                                 .CallerMemberName = propertyName,
+                                                                 .CallerFilePath = sourcefilePath,
+                                                                 .CallerClassName = NameOfCallingClass(),
+                                                                 .CallerLineNumber = sourceLineNumber})
+    End Sub
 
-        Return New LogMessage With {.Level = l,
-                                    .Message = m,
-                                    .CallerMemberName = propertyName,
-                                    .CallerFilePath = sourcefilePath,
-                                    .CallerClassName = NameOfCallingClass(),
-                                    .CallerLineNumber = sourceLineNumber}
-    End Function
+    Protected Sub SendLog(l As LogLevel,
+                          m As String,
+                          <CallerMemberName> Optional propertyName As String = Nothing,
+                          <CallerFilePath> Optional sourcefilePath As String = Nothing,
+                          <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
 
-    Protected Function CreateLog(l As LogLevel, e As Exception,
-                                 <CallerMemberName> Optional propertyName As String = Nothing,
-                                 <CallerFilePath> Optional sourcefilePath As String = Nothing,
-                                 <CallerLineNumber> Optional sourceLineNumber As Integer = 0) As LogMessage
+        FritzBoxTR64._LogWriter?.LogMessage(New LogMessage With {.Level = l,
+                                                                 .Message = m,
+                                                                 .CallerMemberName = propertyName,
+                                                                 .CallerFilePath = sourcefilePath,
+                                                                 .CallerClassName = NameOfCallingClass(),
+                                                                 .CallerLineNumber = sourceLineNumber})
+    End Sub
 
-        Return New LogMessage With {.Level = l,
-                                    .Ex = e,
-                                    .CallerFilePath = sourcefilePath,
-                                    .CallerMemberName = propertyName,
-                                    .CallerClassName = NameOfCallingClass(),
-                                    .CallerLineNumber = sourceLineNumber}
-    End Function
+    Protected Sub SendLog(l As LogLevel,
+                          e As Exception,
+                          <CallerMemberName> Optional propertyName As String = Nothing,
+                          <CallerFilePath> Optional sourcefilePath As String = Nothing,
+                          <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
+
+        FritzBoxTR64._LogWriter?.LogMessage(New LogMessage With {.Level = l,
+                                                                 .Ex = e,
+                                                                 .CallerFilePath = sourcefilePath,
+                                                                 .CallerMemberName = propertyName,
+                                                                 .CallerClassName = NameOfCallingClass(),
+                                                                 .CallerLineNumber = sourceLineNumber})
+    End Sub
 
     ''' <remarks><see href="https://stackoverflow.com/a/48570616"/></remarks>
     Private Function NameOfCallingClass() As String
@@ -98,7 +103,7 @@ Public Enum LogLevel
     ''' <summary>
     ''' Something unexpected; application will continue
     ''' </summary>
-    Warn = 3
+    Warning = 3
 
     ''' <summary>
     ''' Something failed; application may or may not continue

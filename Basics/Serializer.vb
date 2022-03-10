@@ -8,11 +8,9 @@ Imports System.Xml.Xsl
 Friend Class Serializer
     Inherits LogBase
 
-    Private Property PushStatus As Action(Of LogMessage)
     Private Property Client As TR064WebFunctions
 
-    Public Sub New(Status As Action(Of LogMessage), http As TR064WebFunctions)
-        PushStatus = Status
+    Public Sub New(http As TR064WebFunctions)
         Client = http
     End Sub
 
@@ -39,16 +37,16 @@ Friend Class Serializer
                     If IsPfad Then
                         Try
                             .Load(InputData)
-                            PushStatus?.Invoke(CreateLog(LogLevel.Trace, $"{InputData}: { .InnerXml}"))
+                            SendLog(LogLevel.Trace, $"{InputData}: { .InnerXml}")
                         Catch ex As Exception
-                            PushStatus?.Invoke(CreateLog(LogLevel.Error, InputData, ex))
+                            SendLog(LogLevel.Error, InputData, ex)
                         End Try
                     Else
                         Try
                             .LoadXml(InputData)
-                            PushStatus?.Invoke(CreateLog(LogLevel.Trace, .InnerXml))
+                            SendLog(LogLevel.Trace, .InnerXml)
                         Catch ex As Exception
-                            PushStatus?.Invoke(CreateLog(LogLevel.Error, InputData, ex))
+                            SendLog(LogLevel.Error, InputData, ex)
                         End Try
 
                     End If
@@ -58,17 +56,17 @@ Friend Class Serializer
                 Return True
 
             Catch ex As XmlException
-                PushStatus?.Invoke(CreateLog(LogLevel.Fatal, $"Die XML-Datan weist einen Lade- oder Analysefehler auf: '{InputData}')", ex))
+                SendLog(LogLevel.Error, $"Die XML-Datan weist einen Lade- oder Analysefehler auf: '{InputData}')", ex)
 
                 Return False
 
             Catch ex As FileNotFoundException
-                PushStatus?.Invoke(CreateLog(LogLevel.Fatal, $"Die XML-Datan kann nicht gefunden werden '{InputData}'", ex))
+                SendLog(LogLevel.Error, $"Die XML-Datan kann nicht gefunden werden '{InputData}'", ex)
                 Return False
 
             End Try
         Else
-            PushStatus?.Invoke(CreateLog(LogLevel.Fatal, "Die übergebenen XML-Datan sind leer."))
+            SendLog(LogLevel.Error, "Die übergebenen XML-Datan sind leer.")
 
             Return False
         End If
@@ -119,7 +117,7 @@ Friend Class Serializer
             End Using
 
         Else
-            PushStatus?.Invoke(CreateLog(LogLevel.Fatal, New Exception($"Fehler beim Deserialisieren: {Data} kann nicht deserialisert werden.")))
+            SendLog(LogLevel.Error, New Exception($"Fehler beim Deserialisieren: {Data} kann nicht deserialisert werden."))
             Return False
 
         End If
@@ -148,11 +146,11 @@ Friend Class Serializer
 
             Catch ex As InvalidOperationException
 
-                PushStatus?.Invoke(CreateLog(LogLevel.Fatal, "Bei der Deserialisierung ist ein Fehler aufgetreten.", ex))
+                SendLog(LogLevel.Error, "Bei der Deserialisierung ist ein Fehler aufgetreten.", ex)
                 Return False
             End Try
         Else
-            PushStatus?.Invoke(CreateLog(LogLevel.Fatal, New Exception("Fehler beim Deserialisieren.")))
+            SendLog(LogLevel.Error, New Exception("Fehler beim Deserialisieren."))
             Return False
         End If
 
@@ -189,7 +187,7 @@ Friend Class Serializer
                         Return True
                     Catch ex As InvalidOperationException
 
-                        PushStatus?.Invoke(CreateLog(LogLevel.Fatal, New Exception($"Fehler beim Serialisieren von {GetType(T).FullName}: {objectData}")))
+                        SendLog(LogLevel.Error, New Exception($"Fehler beim Serialisieren von {GetType(T).FullName}: {objectData}"))
 
                         Return False
                     End Try
@@ -205,19 +203,19 @@ Friend Class Serializer
 
 #Region "XmlDeserializationEvents"
     Private Sub On_UnknownAttribute(sender As Object, e As XmlAttributeEventArgs)
-        PushStatus?.Invoke(CreateLog(LogLevel.Warn, $"Unknown Attribute: {e.Attr.Name} in {e.ObjectBeingDeserialized}"))
+        SendLog(LogLevel.Warning, $"Unknown Attribute: {e.Attr.Name} in {e.ObjectBeingDeserialized}")
     End Sub
 
     Private Sub On_UnknownElement(sender As Object, e As XmlElementEventArgs)
-        PushStatus?.Invoke(CreateLog(LogLevel.Warn, $"Unknown Element: {e.Element.Name} in {e.ObjectBeingDeserialized}"))
+        SendLog(LogLevel.Warning, $"Unknown Element: {e.Element.Name} in {e.ObjectBeingDeserialized}")
     End Sub
 
     Private Sub On_UnknownNode(sender As Object, e As XmlNodeEventArgs)
-        PushStatus?.Invoke(CreateLog(LogLevel.Warn, $"Unknown Node: {e.Name} in {e.ObjectBeingDeserialized}"))
+        SendLog(LogLevel.Warning, $"Unknown Node: {e.Name} in {e.ObjectBeingDeserialized}")
     End Sub
 
     Private Sub On_UnreferencedObject(sender As Object, e As UnreferencedObjectEventArgs)
-        PushStatus?.Invoke(CreateLog(LogLevel.Warn, $"Unreferenced Object: {e.UnreferencedId}"))
+        SendLog(LogLevel.Warning, $"Unreferenced Object: {e.UnreferencedId}")
     End Sub
 #End Region
 
