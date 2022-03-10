@@ -59,8 +59,8 @@ Friend Class DeviceconfigSCPD
     End Function
 
     Public Function SetConfigFile(Password As String, ConfigFileUrl As String) As Boolean Implements IDeviceconfigSCPD.SetConfigFile
-        Return Not TR064Start(ServiceFile, "X_AVM-X_AVM-DE_SetConfigFile ", New Dictionary(Of String, String) From {{"NewX_AVM-DE_Password", Password},
-                                                                                                                    {"NewX_AVM-DE_ConfigFileUrl", ConfigFileUrl}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-X_AVM-DE_SetConfigFile", New Dictionary(Of String, String) From {{"NewX_AVM-DE_Password", Password},
+                                                                                                                   {"NewX_AVM-DE_ConfigFileUrl", ConfigFileUrl}}).ContainsKey("Error")
     End Function
 
     Public Function GetSessionID(ByRef SessionID As String) As Boolean Implements IDeviceconfigSCPD.GetSessionID

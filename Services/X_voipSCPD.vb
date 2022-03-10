@@ -157,7 +157,7 @@ Friend Class X_voipSCPD
     End Function
 
     Public Function DelVoIPAccount(VoIPAccountIndex As Integer) As Boolean Implements IX_voipSCPD.DelVoIPAccount
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_DelVoIPAccount", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex ", VoIPAccountIndex.ToString}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_DelVoIPAccount", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", VoIPAccountIndex.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetVoIPAccount(ByRef Account As VoIPAccount, AccountIndex As Integer) As Boolean Implements IX_voipSCPD.GetVoIPAccount

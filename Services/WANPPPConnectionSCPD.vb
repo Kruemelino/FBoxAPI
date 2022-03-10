@@ -199,7 +199,7 @@ Friend Class WANPPPConnectionSCPD
     End Function
 
     Public Function X_AVM_DE_GetAutoDisconnectTimeSpan(ByRef DisconnectPreventionEnable As Boolean, ByRef DisconnectPreventionHour As Integer) As Boolean Implements IWANPPPConnectionSCPD.X_AVM_DE_GetAutoDisconnectTimeSpan
-        With TR064Start(ServiceFile, "X_AVM_DE_GetAutoDisconnectTimeSpan ", Nothing)
+        With TR064Start(ServiceFile, "X_AVM_DE_GetAutoDisconnectTimeSpan", Nothing)
 
             Return .TryGetValueEx("NewX_AVM-DE_DisconnectPreventionEnable", DisconnectPreventionEnable) And
                    .TryGetValueEx("NewX_AVM-DE_DisconnectPreventionHour", DisconnectPreventionHour)
