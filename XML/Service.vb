@@ -1,5 +1,4 @@
-﻿Imports System.Net
-Imports System.Xml
+﻿Imports System.Xml
 Imports System.Xml.Serialization
 
 <DebuggerStepThrough>
@@ -40,7 +39,7 @@ Imports System.Xml.Serialization
 
         If SCPD Is Nothing Then
             ' Wenn ServiceControlProtocolDefinition noch nicht geladen wurde, dann lade sie von der Fritz!Box
-            If Not XML.Deserialize($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}{SCPDURL}", True, SCPD) Then
+            If Not XML.Deserialize($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}{SCPDURL}", True, SCPD) Then
                 ' Fehlerfall
                 SendLog(LogLevel.Error, New Exception($"ServiceControlProtocolDefinition nicht geladen."))
             End If
@@ -51,7 +50,7 @@ Imports System.Xml.Serialization
         With ResponseData
             If Action IsNot Nothing Then
 
-                Response = Client.PostStringWebClient($"{Uri.UriSchemeHttps}://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064PortSSL}{ControlURL}",
+                Response = Client.PostStringWebClient($"{Uri.UriSchemeHttps}://{FritzBoxTR64.FBoxIPAdresse}:{49443}{ControlURL}",
                                                       GetRequestXML(Action, InputArguments),
                                                       $"""{ServiceType}#{Action.Name}""")
 

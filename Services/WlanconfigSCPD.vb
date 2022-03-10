@@ -208,13 +208,13 @@ Friend Class WlanconfigSCPD
 
     <Obsolete> Public Function GetWLANDeviceList(AssociatedDevices As WLANDeviceList) As Boolean Implements IWlanconfigSCPD.GetWLANDeviceList
         Dim LuaPath As String = String.Empty
-        Return GetWLANDeviceListPath(LuaPath) AndAlso XML.Deserialize($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}{LuaPath}", True, AssociatedDevices)
+        Return GetWLANDeviceListPath(LuaPath) AndAlso XML.Deserialize($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}{LuaPath}", True, AssociatedDevices)
     End Function
 
     Public Async Function GetWLANDeviceList() As Task(Of WLANDeviceList) Implements IWlanconfigSCPD.GetWLANDeviceList
         ' Ermittle den Pfad zu AssociatedDevices und deserialisiere die Daten
         ' X_AVM-DE_GetWLANDeviceListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
-        Return Await XML.DeserializeAsyncFromPath(Of WLANDeviceList)($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}" &
+        Return Await XML.DeserializeAsyncFromPath(Of WLANDeviceList)($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}" &
                                                                      (TR064Start(ServiceFile,
                                                                                  "X_AVM-DE_GetWLANDeviceListPath",
                                                                                  Nothing)).TryGetValueEx(Of String)("NewX_AVM-DE_WLANDeviceListPath"))

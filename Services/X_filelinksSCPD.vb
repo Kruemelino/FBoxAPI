@@ -85,13 +85,13 @@ Friend Class X_filelinksSCPD
 
     Public Function GetFilelinkList(ByRef List As FileLinkList) As Boolean Implements IX_filelinksSCPD.GetFilelinkList
         Dim LuaPath As String = String.Empty
-        Return GetFilelinkListPath(LuaPath) AndAlso XML.Deserialize($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}{LuaPath}", True, List)
+        Return GetFilelinkListPath(LuaPath) AndAlso XML.Deserialize($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}{LuaPath}", True, List)
     End Function
 
     Public Async Function GetFilelinkList() As Task(Of FileLinkList) Implements IX_filelinksSCPD.GetFilelinkList
         ' Ermittle den Pfad zu AssociatedDevices und deserialisiere die Daten
         ' GetFilelinkListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
-        Return Await XML.DeserializeAsyncFromPath(Of FileLinkList)($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}" &
+        Return Await XML.DeserializeAsyncFromPath(Of FileLinkList)($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}" &
                                                                    TR064Start(ServiceFile,
                                                                                "GetFilelinkListPath",
                                                                                Nothing).TryGetValueEx(Of String)("NewFilelinkListPath"))

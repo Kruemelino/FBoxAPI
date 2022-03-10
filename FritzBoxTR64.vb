@@ -100,7 +100,7 @@ Public Class FritzBoxTR64
 
         If Client.Ping(FBoxIPAdresse) Then
 
-            Dim TR064Description As String = Await Client.GetStringWebClientAsync(New Uri($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{DfltTR064Port}{SCPDFiles.tr64desc.Description}"))
+            Dim TR064Description As String = Await Client.GetStringWebClientAsync(New Uri($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{49000}{SCPDFiles.tr64desc.Description}"))
 
             ' Herunterladen
             If TR064Description.IsNotStringNothingOrEmpty Then
@@ -139,7 +139,7 @@ Public Class FritzBoxTR64
     Public Async Function AddAURAService() As Task(Of Boolean)
 
         If Services?.Any Then
-            Dim Response As String = Await Client.GetStringWebClientAsync(New Uri($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{DfltTR064Port}{SCPDFiles.auradesc.Description}"))
+            Dim Response As String = Await Client.GetStringWebClientAsync(New Uri($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{49000}{SCPDFiles.auradesc.Description}"))
 
             If Response.IsNotStringNothingOrEmpty Then
                 Dim AuraDesc As New TR64Desc

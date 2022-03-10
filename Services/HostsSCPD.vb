@@ -117,13 +117,13 @@ Friend Class HostsSCPD
 
     <Obsolete> Public Function GetHostList(ByRef Hosts As HostList) As Boolean Implements IHostsSCPD.GetHostList
         Dim LuaPath As String = String.Empty
-        Return GetHostListPath(LuaPath) AndAlso XML.Deserialize($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}{LuaPath}", True, Hosts)
+        Return GetHostListPath(LuaPath) AndAlso XML.Deserialize($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}{LuaPath}", True, Hosts)
     End Function
 
     Public Async Function GetHostList() As Task(Of HostList) Implements IHostsSCPD.GetHostList
         ' Ermittle den Pfad zu Hostlost und deserialisiere die Daten
         ' X_AVM-DE_GetHostListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
-        Return Await XML.DeserializeAsyncFromPath(Of HostList)($"http://{FritzBoxTR64.FBoxIPAdresse}:{DfltTR064Port}" &
+        Return Await XML.DeserializeAsyncFromPath(Of HostList)($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}" &
                                                                (TR064Start(ServiceFile,
                                                                            "X_AVM-DE_GetHostListPath",
                                                                            Nothing)).TryGetValueEx(Of String)("NewX_AVM-DE_HostListPath"))
