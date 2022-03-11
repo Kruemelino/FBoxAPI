@@ -4,8 +4,6 @@ Public Class FritzBoxTR64
     Inherits LogBase
     Implements IDisposable
 
-    <Obsolete("This event is obsolete and will be removed in a future version. Use the property LogWriter As ILogWriter of this class instead.")>
-    Public Event Status As EventHandler(Of NotifyEventArgs(Of LogMessage))
     Public Property Ready As Boolean = False
     Friend Shared Property FBoxIPAdresse As String
     Private Property FBTR64Desc As TR64Desc
