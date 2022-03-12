@@ -68,7 +68,20 @@ Public Class FritzBoxTR64
     ''' <param name="Anmeldeinformationen">Die Anmeldeinformationen (Benutzername und Passwort) als <see cref="NetworkCredential"/>.</param>
     ''' <param name="LogWriter">Eine Klasse, die die Schnittstelle <see cref="ILogWriter"/> implementiert und das Logging realisiert.</param>
     Public Sub New(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential, Optional LogWriter As ILogWriter = Nothing)
+        SetData(FritzBoxAdresse, Anmeldeinformationen, LogWriter)
+    End Sub
 
+    Public Sub New(Settings As Settings)
+        If Settings IsNot Nothing Then
+            With Settings
+                SetData(.FritzBoxAdresse, .Anmeldeinformationen, .LogWriter)
+            End With
+        End If
+    End Sub
+#End Region
+
+#Region "Initialisierung"
+    Private Sub SetData(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential, Optional LogWriter As ILogWriter = Nothing)
         ' Setze die Verknüpfung zum LogWriter
         _LogWriter = LogWriter
 
@@ -82,15 +95,12 @@ Public Class FritzBoxTR64
         _XML = New Serializer(Client)
 
         ' Lade die TR064 Services, LUA und UserMode
-        InitServices()
+        InitServices(False)
 
         ' Lade alle relevanten Daten von der Fritz!Box und initialisiere die Services
         Ready = ConnectTR064()
-
     End Sub
-#End Region
 
-#Region "Initialisierung"
     ''' <summary>
     ''' Lädt alle TR-064Description herunter und initialisiert die Services
     ''' </summary>
@@ -196,9 +206,12 @@ Public Class FritzBoxTR64
 
     End Sub
 
-    Private Sub InitServices()
+    Private Async Sub InitServices(UseAura As Boolean)
         ' Lade die AVM Services unabhängig davon, ob die Verbindung geklappt hat
         InitAVMServices()
+
+        ' Lade den AURA Service
+        If UseAura Then Await AddAURAService()
 
         ' Lade den UserModus
         UserMode = New UserModeSCPD(AddressOf TR064Start)
@@ -222,6 +235,7 @@ Public Class FritzBoxTR64
 
     End Sub
 #End Region
+
     Private Function TR064Start(SCPDURL As SCPDFiles, ActionName As String, Optional InputArguments As Dictionary(Of String, String) = Nothing) As Dictionary(Of String, String)
         ' Versuche einen Start, falls noch nicht geschehen
         If Not Ready Then ConnectTR064()

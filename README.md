@@ -11,8 +11,13 @@ Dieses Addin ist in meiner Freizeit entstanden. Ich erwarte keine Gegenleistung.
 Die Schnittstelle basiert auf der [AVM-Dokumentation](https://avm.de/service/schnittstellen). 
 
 ### Nutzung
-Die Verwendung ist recht einfach angedacht. Es muss eine neue `FBoxAPI.FritzBoxTR64`-Klasse instanziiert werden. Hierfür sind zwei Parameter erforderlich: IP-Adresse der Fritz!Box und die 
-Anmeldeinformationen. Nutzername und Passwort werden in einer neuen Instanz der `System.Net.NetworkCredential`-Klasse hinterlegt und übergeben.
+Die Verwendung ist recht einfach angedacht. Es muss eine neue `FBoxAPI.FritzBoxTR64`-Klasse instanziiert werden. Hierfür sind zwei Parameter erforderlich: 
+IP-Adresse der Fritz!Box und die Anmeldeinformationen. Nutzername und Passwort werden in einer neuen Instanz der `System.Net.NetworkCredential`-Klasse hinterlegt und übergeben.
+Es gibt mehrere Möglichkeiten die Schnittstelle zu initiieren.
+
+- Übergabe der benötigten Daten als Einzel-Parameter
+- Dimensionierung einer `FBoxAPI.Settings`-Klasse, die alle notwendigen Daten enthält
+
 Im folgenen ist ein kleines Beispiel aufgeführt, wie die SessionID der Fritz!Box abgefragt werden kann. 
 
 ```vbnet
@@ -27,18 +32,15 @@ Private Function GetSessionID() As String
     ' Anmeldeinformationen können Nothing sein, falls nur Actions ausgeführt werden, die keine Anmeldung erfordern.
     Dim Anmeldeinformationen As New Net.NetworkCredential(Nutzername, Passwort)
 
-    ' Timeout für die http-Komunikation: 120 ms
-    Dim timeout as Integer = 120
-
     ' Starte die TR-064 Schnittstelle zur Fritz!Box
-    Using FBoxTR064 As New FBoxAPI.FritzBoxTR64("192.168.178.1", timeout, Anmeldeinformationen)
+    Using FBoxTR064 As New FBoxAPI.FritzBoxTR64("192.168.178.1", Anmeldeinformationen)
 
         ' Auswahl des Service
         With FBoxTR064.Deviceconfig
 
             ' Action ausführen
             If .GetSessionID(SessionID) Then
-                ' Alles OK
+                ' Alles OK: SessionID enthält eine gültige SessionID
             Else
                 ' Ein Fehler ist aufgetreten
             End If
@@ -50,11 +52,22 @@ Private Function GetSessionID() As String
 
 End Function
 ```
-Hinweis: Wenn der AURA-Service (AVM USB Remote Access) verwendet werden soll, muss dies bei der Initialisierung der Schnittstelle übergegeben werden. 
-Hierfür gibt es einen optionalen Parameter `InitAURA` im Konstruktor bzw. Init-Funktion welcher standardmäßig auf `False` gesetzt ist.
 
-Sobald eine neue `FBoxAPI.FritzBoxTR64`-Klasse erstellt wurde, kann auch auf das Event `Status` abgefragt werden. 
-Die FBoxAPI.LogMessage beinhaltet diverse relevante Eigenschaften:
+Alternativ:
+```vbnet
+FBoxTR064 = New FBoxAPI.FritzBoxTR64(New FBoxAPI.Settings With {.Anmeldeinformationen = Anmeldeinformationen,
+                                                                .FritzBoxAdresse = "192.168.178.1",
+                                                                .LogWriter = New FBoxAPILog,
+                                                                .AuraService = True})
+```
+
+Hinweis: Wenn der AURA-Service (AVM USB Remote Access) verwendet werden soll, muss dies bei der Initialisierung der Schnittstelle übergegeben werden. 
+~~Hierfür gibt es einen optionalen Parameter `InitAURA` im Konstruktor bzw. Init-Funktion welcher standardmäßig auf `False` gesetzt ist.~~
+Dies über die Eigenschaft `AuraService` der `FBoxAPI.Settings`-Klasse möglich.
+
+~~Sobald eine neue `FBoxAPI.FritzBoxTR64`-Klasse erstellt wurde, kann auch auf das Event `Status` abgefragt werden.~~
+Mit Hilfe des `LogWriter`-Schnittstelle kann eine eigene Routine verknüpft werden, die das Logging übernimmt.
+Die Schnittstelle gibt folgende relevante Daten in der Containerklasse `FBoxAPI.LogMessage` für das Logging aus:
 
 * Level (`System.Enum`) für das LogLevel (`Trace` bis `Fatal`)
 * Message (`System.String`)
@@ -66,20 +79,27 @@ Die FBoxAPI.LogMessage beinhaltet diverse relevante Eigenschaften:
 
 Beispiel für [NLog](https://nlog-project.org/):
 ```vbnet
-    Friend Sub FBoxAPIMessage(sender As Object, e As FBoxAPI.NotifyEventArgs(Of FBoxAPI.LogMessage))
+Imports FBoxAPI
 
-        With e.Value
-            Dim LogEvent As New LogEventInfo(LogLevel.FromOrdinal(.Level),
+Friend Class FBoxAPILog
+    Implements ILogWriter
+
+    Private Property NLogger As Logger = LogManager.GetCurrentClassLogger
+
+    Public Sub LogMessage(MessageContainer As LogMessage) Implements ILogWriter.LogMessage
+        With MessageContainer
+            Dim LogEvent As New LogEventInfo(NLog.LogLevel.FromOrdinal(.Level),
                                              .CallerClassName,
                                              .Message)
 
             LogEvent.SetCallerInfo(.CallerClassName, .CallerMemberName, .CallerFilePath, .CallerLineNumber)
-            
+
             NLogger.Log(LogEvent)
         End With
-
     End Sub
+End Class
 ```
+
 ### Bekannte Probleme
 * Die Dokumentation von AVM ist nicht immer korrekt. Z. B. wird in der Dokumentation [X_AVM-DE_AppSetup](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_appsetup.pdf)
   der Parameter `MyFritzDynDNSEnabled` der Action GetAppRemoteInfo aufgelistet. Dieser Parameter lautet aber `NewMyFritzEnabled`. 
@@ -124,7 +144,7 @@ folgende angehakte Services werden derzeit unterstützt. Falls etwas fehlen soll
 * [x] [X_HomePlug](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeplugSCPD.pdf)
 * [x] [X_VoIP](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voip-avm.pdf)	
       
-		
+        
 
 ### Markenrecht
 Dieses Software wird vom Autor privat in der Freizeit als Hobby gepflegt. Mit der Bereitstellung der Software werden keine gewerblichen Interessen verfolgt. Es wird aus rein ideellen Gründen zum Gemeinwohl aller Nutzer einer Fritz!Box betrieben. 
