@@ -4,7 +4,7 @@ Imports System.Xml
 Imports System.Xml.Serialization
 Imports System.Xml.Xsl
 
-<DebuggerStepThrough()>
+'<DebuggerStepThrough()>
 Friend Class Serializer
     Inherits LogBase
 

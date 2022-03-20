@@ -12,6 +12,8 @@ Public Interface IX_remoteSCPD
                      ByRef Port As Integer,
                      ByRef Username As String) As Boolean
 
+    Function GetInfo(ByRef Info As XRemoteInfo) As Boolean
+
     ''' <summary>
     ''' Configure one user for remote access from internet. 
     ''' The user will have box configuration rights from internet on success. 

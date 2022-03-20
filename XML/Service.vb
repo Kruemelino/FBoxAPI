@@ -81,12 +81,12 @@ Imports System.Xml.Serialization
 
         With New XDocument(New XDeclaration("1.0", "utf-8", "yes"),
                            New XElement(s + "Envelope",
-                                          New XAttribute(XNamespace.Xmlns + "s", s),
-                                          New XAttribute(s + "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"),
-                                          New XElement(s + "Body",
-                                                       New XElement(u + Action.Name,
-                                                                    New XAttribute(XNamespace.Xmlns + "u", u),
-                                                                    InputValues?.Select(Function(X) New XElement(X.Key) With {.Value = X.Value})))))
+                                        New XAttribute(XNamespace.Xmlns + "s", s),
+                                        New XAttribute(s + "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"),
+                                        New XElement(s + "Body",
+                                                     New XElement(u + Action.Name,
+                                                                  New XAttribute(XNamespace.Xmlns + "u", u),
+                                                                  InputValues?.Select(Function(X) New XElement(X.Key) With {.Value = X.Value})))))
             Return .ToString
         End With
     End Function

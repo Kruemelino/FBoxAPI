@@ -7,12 +7,12 @@ Public Class FritzBoxTR64
     Public Property Ready As Boolean = False
     Friend Shared Property FBoxIPAdresse As String
     Private Property FBTR64Desc As TR64Desc
-    Private Property XML As Serializer
-    Private Property Client As TR064WebFunctions
+    Friend Property XML As Serializer
+    Friend Property Client As TR064WebFunctions
     Private Property Services As List(Of Service)
 
     Friend Shared _LogWriter As ILogWriter
-    Public WriteOnly Property LogWriter As ILogWriter
+    Public Shared WriteOnly Property LogWriter As ILogWriter
         Set
             _LogWriter = Value
         End Set
@@ -56,6 +56,7 @@ Public Class FritzBoxTR64
 
     Public Property UserMode As UserModeSCPD
     Public Property HttpService As IFBoxHttpTransfer
+    Public Property AHAService As IFBoxAHA
 #End Region
 
 #Region "Konstruktor"
@@ -218,6 +219,9 @@ Public Class FritzBoxTR64
 
         ' Lade den LuaService
         HttpService = New FBoxHttpTransfer(Client)
+
+        ' Lade das AVM Home Automation HTTP Interface 
+        AHAService = New FBoxAHA(Me)
     End Sub
 
     ''' <summary>

@@ -63,7 +63,7 @@ FBoxTR064 = New FBoxAPI.FritzBoxTR64(New FBoxAPI.Settings With {.Anmeldeinformat
 
 Hinweis: Wenn der AURA-Service (AVM USB Remote Access) verwendet werden soll, muss dies bei der Initialisierung der Schnittstelle übergegeben werden. 
 ~~Hierfür gibt es einen optionalen Parameter `InitAURA` im Konstruktor bzw. Init-Funktion welcher standardmäßig auf `False` gesetzt ist.~~
-Dies über die Eigenschaft `AuraService` der `FBoxAPI.Settings`-Klasse möglich.
+Dies ist über die Eigenschaft `AuraService` der `FBoxAPI.Settings`-Klasse möglich.
 
 ~~Sobald eine neue `FBoxAPI.FritzBoxTR64`-Klasse erstellt wurde, kann auch auf das Event `Status` abgefragt werden.~~
 Mit Hilfe des `LogWriter`-Schnittstelle kann eine eigene Routine verknüpft werden, die das Logging übernimmt.
@@ -107,7 +107,7 @@ End Class
 * Die Services und Actions wurden per Copy&Paste aus den vorliegenden Dokumentationen zusammengestellt. Bitte habt Verständnis, dass ich nicht alles testen kann.  
 
 ### Umsetzung
-folgende angehakte Services werden derzeit unterstützt. Falls etwas fehlen sollte, oder etwas nicht funktioniert, dann gebt bitte Bescheid.
+folgende angehakte TR-064 Services werden derzeit unterstützt. Falls etwas fehlen sollte, oder etwas nicht funktioniert, dann gebt bitte Bescheid.
 
 * [x] [AURA](https://github.com/blacksenator/fritzsoap/blob/master/docs/auraSCPD.pdf) (Inoffizielle Dokumentation von Black Senator aus dem IPPF)
 * [x] [DeviceConfig](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf)
@@ -144,7 +144,7 @@ folgende angehakte Services werden derzeit unterstützt. Falls etwas fehlen soll
 * [x] [X_HomePlug](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeplugSCPD.pdf)
 * [x] [X_VoIP](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voip-avm.pdf)	
       
-        
+Desweiteren wird das [AVM Home Automation](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf)-Interface unterstützt. 
 
 ### Markenrecht
 Dieses Software wird vom Autor privat in der Freizeit als Hobby gepflegt. Mit der Bereitstellung der Software werden keine gewerblichen Interessen verfolgt. Es wird aus rein ideellen Gründen zum Gemeinwohl aller Nutzer einer Fritz!Box betrieben. 

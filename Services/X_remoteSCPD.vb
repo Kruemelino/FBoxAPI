@@ -27,6 +27,17 @@ Friend Class X_remoteSCPD
         End With
     End Function
 
+    Public Function GetInfo(ByRef Info As XRemoteInfo) As Boolean Implements IX_remoteSCPD.GetInfo
+        If Info Is Nothing Then Info = New XRemoteInfo
+
+        With TR064Start(ServiceFile, "GetInfo", Nothing)
+
+            Return .TryGetValueEx("NewEnabled", Info.Enabled) And
+                   .TryGetValueEx("NewPort", Info.Port) And
+                   .TryGetValueEx("NewUsername", Info.Username)
+        End With
+    End Function
+
     Public Function SetConfig(Enabled As Boolean, Port As Integer, Username As String, Password As String) As Boolean Implements IX_remoteSCPD.SetConfig
         Return Not TR064Start(ServiceFile, "SetConfig",
                               New Dictionary(Of String, String) From {{"NewEnabled", Enabled.ToBoolStr},

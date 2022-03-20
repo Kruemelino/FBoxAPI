@@ -4,7 +4,7 @@ Imports System.Runtime.CompilerServices
 <DebuggerStepThrough>
 Public MustInherit Class LogBase
 
-    Protected Sub SendLog(l As LogLevel,
+    Protected Shared Sub SendLog(l As LogLevel,
                           m As String,
                           e As Exception,
                           <CallerMemberName> Optional propertyName As String = Nothing,
@@ -16,11 +16,11 @@ Public MustInherit Class LogBase
                                                                  .Ex = e,
                                                                  .CallerMemberName = propertyName,
                                                                  .CallerFilePath = sourcefilePath,
-                                                                 .CallerClassName = NameOfCallingClass(),
+                                                                 .CallerClassName = NameOfCallingClass,
                                                                  .CallerLineNumber = sourceLineNumber})
     End Sub
 
-    Protected Sub SendLog(l As LogLevel,
+    Protected Shared Sub SendLog(l As LogLevel,
                           m As String,
                           <CallerMemberName> Optional propertyName As String = Nothing,
                           <CallerFilePath> Optional sourcefilePath As String = Nothing,
@@ -30,11 +30,11 @@ Public MustInherit Class LogBase
                                                                  .Message = m,
                                                                  .CallerMemberName = propertyName,
                                                                  .CallerFilePath = sourcefilePath,
-                                                                 .CallerClassName = NameOfCallingClass(),
+                                                                 .CallerClassName = NameOfCallingClass,
                                                                  .CallerLineNumber = sourceLineNumber})
     End Sub
 
-    Protected Sub SendLog(l As LogLevel,
+    Protected Shared Sub SendLog(l As LogLevel,
                           e As Exception,
                           <CallerMemberName> Optional propertyName As String = Nothing,
                           <CallerFilePath> Optional sourcefilePath As String = Nothing,
@@ -44,30 +44,32 @@ Public MustInherit Class LogBase
                                                                  .Ex = e,
                                                                  .CallerFilePath = sourcefilePath,
                                                                  .CallerMemberName = propertyName,
-                                                                 .CallerClassName = NameOfCallingClass(),
+                                                                 .CallerClassName = NameOfCallingClass,
                                                                  .CallerLineNumber = sourceLineNumber})
     End Sub
 
     ''' <remarks><see href="https://stackoverflow.com/a/48570616"/></remarks>
-    Private Function NameOfCallingClass() As String
-        Dim fullName As String
-        Dim declaringType As Type
-        Dim skipFrames As Integer = 2
+    Private Shared ReadOnly Property NameOfCallingClass As String
+        Get
+            Dim fullName As String
+            Dim declaringType As Type
+            Dim skipFrames As Integer = 2
 
-        Do
-            Dim method As MethodBase = New StackFrame(skipFrames, False).GetMethod()
-            declaringType = method.DeclaringType
+            Do
+                Dim method As MethodBase = New StackFrame(skipFrames, False).GetMethod()
+                declaringType = method.DeclaringType
 
-            If declaringType Is Nothing Then
-                Return method.Name
-            End If
+                If declaringType Is Nothing Then
+                    Return method.Name
+                End If
 
-            skipFrames += 1
-            fullName = declaringType.FullName
-        Loop While declaringType.[Module].Name.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase)
+                skipFrames += 1
+                fullName = declaringType.FullName
+            Loop While declaringType.[Module].Name.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase)
 
-        Return fullName
-    End Function
+            Return fullName
+        End Get
+    End Property
 End Class
 
 <DebuggerStepThrough>
