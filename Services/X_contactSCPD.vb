@@ -6,6 +6,7 @@ Imports System.Xml
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf</see>
 ''' </summary>
 Friend Class X_contactSCPD
+    Inherits LogBase
     Implements IX_contactSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_contactSCPD.TR064Start
@@ -84,14 +85,65 @@ Friend Class X_contactSCPD
                               New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}}).ContainsKey("Error")
     End Function
 
-    Public Function GetCallList(ByRef CallListURL As String) As Boolean Implements IX_contactSCPD.GetCallList
-        Return TR064Start(ServiceFile, "GetCallList", Nothing).TryGetValueEx("NewCallListURL", CallListURL)
+    Public Function GetCallList(ByRef CallListURL As String,
+                                Optional days As Integer = 999,
+                                Optional id As Integer = 0,
+                                Optional max As Integer = 999,
+                                Optional sid As String = "",
+                                Optional timestamp As Integer = 0,
+                                Optional typeCSV As Boolean = False) As Boolean Implements IX_contactSCPD.GetCallList
+
+        ' Ermittle die Basisurl: https://192.168.178.1:49443/calllist.lua?sid=0000000000000000
+        If TR064Start(ServiceFile, "GetCallList", Nothing).TryGetValueEx("NewCallListURL", CallListURL) Then
+            ' Eine SessionID ist bereits vorhanden.
+            ' Wenn eine SessionID übergeben wurde und diese nicht der SessionID 0000000000000000 entspricht, dann ersetze diese.
+            If sid.IsNotStringNothingOrEmpty AndAlso Not sid.Contains(My.Resources.DfltFritzBoxSessionID) Then
+                ' Session ID for authentication
+                ' Falls die SessionID mit folgendem Format übergeben wurde "sid=0000000000000000", dann überschreibe auch das "sid="
+                CallListURL = CallListURL.Substring(0, CallListURL.Length - If(sid.StartsWith("sid="), 20, 16)) & sid
+            End If
+
+            ' number of days to look back for calls e.g. 1: calls from today and yesterday, 7: calls from the complete last week
+            If Not days.Equals(999) Then CallListURL += $"&days={days}"
+
+            ' maximum number of entries in call list
+            If Not max.Equals(999) Then CallListURL += $"&max={max}"
+
+            ' calls since this unique ID
+            ' value from timestamp tag, to get only entries that are newer (timestamp is resetted by a factory reset) 
+            ' The parameters timestamp and id have to be used in combination. If only one of both is used, the feature is not supported.
+            If id.IsNotZero And timestamp.IsNotZero Then
+                CallListURL += $"&id={id}&timestamp={timestamp}"
+            ElseIf Not id.IsZero.Equals(timestamp.IsZero) Then
+                ' Log wenn id.IsZero und timestamp.IsNotZero oder id.IsNotZero und timestamp.IsZero
+                SendLog(LogLevel.Warning, $"The parameters timestamp and id have to be used in combination. If only one of both is used, the feature is not supported.")
+            End If
+
+            ' optional parameter for type of output file: xml (default) or csv
+            If typeCSV Then CallListURL += "&type=csv"
+
+            SendLog(LogLevel.Debug, $"{CallListURL} ")
+
+            Return True
+        Else
+            Return False
+        End If
     End Function
 
-    Public Async Function GetCallList() As Task(Of CallList) Implements IX_contactSCPD.GetCallList
-        Return Await XML.DeserializeAsyncFromPath(Of CallList)((TR064Start(ServiceFile,
-                                                                           "GetCallList",
-                                                                           Nothing)).TryGetValueEx(Of String)("NewCallListURL"))
+    Public Async Function GetCallList(Optional days As Integer = 999,
+                                      Optional id As Integer = 0,
+                                      Optional max As Integer = 999,
+                                      Optional sid As String = "",
+                                      Optional timestamp As Integer = 0) As Task(Of CallList) Implements IX_contactSCPD.GetCallList
+
+        Dim CallListURL As String = String.Empty
+
+        If GetCallList(CallListURL, days, id, max, sid, timestamp) Then
+            Return Await XML.DeserializeAsyncFromPath(Of CallList)(CallListURL)
+        Else
+            Return Nothing
+        End If
+
     End Function
 
 #Region "Phonebook"
@@ -338,5 +390,6 @@ Friend Class X_contactSCPD
                               New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId.ToString},
                                                                       {"NewEnable", Enable.ToBoolStr}}).ContainsKey("Error")
     End Function
+
 #End Region
 End Class

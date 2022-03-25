@@ -95,6 +95,7 @@ Public Enum SCPDFiles
 
 End Enum
 
+#Region "Telefonbuch"
 Public Enum TelNrTypEnum
     <XmlEnum("")> notset
 
@@ -131,6 +132,8 @@ Public Enum EMailTypEnum
     ' Für die XML - Deserialsierung ist dies aber extrem wichtig.
 
 End Enum
+#End Region
+
 
 ''' <summary>
 ''' Fritz!Box Deflection

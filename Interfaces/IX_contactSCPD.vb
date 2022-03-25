@@ -40,38 +40,56 @@ Public Interface IX_contactSCPD
     ''' <summary>
     ''' Ermittelt die URL zum Herunterladen des Anrufliste.
     ''' </summary>
-    ''' <param name="CallListURL">Represents the URL to the CallList.
-    ''' The URL can be extended to limit the number of entries in the XML call list file.
-    ''' E.g. max=42 would limit to 42 calls in the list.
-    ''' If the parameter Is Not Set Or the value Is 0 all calls will be inserted into the Call list file.
-    ''' The URL can be extended To fetch a limited number Of entries Using the parameter days.
-    ''' E.g. days=7 would fetch the calls from now until 7 days in the past.
-    ''' If the parameter Is Not Set Or the value Is 0 all calls will be inserted into the Call list file.
-    ''' The parameter NewCallListURL Is empty, If the feature (CallList) Is disabled. If the feature
-    ''' Is Not supported an internal error (820) Is returned. In the other case the URL Is returned.    
-    '''     <list type="bullet">
-    '''         <listheader>The following URL parameters are supported.</listheader>
-    '''         <item><term>name</term> (number): number of days to look back for calls e.g. 1: calls from today and yesterday, 7: calls from the complete last week, Default 999</item>
-    '''         <item><term>id</term> (number): calls since this unique ID</item>
-    '''         <item><term>maxv</term> (number): maximum number of entries in call list, default 999</item>
-    '''         <item><term>sid</term> (hex-string): Session ID for authentication </item>
-    '''         <item><term>timestamp</term> (number): value from timestamp tag, to get only entries that are newer (timestamp Is resetted by a factory reset) </item>
-    '''         <item><term>tr064sid</term>  (string): Session ID for authentication (obsolete)</item>
-    '''         <item><term>type</term>  (string): optional parameter for type of output file: xml (default) or csv </item>
-    '''     </list>
-    '''     The parameters timestamp and id have to be used in combination. If only one of both is used, the feature Is Not supported. 
-    ''' </param>
-    Function GetCallList(ByRef CallListURL As String) As Boolean
-
-    '''' <summary>
-    '''' Inoffizielle asynchrone Action: Ermittelt die URL zum Herunterladen des Anrufliste.
-    '''' </summary>
-    'Function GetCallListAsync() As Task(Of String)
+    ''' <remarks>
+    ''' <para>The URL can be extended to limit the number of entries in the XML call list file.<br/>
+    ''' E.g. max=42 would limit to 42 calls in the list.<br/>
+    ''' If the parameter is not set or the value is 0 all calls will be inserted into the call list file.</para>
+    ''' <para>The URL can be extended to fetch a limited number of entries using the parameter days.<br/>
+    ''' E.g. days=7 would fetch the calls from now until 7 days in the past.<br/>
+    ''' If the parameter is not set or the value is 0 all calls will be inserted into the call list file.</para>
+    ''' <para>The parameter NewCallListURL is empty, if the feature (CallList) is disabled. If the feature is not supported an internal error (820) is returned. In the other case the URL is returned.</para>
+    ''' <para>The parameters <paramref name="timestamp"/> and <paramref name="id"/> have to be used in combination. If only one of both is used, the feature is not supported.</para>
+    ''' </remarks>
+    ''' <param name="CallListURL">Represents the URL to the CallList.</param>
+    ''' <param name="days">number of days to look back for calls e.g. 1: calls from today and yesterday, 7: calls from the complete last week, Default 999</param>
+    ''' <param name="id">calls since this unique ID</param>
+    ''' <param name="max">maximum number of entries in call list, default 999</param>
+    ''' <param name="sid">Session ID for authentication</param>
+    ''' <param name="timestamp">Timestamp of call list creation (unique ID per call list).<br/>
+    ''' Value from timestamp tag, to get only entries that are newer (timestamp is resetted by a factory reset)</param>
+    ''' <param name="type">optional parameter for type of output file: xml (default) or csv</param>
+    Function GetCallList(ByRef CallListURL As String,
+                         Optional days As Integer = 999,
+                         Optional id As Integer = 0,
+                         Optional max As Integer = 999,
+                         Optional sid As String = "",
+                         Optional timestamp As Integer = 0,
+                         Optional typeCSV As Boolean = False) As Boolean
 
     ''' <summary>
     ''' Inoffizielle asynchrone Action: Ermittelt die Anrufliste als deserialisiertes Datenobjekt vom Typ <see cref="CallList"/>.
     ''' </summary>
-    Function GetCallList() As Task(Of CallList)
+    ''' <remarks>
+    ''' <para>The URL can be extended to limit the number of entries in the XML call list file.<br/>
+    ''' E.g. max=42 would limit to 42 calls in the list.<br/>
+    ''' If the parameter is not set or the value is 0 all calls will be inserted into the call list file.</para>
+    ''' <para>The URL can be extended to fetch a limited number of entries using the parameter days.<br/>
+    ''' E.g. days=7 would fetch the calls from now until 7 days in the past.<br/>
+    ''' If the parameter is not set or the value is 0 all calls will be inserted into the call list file.</para>
+    ''' <para>The parameter NewCallListURL is empty, if the feature (CallList) is disabled. If the feature is not supported an internal error (820) is returned. In the other case the URL is returned.</para>
+    ''' <para>The parameters <paramref name="timestamp"/> and <paramref name="id"/> have to be used in combination. If only one of both is used, the feature is not supported.</para>
+    ''' </remarks>
+    ''' <param name="days">number of days to look back for calls e.g. 1: calls from today and yesterday, 7: calls from the complete last week, Default 999</param>
+    ''' <param name="id">calls since this unique ID</param>
+    ''' <param name="max">maximum number of entries in call list, default 999</param>
+    ''' <param name="sid">Session ID for authentication</param>
+    ''' <param name="timestamp">Timestamp of call list creation (unique ID per call list).<br/>
+    ''' Value from timestamp tag, to get only entries that are newer (timestamp is resetted by a factory reset)</param>
+    Function GetCallList(Optional days As Integer = 999,
+                         Optional id As Integer = 0,
+                         Optional max As Integer = 999,
+                         Optional sid As String = "",
+                         Optional timestamp As Integer = 0) As Task(Of CallList)
 
 #Region "Phonebook"
     ''' <summary>

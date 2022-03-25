@@ -1,6 +1,6 @@
 # FBoxAPI
 
-Dieses Projekt ist ein .NET Bibliothek für die TR-064 Schnittstelle der AVM Fritz!Box. 
+Dieses Projekt ist ein .NET Bibliothek für die Schnittstellen TR-064 und AHA der AVM Fritz!Box. 
 Das Projekt ist eine Ausgliederung aus meinem Addin für Microsoft Outlook: [Fritz!Box Telefon-dingsbums V5](https://github.com/Kruemelino/FritzBoxTelefon-dingsbums) 
 
 Dieses Addin ist in meiner Freizeit entstanden. Ich erwarte keine Gegenleistung. Ein Danke ist ausreichend. Wer mir dennoch etwas Gutes zukommen lassen möchte kann dies gerne tun:
@@ -11,7 +11,7 @@ Dieses Addin ist in meiner Freizeit entstanden. Ich erwarte keine Gegenleistung.
 Die Schnittstelle basiert auf der [AVM-Dokumentation](https://avm.de/service/schnittstellen). 
 
 ### Nutzung
-Die Verwendung ist recht einfach angedacht. Es muss eine neue `FBoxAPI.FritzBoxTR64`-Klasse instanziiert werden. Hierfür sind zwei Parameter erforderlich: 
+Die Verwendung ist recht einfach angedacht. Es muss eine neue `FBoxAPI.FritzBoxTR64`-Klasse instanziiert werden (auch für AHA). Hierfür sind zwei Parameter erforderlich: 
 IP-Adresse der Fritz!Box und die Anmeldeinformationen. Nutzername und Passwort werden in einer neuen Instanz der `System.Net.NetworkCredential`-Klasse hinterlegt und übergeben.
 Es gibt mehrere Möglichkeiten die Schnittstelle zu initiieren.
 
@@ -88,9 +88,10 @@ Friend Class FBoxAPILog
 
     Public Sub LogMessage(MessageContainer As LogMessage) Implements ILogWriter.LogMessage
         With MessageContainer
-            Dim LogEvent As New LogEventInfo(NLog.LogLevel.FromOrdinal(.Level),
-                                             .CallerClassName,
-                                             .Message)
+            Dim LogEvent As New LogEventInfo() With {.Level = NLog.LogLevel.FromOrdinal(MessageContainer.Level),
+                                                     .LoggerName = MessageContainer.CallerClassName,
+                                                     .Exception = MessageContainer.Ex,
+                                                     .Message = MessageContainer.Message}
 
             LogEvent.SetCallerInfo(.CallerClassName, .CallerMemberName, .CallerFilePath, .CallerLineNumber)
 

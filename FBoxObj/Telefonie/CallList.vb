@@ -2,7 +2,10 @@
 
 <Serializable()>
 <XmlRoot("root"), XmlType("root")> Public Class CallList
-    <XmlElement("timestamp")> Public Property Timestamp As String
+    ''' <summary>
+    ''' Timestamp of call list creation (unique ID per call list).
+    ''' </summary>
+    <XmlElement("timestamp")> Public Property TimeStamp As Integer
     <XmlElement("Call")> Public Property Calls As List(Of [Call])
 
     Public Sub New()

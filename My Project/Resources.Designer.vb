@@ -61,6 +61,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Sucht eine lokalisierte Zeichenfolge, die 0000000000000000 ähnelt.
+        '''</summary>
+        Friend ReadOnly Property DfltFritzBoxSessionID() As String
+            Get
+                Return ResourceManager.GetString("DfltFritzBoxSessionID", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Sucht eine lokalisierte Zeichenfolge, die &lt;xsl:stylesheet version=&quot;1.0&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
         '''  &lt;xsl:output omit-xml-declaration=&quot;yes&quot; indent=&quot;yes&quot;/&gt;
         '''  &lt;xsl:strip-space elements=&quot;*&quot;/&gt;

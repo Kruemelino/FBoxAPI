@@ -59,9 +59,7 @@ Public MustInherit Class LogBase
                 Dim method As MethodBase = New StackFrame(skipFrames, False).GetMethod()
                 declaringType = method.DeclaringType
 
-                If declaringType Is Nothing Then
-                    Return method.Name
-                End If
+                If declaringType Is Nothing Then Return method.Name
 
                 skipFrames += 1
                 fullName = declaringType.FullName

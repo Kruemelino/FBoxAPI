@@ -3,24 +3,24 @@
 		<RootNamespace>FBoxAPI</RootNamespace>
 		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net461;net472;net48;net50</TargetFrameworks>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<Version>0.0.24</Version>
+		<Version>0.0.25</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/Kruemelino/FBoxAPI</RepositoryUrl>
 		<PackageTags>Fritz!Box fritzbox api tr-064 soap</PackageTags>
-		<Description>This project is a .NET library for the TR-064 interface of the AVM Fritz!Box.</Description>
+		<Description>This project is a .NET library for the TR-064 and AHA interfaces of the AVM Fritz!Box.</Description>
 		<Copyright>Gert Michael (Kruemelino) © 2022</Copyright>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<UserSecretsId>a1ddc68d-05e8-499c-aab2-79241460d4c1</UserSecretsId>
 		<Authors>Kruemelino</Authors>
 		<Company />
 		<PackageProjectUrl>https://github.com/Kruemelino/FBoxAPI</PackageProjectUrl>
-		<PackageReleaseNotes>New: Added Support of .NET5.0 (removed support for .NET Framework 4.5.2)
-New: asynchron file transfer e.g. CallList, Phonebooks, HostList
-New: Function to start lua-requests (FboxHttpTransfer)
-New: download contact images, fax messages, voicemail messages to file system or byte array (FboxHttpTransfer)
-Various optimizations</PackageReleaseNotes>
-		<AssemblyVersion>0.0.1.24</AssemblyVersion>
-		<FileVersion>0.0.1.24</FileVersion>
+		<PackageReleaseNotes>Fix: Various little bugs
+New: support of the parameters of the GetCallListAction
+New logging interface
+New settings-class for init
+Added AHA support</PackageReleaseNotes>
+		<AssemblyVersion>0.0.1.25</AssemblyVersion>
+		<FileVersion>0.0.1.25</FileVersion>
 		<OptionStrict>On</OptionStrict>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
