@@ -13,14 +13,14 @@ Imports System.Xml.Serialization
 
     <XmlIgnore> Private Property SCPD As ServiceControlProtocolDefinition
     <XmlIgnore> Private Property XML As Serializer
-    <XmlIgnore> Private Property Client As TR064WebFunctions
+    <XmlIgnore> Private Property Client As WebFunctions
     <XmlIgnore> Friend ReadOnly Property Initialized As Boolean
         Get
             Return SCPD IsNot Nothing
         End Get
     End Property
 
-    Friend Sub Init(XML As Serializer, Client As TR064WebFunctions)
+    Friend Sub Init(XML As Serializer, Client As WebFunctions)
         _XML = XML
         _Client = Client
     End Sub

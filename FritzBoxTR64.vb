@@ -8,7 +8,7 @@ Public Class FritzBoxTR64
     Friend Shared Property FBoxIPAdresse As String
     Private Property FBTR64Desc As TR64Desc
     Friend Property XML As Serializer
-    Friend Property Client As TR064WebFunctions
+    Friend Property Client As WebFunctions
     Private Property Services As List(Of Service)
 
     Friend Shared _LogWriter As ILogWriter
@@ -90,7 +90,7 @@ Public Class FritzBoxTR64
         _FBoxIPAdresse = FritzBoxAdresse
 
         ' Lade die Klasse für die http-Funktionalitäten.
-        _Client = New TR064WebFunctions(Anmeldeinformationen)
+        _Client = New WebFunctions(Anmeldeinformationen)
 
         ' XML initialisieren
         _XML = New Serializer(Client)

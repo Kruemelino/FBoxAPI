@@ -2,7 +2,7 @@
 Imports System.Text
 
 <DebuggerStepThrough>
-Friend Class TR064WebFunctions
+Friend Class WebFunctions
     Inherits LogBase
     Implements IDisposable
 
@@ -23,14 +23,17 @@ Friend Class TR064WebFunctions
         NetworkCredentials = Anmeldeinformationen
     End Sub
 
-    Private Function CreateWebClient(UniformResourceIdentifier As Uri) As WebClient
+    Private Function CreateWebClient(UniformResourceIdentifier As Uri,
+                                     Optional UserAgent As String = "AVM UPnP/1.0 Client 1.0",
+                                     Optional ContentType As String = "text/xml") As WebClient
+
         Dim Client As New WebClient With {.CachePolicy = New Cache.HttpRequestCachePolicy(Cache.HttpRequestCacheLevel.BypassCache),
                                           .Encoding = Encoding.UTF8}
 
         With Client.Headers
-            .Set(HttpRequestHeader.UserAgent, "AVM UPnP/1.0 Client 1.0")
+            .Set(HttpRequestHeader.UserAgent, UserAgent)
             .Set(HttpRequestHeader.KeepAlive, "false")
-            .Set(HttpRequestHeader.ContentType, "text/xml")
+            .Set(HttpRequestHeader.ContentType, ContentType)
         End With
 
 
@@ -225,15 +228,18 @@ Friend Class TR064WebFunctions
 #End Region
 
 #Region "POST"
-    Friend Async Function PostStringWebClientAsync(UniformResourceIdentifier As Uri, PostData As String, SOAPActionHeader As String) As Task(Of String)
+    Friend Function PostStringWebClient(Path As String, PostData As String, SOAPActionHeader As String) As String
+        Dim T As Task(Of String) = Task.Run(Function() PostStringWebClientAsyncTR064(New Uri(Path), PostData, SOAPActionHeader))
+        T.Wait()
+        Return T.Result
+    End Function
+
+    Private Async Function PostBase(Client As WebClient, UniformResourceIdentifier As Uri, PostData As String) As Task(Of String)
         Dim ReturnString As String = String.Empty
 
-        Using Client As WebClient = CreateWebClient(UniformResourceIdentifier)
-            Client.Credentials = NetworkCredentials
-            Client.Headers.Set("SOAPACTION", SOAPActionHeader)
-
+        With Client
             Try
-                ReturnString = Await Client.UploadStringTaskAsync(UniformResourceIdentifier, PostData)
+                ReturnString = Await .UploadStringTaskAsync(UniformResourceIdentifier, PostData)
 
                 SendLog(LogLevel.Debug, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; RequestContent: {vbCrLf}{PostData}{vbCrLf}Response: {vbCrLf}{ReturnString}")
             Catch ex As WebException
@@ -255,20 +261,42 @@ Friend Class TR064WebFunctions
                 ServicePointManager.ServerCertificateValidationCallback = Nothing
 
                 ' Releases the resources used by the WebClient.
-                Client.Dispose()
+                .Dispose()
             End Try
+        End With
+
+        Return ReturnString
+    End Function
+
+    Private Async Function PostStringWebClientAsyncTR064(UniformResourceIdentifier As Uri, PostData As String, SOAPActionHeader As String) As Task(Of String)
+        Dim ReturnString As String = String.Empty
+
+        Using Client As WebClient = CreateWebClient(UniformResourceIdentifier)
+            With Client
+                .Credentials = NetworkCredentials
+                .Headers.Set("SOAPACTION", SOAPActionHeader)
+            End With
+
+            ReturnString = Await PostBase(Client, UniformResourceIdentifier, PostData)
 
         End Using
 
         Return ReturnString
     End Function
-#End Region
 
-    Friend Function PostStringWebClient(Path As String, PostData As String, SOAPActionHeader As String) As String
-        Dim T As Task(Of String) = Task.Run(Function() PostStringWebClientAsync(New Uri(Path), PostData, SOAPActionHeader))
-        T.Wait()
-        Return T.Result
+    Friend Async Function PostStringWebClientAsyncLua(UniformResourceIdentifier As Uri, PostData As String) As Task(Of String)
+        Dim ReturnString As String = String.Empty
+
+        Using Client As WebClient = CreateWebClient(UniformResourceIdentifier,
+                                                    "application/x-www-form-urlencoded",
+                                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36")
+
+            ReturnString = Await PostBase(Client, UniformResourceIdentifier, PostData)
+        End Using
+
+        Return ReturnString
     End Function
+#End Region
 
 #Region "WebResponse - Legacy"
     'Private Function CreateTR064GetWebRequest(UniformResourceIdentifier As Uri) As HttpWebRequest

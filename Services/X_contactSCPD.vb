@@ -12,7 +12,10 @@ Friend Class X_contactSCPD
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_contactSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_contactSCPD Implements IX_contactSCPD.Servicefile
     Private Property XML As Serializer
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)),
+    Public Sub New(Start As Func(Of SCPDFiles,
+                                 String,
+                                 Dictionary(Of String, String),
+                                 Dictionary(Of String, String)),
                    XMLSerializer As Serializer)
 
         TR064Start = Start
@@ -186,9 +189,9 @@ Friend Class X_contactSCPD
         xslt.Load(XmlReader.Create(Assembly.GetExecutingAssembly.GetManifestResourceStream("FBoxAPI.ToLower.xslt")))
 
         'Ermittle den Pfad zum Telefonbuch und deserialisiere die Daten
-        Return Await XML.DeserializeAsyncFromPath(Of PhonebooksType)((TR064Start(ServiceFile,
+        Return Await XML.DeserializeAsyncFromPath(Of PhonebooksType)(TR064Start(ServiceFile,
                                                                                  "GetPhonebook",
-                                                                                 New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString}})).TryGetValueEx(Of String)("NewPhonebookURL"),
+                                                                                 New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString}}).TryGetValueEx(Of String)("NewPhonebookURL"),
                                                                      xslt)
     End Function
 
@@ -270,7 +273,6 @@ Friend Class X_contactSCPD
                                                                       New Dictionary(Of String, String) From {{"NewNumber", Number}})).
                                                                       TryGetValueEx(Of String)("NewPhonebookEntryData"))
     End Function
-
 
     Public Function GetCallBarringList(ByRef PhonebookURL As String) As Boolean Implements IX_contactSCPD.GetCallBarringList
         Return TR064Start(ServiceFile, "GetCallBarringList", Nothing).TryGetValueEx("NewPhonebookURL", PhonebookURL)

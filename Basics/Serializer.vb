@@ -8,9 +8,9 @@ Imports System.Xml.Xsl
 Friend Class Serializer
     Inherits LogBase
 
-    Private Property Client As TR064WebFunctions
+    Private Property Client As WebFunctions
 
-    Public Sub New(http As TR064WebFunctions)
+    Public Sub New(http As WebFunctions)
         Client = http
     End Sub
 
@@ -157,6 +157,7 @@ Friend Class Serializer
     End Function
 
     Friend Async Function DeserializeAsyncFromPath(Of T)(Path As String, Optional xslt As XslCompiledTransform = Nothing) As Task(Of T)
+        SendLog(LogLevel.Debug, $"Deserialisierung von Pfad {Path} ")
         ' Lade Daten herunter und starte das Deserialisiere der XML-Daten
         Return Await DeserializeAsyncData(Of T)(Await Client.GetStringWebClientAsync(Path), xslt)
     End Function
