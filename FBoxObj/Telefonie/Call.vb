@@ -56,7 +56,7 @@
     ''' </summary>
     ''' <remarks>    
     ''' To differ between voice calls, fax calls and TAM calls use the Port value.
-    ''' E.g. if port equals 5 it Is a fax call. If port equals 6 Or port in in the rage of 40 to 49 it Is a TAM call.
+    ''' E.g. if port equals 5 it is a fax call. If port equals 6 or port in in the rage of 40 to 49 it is a TAM call.
     ''' </remarks>
     <XmlElement("Port")> Public Property Port As Integer
 

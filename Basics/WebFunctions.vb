@@ -106,7 +106,7 @@ Friend Class WebFunctions
         Using Client As WebClient = CreateWebClient(UniformResourceIdentifier)
 
             Try
-
+                SendLog(LogLevel.Debug, $"{UniformResourceIdentifier.AbsoluteUri} ")
                 ReturnStream = Await Client.OpenReadTaskAsync(UniformResourceIdentifier)
 
             Catch ex As ArgumentNullException
@@ -481,8 +481,8 @@ Friend Class WebFunctions
 #End Region
 #End Region
 
+#Disable Warning CA1822 ' Member als statisch markieren
     Friend Function Ping(IPAdresse As String) As Boolean
-
         Dim PingSender As New NetworkInformation.Ping()
         Dim Options As New NetworkInformation.PingOptions() With {.DontFragment = True}
         Dim PingReply As NetworkInformation.PingReply = Nothing
@@ -500,6 +500,7 @@ Friend Class WebFunctions
 
         PingSender.Dispose()
     End Function
+#Enable Warning CA1822 ' Member als statisch markieren
 
 #Region "IDisposable Support"
     Private Sub Dispose(disposing As Boolean)
