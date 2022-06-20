@@ -30,6 +30,9 @@ Added AHA support</PackageReleaseNotes>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
 	  <NoWarn />
 	  <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+	  <RemoveIntegerChecks>false</RemoveIntegerChecks>
+	  <DefineDebug>false</DefineDebug>
+	  <DefineTrace>false</DefineTrace>
 	</PropertyGroup>
 	<ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
 		<Reference Include="System.Net.Http" />
