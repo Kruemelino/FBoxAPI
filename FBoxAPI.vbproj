@@ -22,6 +22,7 @@ Added AHA support</PackageReleaseNotes>
 		<AssemblyVersion>0.0.1.25</AssemblyVersion>
 		<FileVersion>0.0.1.25</FileVersion>
 		<OptionStrict>On</OptionStrict>
+		<Configurations>Debug;Release</Configurations>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
 	  <NoWarn />
