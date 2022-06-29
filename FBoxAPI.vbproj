@@ -3,7 +3,7 @@
 		<RootNamespace>FBoxAPI</RootNamespace>
 		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net461;net472;net48;net50</TargetFrameworks>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<Version>0.0.25</Version>
+		<Version>0.0.26</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/Kruemelino/FBoxAPI</RepositoryUrl>
 		<PackageTags>Fritz!Box fritzbox api tr-064 soap</PackageTags>
@@ -19,8 +19,8 @@ New: support of the parameters of the GetCallListAction
 New logging interface
 New settings-class for init
 Added AHA support</PackageReleaseNotes>
-		<AssemblyVersion>0.0.1.25</AssemblyVersion>
-		<FileVersion>0.0.1.25</FileVersion>
+		<AssemblyVersion>0.0.1.26</AssemblyVersion>
+		<FileVersion>0.0.1.26</FileVersion>
 		<OptionStrict>On</OptionStrict>
 		<Configurations>Debug;Release</Configurations>
 	</PropertyGroup>
