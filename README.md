@@ -5,7 +5,7 @@ Das Projekt ist eine Ausgliederung aus meinem Addin für Microsoft Outlook: [Fri
 
 Dieses Addin ist in meiner Freizeit entstanden. Ich erwarte keine Gegenleistung. Ein Danke ist ausreichend. Wer mir dennoch etwas Gutes zukommen lassen möchte kann dies gerne tun:
 
-[![Donate](https://img.shields.io/badge/Spenden-PayPal-green.svg)](https://www.paypal.com/paypalme/gertmichael)
+[![Donate](https://img.shields.io/badge/Spenden-PayPal-green.svg?logo=paypal)](https://www.paypal.com/paypalme/gertmichael) ![Nuget](https://img.shields.io/nuget/v/FBoxAPI)
 
 ### Grundlagen
 Die Schnittstelle basiert auf der [AVM-Dokumentation](https://avm.de/service/schnittstellen). 
