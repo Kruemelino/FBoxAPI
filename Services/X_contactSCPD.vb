@@ -88,6 +88,7 @@ Friend Class X_contactSCPD
                               New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}}).ContainsKey("Error")
     End Function
 
+#Region "CallList"
     Public Function GetCallList(ByRef CallListURL As String,
                                 Optional days As Integer = 999,
                                 Optional id As Integer = 0,
@@ -148,6 +149,8 @@ Friend Class X_contactSCPD
         End If
 
     End Function
+
+#End Region
 
 #Region "Phonebook"
     Public Function GetPhonebookList(ByRef PhonebookList As Integer()) As Boolean Implements IX_contactSCPD.GetPhonebookList

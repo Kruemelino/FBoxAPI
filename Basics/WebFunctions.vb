@@ -25,7 +25,7 @@ Friend Class WebFunctions
 
     Private Function CreateWebClient(UniformResourceIdentifier As Uri,
                                      Optional UserAgent As String = "AVM UPnP/1.0 Client 1.0",
-                                     Optional ContentType As String = "text/xml") As WebClient
+                                     Optional ContentType As String = "text/xml;charset=UTF-8") As WebClient
 
         Dim Client As New WebClient With {.CachePolicy = New Cache.HttpRequestCachePolicy(Cache.HttpRequestCacheLevel.BypassCache),
                                           .Encoding = Encoding.UTF8}
