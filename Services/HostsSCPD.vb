@@ -122,11 +122,16 @@ Friend Class HostsSCPD
 
     Public Async Function GetHostList() As Task(Of HostList) Implements IHostsSCPD.GetHostList
         ' Ermittle den Pfad zu Hostlost und deserialisiere die Daten
-        ' X_AVM-DE_GetHostListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
-        Return Await XML.DeserializeAsyncFromPath(Of HostList)($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}" &
-                                                               (TR064Start(ServiceFile,
-                                                                           "X_AVM-DE_GetHostListPath",
-                                                                           Nothing)).TryGetValueEx(Of String)("NewX_AVM-DE_HostListPath"))
+        Dim HostListUrl As String = String.Empty
+
+        If GetHostListPath(HostListUrl) Then
+            ' X_AVM-DE_GetHostListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
+            Return Await XML.DeserializeAsyncFromPath(Of HostList)($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}{HostListUrl}")
+        Else
+            ' Gib eine leere Liste zurück
+            Return New HostList
+        End If
+
     End Function
 
     Public Function GetMeshListPath(ByRef MeshListPath As String) As Boolean Implements IHostsSCPD.GetMeshListPath

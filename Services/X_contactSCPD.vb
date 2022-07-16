@@ -145,7 +145,7 @@ Friend Class X_contactSCPD
         If GetCallList(CallListURL, days, id, max, sid, timestamp) Then
             Return Await XML.DeserializeAsyncFromPath(Of CallList)(CallListURL)
         Else
-            Return Nothing
+            Return New CallList
         End If
 
     End Function
@@ -191,11 +191,19 @@ Friend Class X_contactSCPD
         Dim xslt As New Xsl.XslCompiledTransform
         xslt.Load(XmlReader.Create(Assembly.GetExecutingAssembly.GetManifestResourceStream("FBoxAPI.ToLower.xslt")))
 
-        'Ermittle den Pfad zum Telefonbuch und deserialisiere die Daten
-        Return Await XML.DeserializeAsyncFromPath(Of PhonebooksType)(TR064Start(ServiceFile,
-                                                                                 "GetPhonebook",
-                                                                                 New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString}}).TryGetValueEx(Of String)("NewPhonebookURL"),
-                                                                     xslt)
+        ''Ermittle den Pfad zum Telefonbuch und deserialisiere die Daten
+        'Return Await XML.DeserializeAsyncFromPath(Of PhonebooksType)(TR064Start(ServiceFile,
+        '                                                                         "GetPhonebook",
+        '                                                                         New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString}}).TryGetValueEx(Of String)("NewPhonebookURL"),
+        '                                                             xslt)
+        Dim PhonebookUrl As String = String.Empty
+
+        If GetPhonebook(PhonebookID, PhonebookUrl) Then
+            Return Await XML.DeserializeAsyncFromPath(Of PhonebooksType)(PhonebookUrl, xslt)
+        Else
+            ' Gib eine leere Liste zurück
+            Return New PhonebooksType
+        End If
     End Function
 
     Public Function AddPhonebook(PhonebookName As String, Optional PhonebookExtraID As String = "") As Boolean Implements IX_contactSCPD.AddPhonebook
@@ -287,10 +295,19 @@ Friend Class X_contactSCPD
         xslt.Load(XmlReader.Create(Assembly.GetExecutingAssembly.GetManifestResourceStream("FBoxAPI.ToLower.xslt")))
 
         ' Ermittle den Pfad zu Rufsperre und deserialisiere die Daten
-        Return Await XML.DeserializeAsyncFromPath(Of PhonebooksType)((TR064Start(ServiceFile,
-                                                                                 "GetCallBarringList",
-                                                                                 Nothing)).TryGetValueEx(Of String)("NewPhonebookURL"),
-                                                                     xslt)
+        'Return Await XML.DeserializeAsyncFromPath(Of PhonebooksType)((TR064Start(ServiceFile,
+        '                                                                         "GetCallBarringList",
+        '                                                                         Nothing)).TryGetValueEx(Of String)("NewPhonebookURL"),
+        '                                                             xslt)
+
+        Dim CallBarringListUrl As String = String.Empty
+
+        If GetCallBarringList(CallBarringListUrl) Then
+            Return Await XML.DeserializeAsyncFromPath(Of PhonebooksType)(CallBarringListUrl, xslt)
+        Else
+            ' Gib eine leere Liste zurück
+            Return New PhonebooksType
+        End If
     End Function
 
     Public Function SetCallBarringEntry(PhonebookEntryData As String, Optional ByRef PhonebookEntryUniqueID As Integer = 0) As Boolean Implements IX_contactSCPD.SetCallBarringEntry

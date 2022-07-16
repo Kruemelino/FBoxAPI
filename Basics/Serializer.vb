@@ -66,7 +66,7 @@ Friend Class Serializer
 
             End Try
         Else
-            SendLog(LogLevel.Error, "Die übergebenen XML-Datan sind leer.")
+            SendLog(LogLevel.Error, "Die übergebenen XML-Daten sind leer.")
 
             Return False
         End If

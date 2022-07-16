@@ -56,11 +56,15 @@ Friend Class X_tamSCPD
 
     Public Async Function GetMessageList(i As Integer) As Task(Of MessageList) Implements IX_tamSCPD.GetMessageList
         'Ermittle den Pfad zum Telefonbuch und deserialisiere die Daten
-        Dim url As String = String.Empty
+        Dim MessageListUrl As String = String.Empty
 
-        Return Await XML.DeserializeAsyncFromPath(Of MessageList)((TR064Start(ServiceFile,
-                                                                              "GetMessageList",
-                                                                              New Dictionary(Of String, String) From {{"NewIndex", i.ToString}}).TryGetValueEx(Of String)("NewURL")))
+        If GetMessageList(MessageListUrl, i) Then
+            Return Await XML.DeserializeAsyncFromPath(Of MessageList)(MessageListUrl)
+        Else
+            ' Gib eine leere Liste zurück
+            Return New MessageList
+        End If
+
     End Function
 
     Public Function MarkMessage(Index As Integer, MessageIndex As Integer, MarkedAsRead As Boolean) As Boolean Implements IX_tamSCPD.MarkMessage

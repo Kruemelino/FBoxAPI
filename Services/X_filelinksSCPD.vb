@@ -90,10 +90,15 @@ Friend Class X_filelinksSCPD
 
     Public Async Function GetFilelinkList() As Task(Of FileLinkList) Implements IX_filelinksSCPD.GetFilelinkList
         ' Ermittle den Pfad zu AssociatedDevices und deserialisiere die Daten
-        ' GetFilelinkListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
-        Return Await XML.DeserializeAsyncFromPath(Of FileLinkList)($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}" &
-                                                                   TR064Start(ServiceFile,
-                                                                               "GetFilelinkListPath",
-                                                                               Nothing).TryGetValueEx(Of String)("NewFilelinkListPath"))
+        Dim FilelinkListUrl As String = String.Empty
+
+        If GetFilelinkListPath(FilelinkListUrl) Then
+            ' GetFilelinkListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
+            Return Await XML.DeserializeAsyncFromPath(Of FileLinkList)($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}{FilelinkListUrl}")
+        Else
+            ' Gib eine leere Liste zurück
+            Return New FileLinkList
+        End If
+
     End Function
 End Class

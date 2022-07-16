@@ -213,11 +213,14 @@ Friend Class WlanconfigSCPD
 
     Public Async Function GetWLANDeviceList() As Task(Of WLANDeviceList) Implements IWlanconfigSCPD.GetWLANDeviceList
         ' Ermittle den Pfad zu AssociatedDevices und deserialisiere die Daten
-        ' X_AVM-DE_GetWLANDeviceListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
-        Return Await XML.DeserializeAsyncFromPath(Of WLANDeviceList)($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}" &
-                                                                     (TR064Start(ServiceFile,
-                                                                                 "X_AVM-DE_GetWLANDeviceListPath",
-                                                                                 Nothing)).TryGetValueEx(Of String)("NewX_AVM-DE_WLANDeviceListPath"))
+        Dim WLANDeviceListUrl As String = String.Empty
+
+        If GetWLANDeviceListPath(WLANDeviceListUrl) Then
+            ' X_AVM-DE_GetWLANDeviceListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
+            Return Await XML.DeserializeAsyncFromPath(Of WLANDeviceList)($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}{WLANDeviceListUrl}")
+        Else
+            Return New WLANDeviceList
+        End If
     End Function
 
     Public Function SetStickSurfEnable(StickSurfEnable As Boolean) As Boolean Implements IWlanconfigSCPD.SetStickSurfEnable
