@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<RootNamespace>FBoxAPI</RootNamespace>
-		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net461;net472;net48;net50</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net472;net48;net50</TargetFrameworks>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<Version>0.0.27</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
