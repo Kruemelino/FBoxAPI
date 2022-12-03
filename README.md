@@ -19,7 +19,7 @@ Es gibt mehrere Möglichkeiten die Schnittstelle zu initiieren.
 - Übergabe der benötigten Daten als Einzel-Parameter
 - Dimensionierung einer `FBoxAPI.Settings`-Klasse, die alle notwendigen Daten enthält
 
-Im folgenen ist ein kleines Beispiel aufgeführt, wie die SessionID der Fritz!Box abgefragt werden kann. 
+Im Folgenen ist ein kleines Beispiel aufgeführt, wie die SessionID der Fritz!Box abgefragt werden kann. 
 
 ```vbnet
 Private Function GetSessionID() As String
@@ -65,7 +65,7 @@ FBoxTR064 = New FBoxAPI.FritzBoxTR64(New FBoxAPI.Settings With {.Anmeldeinformat
 Hinweis: Wenn der AURA-Service (AVM USB Remote Access) verwendet werden soll, muss dies bei der Initialisierung der Schnittstelle übergegeben werden. 
 Dies ist über die Eigenschaft `AuraService` der `FBoxAPI.Settings`-Klasse möglich.
 
-### Logging
+#### Logging
 Mit Hilfe des `LogWriter`-Schnittstelle kann eine eigene Routine verknüpft werden, die das Logging übernimmt.
 Die Schnittstelle gibt folgende relevante Daten in der Containerklasse `FBoxAPI.LogMessage` für das Logging aus:
 
@@ -109,7 +109,7 @@ End Class
 Die Nutzung der Zwei-Faktor-Authentifizierung kann ab Fritz!OS 7.39 nicht mehr deaktiviert  werden. Das Setzen verschiedener Einstellungen bedarf nun einer zusätzlichen Bestätigung durch den Nutzer. 
 Der Ablauf des Authentifizierungsprozesses ist in [X_AVM-DE_Auth](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_auth.pdf) beschrieben. 
 Sobald für eine Action eine eine Zwei-Faktor-Authentifizierung erforderlich ist, signalisiert diese API dies über die `LogWriter`-Schnittstelle, welche hierfür mit der Routine `Signal2FAuthentication` ergänzt wurde. 
-Der Parameter `Methods` enhält die erlaubten Methoden, z. B. `button,dtmf;*14048`. So bald der Nutzer die Authentifizierung durchgeführt hat, wird die ursprüngliche Action erneut ausgeführt. 
+Der Parameter `Methods` enhält die erlaubten Methoden, z. B. `button,dtmf;*14048`. Sobald der Nutzer die Authentifizierung durchgeführt hat, wird die ursprüngliche Action erneut ausgeführt. 
 Die Ergebnisse des Authentifizierungsprozesses werden über die `LogMessage` ausgegeben. 
 
 ```vbnet
