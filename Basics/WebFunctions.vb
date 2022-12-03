@@ -249,7 +249,10 @@ Friend Class WebFunctions
                     If ex.Status = WebExceptionStatus.ProtocolError AndAlso .StatusCode = HttpStatusCode.InternalServerError Then
                         Using DataStream As IO.Stream = .GetResponseStream()
                             Using reader = New IO.StreamReader(DataStream)
-                                SendLog(LogLevel.Warning, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; RequestContent: {vbCrLf}{PostData}{vbCrLf}Response:{vbCrLf}{reader.ReadToEnd()}")
+                                ' Ermittle die übermittelte Fehlermeldung
+                                ReturnString = reader.ReadToEnd()
+
+                                SendLog(LogLevel.Warning, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; RequestContent: {vbCrLf}{PostData}{vbCrLf}Response:{vbCrLf}{ReturnString}")
                             End Using
                         End Using
                     Else

@@ -3,13 +3,13 @@ Imports System.Runtime.CompilerServices
 
 <DebuggerStepThrough>
 Public MustInherit Class LogBase
-
+#Region "Logging"
     Protected Shared Sub SendLog(l As LogLevel,
-                          m As String,
-                          e As Exception,
-                          <CallerMemberName> Optional propertyName As String = Nothing,
-                          <CallerFilePath> Optional sourcefilePath As String = Nothing,
-                          <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
+                         m As String,
+                         e As Exception,
+                         <CallerMemberName> Optional propertyName As String = Nothing,
+                         <CallerFilePath> Optional sourcefilePath As String = Nothing,
+                         <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
 
         FritzBoxTR64._LogWriter?.LogMessage(New LogMessage With {.Level = l,
                                                                  .Message = m,
@@ -21,10 +21,10 @@ Public MustInherit Class LogBase
     End Sub
 
     Protected Shared Sub SendLog(l As LogLevel,
-                          m As String,
-                          <CallerMemberName> Optional propertyName As String = Nothing,
-                          <CallerFilePath> Optional sourcefilePath As String = Nothing,
-                          <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
+                         m As String,
+                         <CallerMemberName> Optional propertyName As String = Nothing,
+                         <CallerFilePath> Optional sourcefilePath As String = Nothing,
+                         <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
 
         FritzBoxTR64._LogWriter?.LogMessage(New LogMessage With {.Level = l,
                                                                  .Message = m,
@@ -35,10 +35,10 @@ Public MustInherit Class LogBase
     End Sub
 
     Protected Shared Sub SendLog(l As LogLevel,
-                          e As Exception,
-                          <CallerMemberName> Optional propertyName As String = Nothing,
-                          <CallerFilePath> Optional sourcefilePath As String = Nothing,
-                          <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
+                                 e As Exception,
+                                 <CallerMemberName> Optional propertyName As String = Nothing,
+                                 <CallerFilePath> Optional sourcefilePath As String = Nothing,
+                                 <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
 
         FritzBoxTR64._LogWriter?.LogMessage(New LogMessage With {.Level = l,
                                                                  .Ex = e,
@@ -68,6 +68,13 @@ Public MustInherit Class LogBase
             Return fullName
         End Get
     End Property
+#End Region
+
+#Region "Second Factor Authentication"
+    Protected Shared Sub Signal2FA(Methods As String)
+        FritzBoxTR64._LogWriter?.Signal2FAuthentication(Methods)
+    End Sub
+#End Region
 End Class
 
 <DebuggerStepThrough>

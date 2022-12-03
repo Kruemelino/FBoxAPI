@@ -11,6 +11,7 @@ Dieses Addin ist in meiner Freizeit entstanden. Ich erwarte keine Gegenleistung.
 Die Schnittstelle basiert auf der [AVM-Dokumentation](https://avm.de/service/schnittstellen). 
 
 ### Nutzung
+#### Initialisierung
 Die Verwendung ist recht einfach angedacht. Es muss eine neue `FBoxAPI.FritzBoxTR64`-Klasse instanziiert werden (auch für AHA). Hierfür sind zwei Parameter erforderlich: 
 IP-Adresse der Fritz!Box und die Anmeldeinformationen. Nutzername und Passwort werden in einer neuen Instanz der `System.Net.NetworkCredential`-Klasse hinterlegt und übergeben.
 Es gibt mehrere Möglichkeiten die Schnittstelle zu initiieren.
@@ -62,10 +63,9 @@ FBoxTR064 = New FBoxAPI.FritzBoxTR64(New FBoxAPI.Settings With {.Anmeldeinformat
 ```
 
 Hinweis: Wenn der AURA-Service (AVM USB Remote Access) verwendet werden soll, muss dies bei der Initialisierung der Schnittstelle übergegeben werden. 
-~~Hierfür gibt es einen optionalen Parameter `InitAURA` im Konstruktor bzw. Init-Funktion welcher standardmäßig auf `False` gesetzt ist.~~
 Dies ist über die Eigenschaft `AuraService` der `FBoxAPI.Settings`-Klasse möglich.
 
-~~Sobald eine neue `FBoxAPI.FritzBoxTR64`-Klasse erstellt wurde, kann auch auf das Event `Status` abgefragt werden.~~
+### Logging
 Mit Hilfe des `LogWriter`-Schnittstelle kann eine eigene Routine verknüpft werden, die das Logging übernimmt.
 Die Schnittstelle gibt folgende relevante Daten in der Containerklasse `FBoxAPI.LogMessage` für das Logging aus:
 
@@ -98,10 +98,37 @@ Friend Class FBoxAPILog
             NLogger.Log(LogEvent)
         End With
     End Sub
+
+    Public Sub Signal2FAuthentication(Methods As String) Implements ILogWriter.Signal2FAuthentication
+        ' ...
+    End Sub
 End Class
 ```
 
-### Bekannte Probleme
+#### Zwei-Faktor-Authentifizierung
+Die Nutzung der Zwei-Faktor-Authentifizierung kann ab Fritz!OS 7.39 nicht mehr deaktiviert  werden. Das Setzen verschiedener Einstellungen bedarf nun einer zusätzlichen Bestätigung durch den Nutzer. 
+Der Ablauf des Authentifizierungsprozesses ist in [X_AVM-DE_Auth](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_auth.pdf) beschrieben. 
+Sobald für eine Action eine eine Zwei-Faktor-Authentifizierung erforderlich ist, signalisiert diese API dies über die `LogWriter`-Schnittstelle, welche hierfür mit der Routine `Signal2FAuthentication` ergänzt wurde. 
+Der Parameter `Methods` enhält die erlaubten Methoden, z. B. `button,dtmf;*14048`. So bald der Nutzer die Authentifizierung durchgeführt hat, wird die ursprüngliche Action erneut ausgeführt. 
+Die Ergebnisse des Authentifizierungsprozesses werden über die `LogMessage` ausgegeben. 
+
+```vbnet
+Imports FBoxAPI
+
+Friend Class FBoxAPILog
+    Implements ILogWriter
+
+    Public Sub LogMessage(MessageContainer As LogMessage) Implements ILogWriter.LogMessage
+        ' ...
+    End Sub
+
+    Public Sub Signal2FAuthentication(Methods As String) Implements ILogWriter.Signal2FAuthentication
+        MsgBox(String.Format($"Zwei-Faktor-Authentifizierung: {Methods}"), MsgBoxStyle.Information, "Zwei-Faktor-Authentifizierung")
+    End Sub
+End Class
+```
+
+### Bekannte Probleme und Hinweise
 * Die Dokumentation von AVM ist nicht immer korrekt. Z. B. wird in der Dokumentation [X_AVM-DE_AppSetup](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_appsetup.pdf)
   der Parameter `MyFritzDynDNSEnabled` der Action GetAppRemoteInfo aufgelistet. Dieser Parameter lautet aber `NewMyFritzEnabled`. 
   Es kann nicht ausgeschlossen werden, dann auch anderer Stelle ähnliche Probleme auftreten.

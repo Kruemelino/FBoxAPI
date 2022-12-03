@@ -1,6 +1,14 @@
 ﻿Imports System.ComponentModel
 Imports System.Xml.Serialization
 
+Public Enum AVMErrorCodes
+    InvalidArguments = 402
+    InternalError = 820
+    AuthenticationRequired = 866
+    AuthenticationBlocked = 867
+    AuthenticationBusy = 868
+End Enum
+
 ''' <summary>
 ''' ServiceControlProtocolDefinitions 
 ''' </summary>
@@ -133,7 +141,6 @@ Public Enum EMailTypEnum
 
 End Enum
 #End Region
-
 
 ''' <summary>
 ''' Fritz!Box Deflection

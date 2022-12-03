@@ -20,6 +20,8 @@ Imports System.Xml.Serialization
         End Get
     End Property
 
+    <XmlIgnore> Private Property s As XNamespace = "http://schemas.xmlsoap.org/soap/envelope/"
+
     Friend Sub Init(XML As Serializer, Client As WebFunctions)
         _XML = XML
         _Client = Client
@@ -32,7 +34,7 @@ Imports System.Xml.Serialization
     ''' <param name="InputArguments">Daten, die an die Fritz!Box als Argumente hochgeladen werden sollen.</param>
     ''' <param name="http">Klasse für den http-Transfer</param>
     ''' <param name="NetworkCredential">Daten zur Anmeldung auf der Fritz!Box</param>
-    Friend Function StartAction(ActionName As String, InputArguments As Dictionary(Of String, String)) As Dictionary(Of String, String)
+    Friend Function StartAction(ActionName As String, InputArguments As Dictionary(Of String, String), Token As String) As Dictionary(Of String, String)
         Dim ReturnXMLDoc As New XmlDocument
         Dim ResponseData As New Dictionary(Of String, String)
         Dim Response As String = String.Empty
@@ -51,7 +53,7 @@ Imports System.Xml.Serialization
             If Action IsNot Nothing Then
 
                 Response = Client.PostStringWebClient($"{Uri.UriSchemeHttps}://{FritzBoxTR64.FBoxIPAdresse}:{49443}{ControlURL}",
-                                                      GetRequestXML(Action, InputArguments),
+                                                      GetRequestXML(Action, InputArguments, Token),
                                                       $"""{ServiceType}#{Action.Name}""")
 
                 If Response.IsNotStringNothingOrEmpty Then
@@ -74,14 +76,20 @@ Imports System.Xml.Serialization
     ''' </summary>
     ''' <param name="Action">Die <paramref name="Action"/>, die ausgeführt werden soll.</param>
     ''' <param name="InputValues">Die Daten, welche müt übergeben werden sollen.</param>
-    Private Function GetRequestXML(Action As Action, InputValues As Dictionary(Of String, String)) As String
+    ''' <param name="Token">Authentifizierungs-Token</param>
+    Private Function GetRequestXML(Action As Action, InputValues As Dictionary(Of String, String), Token As String) As String
 
-        Dim s As XNamespace = "http://schemas.xmlsoap.org/soap/envelope/"
         Dim u As XNamespace = ServiceType
+        Dim avm As XNamespace = "avm.de"
+
 
         With New XDocument(New XDeclaration("1.0", "utf-8", "yes"),
                            New XElement(s + "Envelope",
                                         New XAttribute(XNamespace.Xmlns + "s", s),
+                                        If(Token.IsStringNothingOrEmpty, Nothing, New XElement(s + "Header",
+                                                     New XElement(avm + "token", New XAttribute(XNamespace.Xmlns + "avm", avm),
+                                                                                 New XAttribute(s + "mustUnderstand", "1"),
+                                                                                 Token))),
                                         New XAttribute(s + "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"),
                                         New XElement(s + "Body",
                                                      New XElement(u + Action.Name,
@@ -91,6 +99,7 @@ Imports System.Xml.Serialization
         End With
     End Function
 
+
     ''' <summary>
     ''' Erzeugt aus der Antwort der Fritz!Box ein <see cref="Dictionary(Of TKey, TValue)"/>. 
     ''' Hierzu wird die Liste aller möglichen ausgehenden Argumente (direction=out) der jeweiligen <see cref="Action"/> verarbeitet.
@@ -99,8 +108,19 @@ Imports System.Xml.Serialization
     ''' <param name="Response">Antwort der Fritz!Box.</param>
     Private Function GetResponseDictionary(Action As Action, Response As String) As Dictionary(Of String, String)
         With XDocument.Parse(Response)
-            Return Action.ArgumentList.Where(Function(A) A.Direction = "out").ToDictionary(Function(k) k.Name,
-                                                                                           Function(v) .Descendants(v.Name).First.Value)
+
+            If .Descendants.Where(Function(E) E.Name.Equals(s + "Fault")).Any Then
+                With .Descendants.Where(Function(E) E.Name.LocalName.Equals("UPnPError")).First
+                    ' Fehler auslesen
+                    Return New Dictionary(Of String, String) From {{"errorCode", .Descendants(.Name.Namespace + "errorCode").First.Value},
+                                                                   {"errorDescription", .Descendants(.Name.Namespace + "errorDescription").First.Value}}
+                End With
+
+            Else
+                Return Action.ArgumentList.Where(Function(A) A.Direction = "out").ToDictionary(Function(k) k.Name,
+                                                                                               Function(v) .Descendants(v.Name).First.Value)
+            End If
+
         End With
     End Function
 End Class

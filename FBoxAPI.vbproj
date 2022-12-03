@@ -3,7 +3,7 @@
 		<RootNamespace>FBoxAPI</RootNamespace>
 		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net472;net48;net481;net60;net70</TargetFrameworks>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<Version>0.1.30</Version>
+		<Version>0.1.31</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/Kruemelino/FBoxAPI</RepositoryUrl>
 		<PackageTags>Fritz!Box fritzbox api tr-064 soap</PackageTags>
@@ -29,7 +29,7 @@
 	  <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
 	  <RemoveIntegerChecks>false</RemoveIntegerChecks>
 	  <DefineDebug>false</DefineDebug>
-	  <DefineTrace>false</DefineTrace>
+	  <DefineTrace>True</DefineTrace>
 	</PropertyGroup>
 	<ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
 		<Reference Include="System.Net.Http" />
@@ -39,6 +39,9 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <EmbeddedResource Include="Basics\ToLower.xslt" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\EasyWPFThemeLib\EasyWPFThemeLib.vbproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Update="My Project\Resources.Designer.vb">
