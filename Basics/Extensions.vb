@@ -88,9 +88,10 @@ Friend Module Extensions
 
                     ' Bei Boolean muss momentan ein Sonderweg gegangen werden.
                     ' "0" und "1" können nicht in Boolean umgewandelt werden.
-                    If GetType(T) Is GetType(Boolean) AndAlso
-                        (.Item(key).Equals("0") Or .Item(key).Equals("1")) Then
+                    If GetType(T) Is GetType(Boolean) AndAlso (.Item(key).Equals("0") Or .Item(key).Equals("1")) Then
                         value = CType(Convert.ChangeType(CInt(.Item(key)), GetType(T)), T)
+                    ElseIf GetType(T).IsEnum Then
+                        value = CType([Enum].Parse(GetType(T), .Item(key)), T)
                     Else
                         value = CType(Convert.ChangeType(.Item(key), GetType(T)), T)
                     End If

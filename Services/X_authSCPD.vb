@@ -14,7 +14,7 @@ Friend Class X_authSCPD
     End Sub
 
     Public Function GetInfo(ByRef Enabled As Boolean) As Boolean Implements IX_authSCPD.GetInfo
-        Return TR064Start(ServiceFile, "GetAppMessageFilter", Nothing).TryGetValueEx("NewEnabled", Enabled)
+        Return TR064Start(ServiceFile, "GetInfo", Nothing).TryGetValueEx("NewEnabled", Enabled)
     End Function
 
     Public Function GetState(ByRef State As AuthStateEnum) As Boolean Implements IX_authSCPD.GetState
