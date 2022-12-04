@@ -1,6 +1,5 @@
 ﻿Imports System.Net
 Imports System.Threading
-Imports System.Xml
 
 Public Class FritzBoxTR64
     Inherits LogBase
@@ -12,6 +11,8 @@ Public Class FritzBoxTR64
     Friend Property XML As Serializer
     Friend Property Client As WebFunctions
     Private Property Services As List(Of Service)
+
+    Protected Property AuthToken As String = String.Empty
 
     Friend Shared _LogWriter As ILogWriter
     Public Shared WriteOnly Property LogWriter As ILogWriter
@@ -192,7 +193,7 @@ Public Class FritzBoxTR64
         WANPPPConnection = New WANPPPConnectionSCPD(AddressOf TR064Start)
         Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, XML)
         X_appsetup = New X_appsetupSCPD(AddressOf TR064Start)
-        X_auth = New X_authSCPD(AddressOf TR064Start, AddressOf TR064StartWithToken)
+        X_auth = New X_authSCPD(AddressOf TR064Start)
         X_contact = New X_contactSCPD(AddressOf TR064Start, XML)
         X_filelinks = New X_filelinksSCPD(AddressOf TR064Start, XML)
         X_HomeAuto = New X_homeautoSCPD(AddressOf TR064Start)
@@ -255,24 +256,30 @@ Public Class FritzBoxTR64
             Dim Service As Service = GetService(SCPDURL)
 
             If Service IsNot Nothing Then
-                ReturnValues = Service.StartAction(ActionName, InputArguments, "")
+                ReturnValues = Service.StartAction(ActionName, InputArguments, AuthToken)
 
                 ' Falls ein Fehler aufgetreten ist: prüfe, ob AuthenticationRequired
                 If ReturnValues.ContainsKey("errorCode") AndAlso CType(ReturnValues("errorCode"), AVMErrorCodes) = AVMErrorCodes.AuthenticationRequired Then
 
                     SendLog(LogLevel.Info, $"Second Factor Authentication Required")
 
-                    With New Task(Of String)(AddressOf WaitForAuth)
+
+                    Dim T As Task(Of Boolean) = Task.Run(Function() WaitForAuth())
+
+                    With T
                         ' Starte den Task
-                        .RunSynchronously()
+                        '.Run(Function() WaitForAuth())
                         ' Warte bis der Auth Prozess abgeschlossen ist
                         .Wait()
                         ' Fahre mit der Ausführung fort
-                        If .Result.IsNotStringNothingOrEmpty Then
-                            ' Führe den Aufruf mit dem Token nochmal durch
-                            SendLog(LogLevel.Debug, $"Start Action {ActionName} with token { .Result}")
+                        If .Result Then
+                            ' Signalisiere, dass die Authentifikation erfolreich war
+                            AuthenticationSuccesful = True
 
-                            ReturnValues = Service.StartAction(ActionName, InputArguments, .Result)
+                            ' Führe den Aufruf mit dem Token nochmal durch
+                            SendLog(LogLevel.Debug, $"Start Action {ActionName} with token {AuthToken}")
+
+                            ReturnValues = Service.StartAction(ActionName, InputArguments, AuthToken)
                         End If
 
                     End With
@@ -362,7 +369,7 @@ Public Class FritzBoxTR64
 #End Region
 
 #Region "Second Factor Authentication"
-    Private Function WaitForAuth() As String
+    Private Function WaitForAuth() As Boolean
         Dim Token As String = String.Empty
         Dim Methods As String = String.Empty
         Dim RetState As AuthStateEnum
@@ -371,45 +378,36 @@ Public Class FritzBoxTR64
             If RetState = AuthStateEnum.waitingforauth Then
                 ' Die Fritz!Box wartet auf eine Authentifizierung
 
-                Signal2FA(Methods) ' Signalisiere die notwendige Zweifaktor Authentifizierung
+                ' Setze den übermittelten Auth-Token ind die Variable
+                AuthToken = Token
 
-                ' halte den Thread an, so lange die Authentifizierung läuft.
-                ' X_Auth:GetState() + SOAP-Header with Token returns State = authenticated
+                ' Signalisiere die notwendige Zweifaktor-Authentifizierung
+                Signal2FA(Methods)
 
-                While X_auth.GetStateWithToken(Token, RetState) AndAlso RetState = AuthStateEnum.waitingforauth
+                ' Warte auf den Abschluss der Authentifizierung
+                While Not AbortAuthentication And (X_auth.GetState(RetState) AndAlso RetState = AuthStateEnum.waitingforauth)
                     ' Nicht schön, aber selten
                     Thread.Sleep(1000)
                 End While
 
-                If RetState = AuthStateEnum.authenticated Then
-                    ' Gib den Token zurück
-                    Return Token
-                Else
-                    SendLog(LogLevel.Warning, $"Second Factor Authentication Result: {RetState}")
+                ' Brich die Authentifikation ab, falls dies signalisiert wurde
+                If AbortAuthentication Then
+                    X_auth.SetConfig(AuthActionEnum.stop, Token, RetState, Methods)
+                    ' Setze den Token zurück
+                    AuthToken = Token
                 End If
+
+                ' Wenn der Vorgang abgeschlossen wurde, gib das als Boolean zurück: True = Authenticated
+                SendLog(LogLevel.Info, $"Second Factor Authentication Result: {RetState}")
+
+                Return RetState = AuthStateEnum.authenticated
             Else
-                SendLog(LogLevel.Warning, $"Second Factor Authentication State: {RetState}")
+                SendLog(LogLevel.Warning, $"Second Factor Authentication not ready: {RetState}")
             End If
 
         End If
 
-        Return String.Empty
-    End Function
-
-    Private Function TR064StartWithToken(SCPDURL As SCPDFiles, ActionName As String, Token As String, Optional InputArguments As Dictionary(Of String, String) = Nothing) As Dictionary(Of String, String)
-
-        ' Versuche einen Start, falls noch nicht geschehen
-        If Not Ready Then ConnectTR064()
-
-        ' Prüfe, ob die Schnittstelle grundsätzlich verbunden ist.
-        If Ready Then
-            ' Ermittle den Service, welcher zu der übergebenen SCPD gehört
-            Dim Service As Service = GetService(SCPDURL)
-
-            If Service IsNot Nothing Then Return Service.StartAction(ActionName, InputArguments, Token)
-
-        End If
-        Return New Dictionary(Of String, String) From {{"Error", $"Service für {SCPDURL} und {ActionName} nicht vorhanden!"}}
+        Return False
     End Function
 
 #End Region

@@ -71,19 +71,19 @@ Namespace My.Resources
         
         '''<summary>
         '''  Sucht eine lokalisierte Zeichenfolge, die &lt;xsl:stylesheet version=&quot;1.0&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
-        '''  &lt;xsl:output omit-xml-declaration=&quot;yes&quot; indent=&quot;yes&quot;/&gt;
-        '''  &lt;xsl:strip-space elements=&quot;*&quot;/&gt;
+        '''	&lt;xsl:output omit-xml-declaration=&quot;yes&quot; indent=&quot;yes&quot;/&gt;
+        '''	
+        '''	&lt;xsl:strip-space elements=&quot;*&quot;/&gt;
         '''
-        '''  &lt;xsl:variable name=&quot;vUpper&quot; select=
-        ''' &quot;&apos;ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞŸŽŠŒ&apos;&quot;/&gt;
+        '''	&lt;xsl:variable name=&quot;vUpper&quot; select=&quot;&apos;ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞŸŽŠŒ&apos;&quot;/&gt;
         '''
-        '''  &lt;xsl:variable name=&quot;vLower&quot; select=
-        ''' &quot;&apos;abcdefghijklmnopqrstuvwxyzàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿžšœ&apos;&quot;/&gt;
-        '''
-        '''  &lt;xsl:template match=&quot;node()|@*&quot;&gt;
-        '''    &lt;xsl:copy&gt;
-        '''      &lt;xsl:apply-templates select=&quot;node()|@*&quot;/&gt;
-        '''    &lt;/xsl:copy&gt;        ''' [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        '''	&lt;xsl:variable name=&quot;vLower&quot; select=&quot;&apos;abcdefghijklmnopqrstuvwxyzàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿžšœ&apos;&quot;/&gt;
+        '''		
+        '''	&lt;xsl:template match=&quot;node()|@*&quot;&gt;
+        '''		&lt;xsl:copy&gt;
+        '''			&lt;xsl:apply-templates select=&quot;node()|@*&quot;/&gt;
+        '''		&lt;/xsl:copy&gt;
+        '''	&lt;/xsl:templ [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         '''</summary>
         Friend ReadOnly Property ToLower() As String
             Get

@@ -10,4 +10,7 @@
     ''' </summary>
     ''' <param name="Methods">Erlaubte Methoden: z. B. button,dtmf;*14048</param>
     Sub Signal2FAuthentication(Methods As String)
+
+    Property AbortAuthentication As Boolean
+    Property AuthenticationSuccesful As Boolean
 End Interface

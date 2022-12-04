@@ -71,6 +71,31 @@ Public MustInherit Class LogBase
 #End Region
 
 #Region "Second Factor Authentication"
+    Protected Shared Property AbortAuthentication As Boolean
+        Get
+            If FritzBoxTR64._LogWriter Is Nothing Then
+                Return False
+            Else
+                Return FritzBoxTR64._LogWriter.AbortAuthentication
+            End If
+        End Get
+        Set
+            FritzBoxTR64._LogWriter.AbortAuthentication = Value
+        End Set
+    End Property
+    Protected Shared Property AuthenticationSuccesful As Boolean
+        Get
+            If FritzBoxTR64._LogWriter Is Nothing Then
+                Return False
+            Else
+                Return FritzBoxTR64._LogWriter.AuthenticationSuccesful
+            End If
+        End Get
+        Set
+            FritzBoxTR64._LogWriter.AuthenticationSuccesful = Value
+        End Set
+    End Property
+
     Protected Shared Sub Signal2FA(Methods As String)
         FritzBoxTR64._LogWriter?.Signal2FAuthentication(Methods)
     End Sub

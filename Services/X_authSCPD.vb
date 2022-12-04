@@ -7,14 +7,11 @@ Friend Class X_authSCPD
     Implements IX_authSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_authSCPD.TR064Start
-    Public Property TR064StartWithToken As Func(Of SCPDFiles, String, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_authSCPD.TR064StartWithToken
 
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_authSCPD Implements IX_authSCPD.Servicefile
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)),
-                   TokenStart As Func(Of SCPDFiles, String, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
         TR064Start = Start
-        TR064StartWithToken = TokenStart
     End Sub
 
     Public Function GetInfo(ByRef Enabled As Boolean) As Boolean Implements IX_authSCPD.GetInfo
@@ -23,10 +20,6 @@ Friend Class X_authSCPD
 
     Public Function GetState(ByRef State As AuthStateEnum) As Boolean Implements IX_authSCPD.GetState
         Return TR064Start(ServiceFile, "GetState", Nothing).TryGetValueEx("NewState", State)
-    End Function
-
-    Public Function GetStateWithToken(Token As String, ByRef State As AuthStateEnum) As Boolean Implements IX_authSCPD.GetStateWithToken
-        Return TR064StartWithToken(ServiceFile, "GetState", Token, Nothing).TryGetValueEx("NewState", State)
     End Function
 
     Public Function SetConfig(Action As AuthActionEnum, ByRef Token As String, ByRef State As AuthStateEnum, ByRef Methods As String) As Boolean Implements IX_authSCPD.SetConfig
