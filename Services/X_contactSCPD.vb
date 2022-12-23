@@ -6,7 +6,7 @@ Imports System.Xml
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf</see>
 ''' </summary>
 Friend Class X_contactSCPD
-    Inherits LogBase
+    Inherits APIConnectorBase
     Implements IX_contactSCPD
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_contactSCPD.TR064Start

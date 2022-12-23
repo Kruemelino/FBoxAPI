@@ -2,7 +2,7 @@
 Imports System.Threading
 
 Public Class FritzBoxTR64
-    Inherits LogBase
+    Inherits APIConnectorBase
     Implements IDisposable
 
     Public Property Ready As Boolean = False
@@ -14,10 +14,10 @@ Public Class FritzBoxTR64
 
     Protected Property AuthToken As String = String.Empty
 
-    Friend Shared _LogWriter As ILogWriter
-    Public Shared WriteOnly Property LogWriter As ILogWriter
+    Friend Shared _FBAPIConnector As IFBoxAPIConnector
+    Public Shared WriteOnly Property FBAPIConnector As IFBoxAPIConnector
         Set
-            _LogWriter = Value
+            _FBAPIConnector = Value
         End Set
     End Property
 
@@ -70,24 +70,24 @@ Public Class FritzBoxTR64
     ''' </summary>
     ''' <param name="FritzBoxAdresse">Die IP Adresse der Fritz!Box.</param>
     ''' <param name="Anmeldeinformationen">Die Anmeldeinformationen (Benutzername und Passwort) als <see cref="NetworkCredential"/>.</param>
-    ''' <param name="LogWriter">Eine Klasse, die die Schnittstelle <see cref="ILogWriter"/> implementiert und das Logging realisiert.</param>
-    Public Sub New(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential, Optional LogWriter As ILogWriter = Nothing)
-        SetData(FritzBoxAdresse, Anmeldeinformationen, LogWriter)
+    ''' <param name="APIConnector">Eine Klasse, die die Schnittstelle <see cref="IFBoxAPIConnector"/> implementiert und das Logging sowie die 2FA realisiert.</param>
+    Public Sub New(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential, Optional APIConnector As IFBoxAPIConnector = Nothing)
+        SetData(FritzBoxAdresse, Anmeldeinformationen, APIConnector)
     End Sub
 
     Public Sub New(Settings As Settings)
         If Settings IsNot Nothing Then
             With Settings
-                SetData(.FritzBoxAdresse, .Anmeldeinformationen, .LogWriter)
+                SetData(.FritzBoxAdresse, .Anmeldeinformationen, .FBAPIConnector)
             End With
         End If
     End Sub
 #End Region
 
 #Region "Initialisierung"
-    Private Sub SetData(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential, Optional LogWriter As ILogWriter = Nothing)
-        ' Setze die Verknüpfung zum LogWriter
-        _LogWriter = LogWriter
+    Private Sub SetData(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential, Optional APIConnector As IFBoxAPIConnector = Nothing)
+        ' Setze die Verknüpfung zum FBAPIConnector
+        _FBAPIConnector = APIConnector
 
         ' IP Adresse der Fritz!Box setzen
         _FBoxIPAdresse = FritzBoxAdresse

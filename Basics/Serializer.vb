@@ -6,7 +6,7 @@ Imports System.Xml.Xsl
 
 '<DebuggerStepThrough()>
 Friend Class Serializer
-    Inherits LogBase
+    Inherits APIConnectorBase
 
     Private Property Client As WebFunctions
 

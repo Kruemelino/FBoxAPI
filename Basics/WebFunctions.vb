@@ -3,7 +3,7 @@ Imports System.Text
 
 <DebuggerStepThrough>
 Friend Class WebFunctions
-    Inherits LogBase
+    Inherits APIConnectorBase
     Implements IDisposable
 
     Private disposedValue As Boolean

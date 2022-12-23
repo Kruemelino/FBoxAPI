@@ -5,7 +5,7 @@
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf</see>
 ''' </summary>
 Friend Class FBoxAHA
-    Inherits LogBase
+    Inherits APIConnectorBase
     Implements IFBoxAHA
 
     Private ReadOnly Property FBoXTR064Base As FritzBoxTR64

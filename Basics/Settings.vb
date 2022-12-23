@@ -18,6 +18,5 @@
     ''' <summary>
     ''' Die Schnittstelle für die Realisierung des Loggings.
     ''' </summary>
-    Public Property LogWriter As ILogWriter
-
+    Public Property FBAPIConnector As IFBoxAPIConnector
 End Class

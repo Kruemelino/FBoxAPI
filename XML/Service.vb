@@ -3,7 +3,7 @@ Imports System.Xml.Serialization
 
 <DebuggerStepThrough>
 <Serializable()> Public Class Service
-    Inherits LogBase
+    Inherits APIConnectorBase
 
     <XmlElement("serviceType")> Public Property ServiceType As String
     <XmlElement("serviceId")> Public Property ServiceId As String

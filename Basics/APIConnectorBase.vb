@@ -2,7 +2,7 @@
 Imports System.Runtime.CompilerServices
 
 <DebuggerStepThrough>
-Public MustInherit Class LogBase
+Public MustInherit Class APIConnectorBase
 #Region "Logging"
     Protected Shared Sub SendLog(l As LogLevel,
                          m As String,
@@ -11,13 +11,13 @@ Public MustInherit Class LogBase
                          <CallerFilePath> Optional sourcefilePath As String = Nothing,
                          <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
 
-        FritzBoxTR64._LogWriter?.LogMessage(New LogMessage With {.Level = l,
-                                                                 .Message = m,
-                                                                 .Ex = e,
-                                                                 .CallerMemberName = propertyName,
-                                                                 .CallerFilePath = sourcefilePath,
-                                                                 .CallerClassName = NameOfCallingClass,
-                                                                 .CallerLineNumber = sourceLineNumber})
+        FritzBoxTR64._FBAPIConnector?.LogMessage(New LogMessage With {.Level = l,
+                                                                      .Message = m,
+                                                                      .Ex = e,
+                                                                      .CallerMemberName = propertyName,
+                                                                      .CallerFilePath = sourcefilePath,
+                                                                      .CallerClassName = NameOfCallingClass,
+                                                                      .CallerLineNumber = sourceLineNumber})
     End Sub
 
     Protected Shared Sub SendLog(l As LogLevel,
@@ -26,12 +26,12 @@ Public MustInherit Class LogBase
                          <CallerFilePath> Optional sourcefilePath As String = Nothing,
                          <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
 
-        FritzBoxTR64._LogWriter?.LogMessage(New LogMessage With {.Level = l,
-                                                                 .Message = m,
-                                                                 .CallerMemberName = propertyName,
-                                                                 .CallerFilePath = sourcefilePath,
-                                                                 .CallerClassName = NameOfCallingClass,
-                                                                 .CallerLineNumber = sourceLineNumber})
+        FritzBoxTR64._FBAPIConnector?.LogMessage(New LogMessage With {.Level = l,
+                                                                      .Message = m,
+                                                                      .CallerMemberName = propertyName,
+                                                                      .CallerFilePath = sourcefilePath,
+                                                                      .CallerClassName = NameOfCallingClass,
+                                                                      .CallerLineNumber = sourceLineNumber})
     End Sub
 
     Protected Shared Sub SendLog(l As LogLevel,
@@ -40,12 +40,12 @@ Public MustInherit Class LogBase
                                  <CallerFilePath> Optional sourcefilePath As String = Nothing,
                                  <CallerLineNumber> Optional sourceLineNumber As Integer = 0)
 
-        FritzBoxTR64._LogWriter?.LogMessage(New LogMessage With {.Level = l,
-                                                                 .Ex = e,
-                                                                 .CallerFilePath = sourcefilePath,
-                                                                 .CallerMemberName = propertyName,
-                                                                 .CallerClassName = NameOfCallingClass,
-                                                                 .CallerLineNumber = sourceLineNumber})
+        FritzBoxTR64._FBAPIConnector?.LogMessage(New LogMessage With {.Level = l,
+                                                                      .Ex = e,
+                                                                      .CallerFilePath = sourcefilePath,
+                                                                      .CallerMemberName = propertyName,
+                                                                      .CallerClassName = NameOfCallingClass,
+                                                                      .CallerLineNumber = sourceLineNumber})
     End Sub
 
     ''' <remarks><see href="https://stackoverflow.com/a/48570616"/></remarks>
@@ -73,31 +73,31 @@ Public MustInherit Class LogBase
 #Region "Second Factor Authentication"
     Protected Shared Property AbortAuthentication As Boolean
         Get
-            If FritzBoxTR64._LogWriter Is Nothing Then
+            If FritzBoxTR64._FBAPIConnector Is Nothing Then
                 Return False
             Else
-                Return FritzBoxTR64._LogWriter.AbortAuthentication
+                Return FritzBoxTR64._FBAPIConnector.AbortAuthentication
             End If
         End Get
         Set
-            FritzBoxTR64._LogWriter.AbortAuthentication = Value
+            FritzBoxTR64._FBAPIConnector.AbortAuthentication = Value
         End Set
     End Property
     Protected Shared Property AuthenticationSuccesful As Boolean
         Get
-            If FritzBoxTR64._LogWriter Is Nothing Then
+            If FritzBoxTR64._FBAPIConnector Is Nothing Then
                 Return False
             Else
-                Return FritzBoxTR64._LogWriter.AuthenticationSuccesful
+                Return FritzBoxTR64._FBAPIConnector.AuthenticationSuccesful
             End If
         End Get
         Set
-            FritzBoxTR64._LogWriter.AuthenticationSuccesful = Value
+            FritzBoxTR64._FBAPIConnector.AuthenticationSuccesful = Value
         End Set
     End Property
 
     Protected Shared Sub Signal2FA(Methods As String)
-        FritzBoxTR64._LogWriter?.Signal2FAuthentication(Methods)
+        FritzBoxTR64._FBAPIConnector?.Signal2FAuthentication(Methods)
     End Sub
 #End Region
 End Class

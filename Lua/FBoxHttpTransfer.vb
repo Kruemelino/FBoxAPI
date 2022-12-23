@@ -1,7 +1,7 @@
 ﻿Imports System.IO
 
 Friend Class FBoxHttpTransfer
-    Inherits LogBase
+    Inherits APIConnectorBase
     Implements IFBoxHttpTransfer
 
     Private ReadOnly Property Client As WebFunctions

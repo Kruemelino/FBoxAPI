@@ -1,4 +1,4 @@
-﻿Public Interface ILogWriter
+﻿Public Interface IFBoxAPIConnector
     ''' <summary>
     ''' Rouitine welche die Log-Message in das Log der Zielanwendung schreibt.
     ''' </summary>
