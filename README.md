@@ -58,7 +58,7 @@ Alternativ:
 ```vbnet
 FBoxTR064 = New FBoxAPI.FritzBoxTR64(New FBoxAPI.Settings With {.Anmeldeinformationen = Anmeldeinformationen,
                                                                 .FritzBoxAdresse = "192.168.178.1",
-                                                                .LogWriter = New FBoxAPILog,
+                                                                .FBAPIConnector = New FBoxAPIConnector,
                                                                 .AuraService = True})
 ```
 
@@ -66,7 +66,7 @@ Hinweis: Wenn der AURA-Service (AVM USB Remote Access) verwendet werden soll, mu
 Dies ist über die Eigenschaft `AuraService` der `FBoxAPI.Settings`-Klasse möglich.
 
 #### Logging
-Mit Hilfe des `LogWriter`-Schnittstelle kann eine eigene Routine verknüpft werden, die das Logging übernimmt.
+Mit Hilfe des `FBAPIConnector`-Schnittstelle kann eine eigene Routine verknüpft werden, die das Logging übernimmt.
 Die Schnittstelle gibt folgende relevante Daten in der Containerklasse `FBoxAPI.LogMessage` für das Logging aus:
 
 * Level (`System.Enum`) für das LogLevel (`Trace` bis `Fatal`)
@@ -82,11 +82,11 @@ Beispiel für [NLog](https://nlog-project.org/):
 Imports FBoxAPI
 
 Friend Class FBoxAPILog
-    Implements ILogWriter
+    Implements IFBoxAPIConnector
 
     Private Property NLogger As Logger = LogManager.GetCurrentClassLogger
 
-    Public Sub LogMessage(MessageContainer As LogMessage) Implements ILogWriter.LogMessage
+    Public Sub LogMessage(MessageContainer As LogMessage) Implements IFBoxAPIConnector.LogMessage
         With MessageContainer
             Dim LogEvent As New LogEventInfo() With {.Level = NLog.LogLevel.FromOrdinal(MessageContainer.Level),
                                                      .LoggerName = MessageContainer.CallerClassName,
@@ -99,30 +99,36 @@ Friend Class FBoxAPILog
         End With
     End Sub
 
-    Public Sub Signal2FAuthentication(Methods As String) Implements ILogWriter.Signal2FAuthentication
+    Public Sub Signal2FAuthentication(Methods As String) Implements IFBoxAPIConnector.Signal2FAuthentication
         ' ...
     End Sub
 End Class
 ```
 
 #### Zwei-Faktor-Authentifizierung
-Die Nutzung der Zwei-Faktor-Authentifizierung kann ab Fritz!OS 7.39 nicht mehr deaktiviert  werden. Das Setzen verschiedener Einstellungen bedarf nun einer zusätzlichen Bestätigung durch den Nutzer. 
+Die Nutzung der Zwei-Faktor-Authentifizierung kann ab Fritz!OS 7.39 nicht mehr deaktiviert werden. Das Setzen verschiedener Einstellungen bedarf nun einer zusätzlichen Bestätigung durch den Nutzer. 
 Der Ablauf des Authentifizierungsprozesses ist in [X_AVM-DE_Auth](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_auth.pdf) beschrieben. 
-Sobald für eine Action eine eine Zwei-Faktor-Authentifizierung erforderlich ist, signalisiert diese API dies über die `LogWriter`-Schnittstelle, welche hierfür mit der Routine `Signal2FAuthentication` ergänzt wurde. 
+Sobald für eine Action eine eine Zwei-Faktor-Authentifizierung erforderlich ist, signalisiert diese API dies über die `FBoxAPIConnector`-Schnittstelle, welche hierfür mit der Routine `Signal2FAuthentication` ergänzt wurde. 
 Der Parameter `Methods` enhält die erlaubten Methoden, z. B. `button,dtmf;*14048`. Sobald der Nutzer die Authentifizierung durchgeführt hat, wird die ursprüngliche Action erneut ausgeführt. 
 Die Ergebnisse des Authentifizierungsprozesses werden über die `LogMessage` ausgegeben. 
+* Über die Eigenschaft `AbortAuthentication` kann der API signalisiert werden, dass der Authentifizierungsporzess abgebrochen werden soll.
+* Über die Eigenschaft `AuthenticationSuccesful` signalisiert die API, dass der Authentifizierungsporzess abgeschlossen wurde.
 
 ```vbnet
 Imports FBoxAPI
 
 Friend Class FBoxAPILog
-    Implements ILogWriter
+    Implements IFBoxAPIConnector
 
-    Public Sub LogMessage(MessageContainer As LogMessage) Implements ILogWriter.LogMessage
+    Public Sub LogMessage(MessageContainer As LogMessage) Implements IFBoxAPIConnector.LogMessage
         ' ...
     End Sub
 
-    Public Sub Signal2FAuthentication(Methods As String) Implements ILogWriter.Signal2FAuthentication
+    Public Property AbortAuthentication As Boolean Implements IFBoxAPIConnector.AbortAuthentication
+
+    Public Property AuthenticationSuccesful As Boolean Implements IFBoxAPIConnector.AuthenticationSuccesful
+
+    Public Sub Signal2FAuthentication(Methods As String) Implements IFBoxAPIConnector.Signal2FAuthentication
         MsgBox(String.Format($"Zwei-Faktor-Authentifizierung: {Methods}"), MsgBoxStyle.Information, "Zwei-Faktor-Authentifizierung")
     End Sub
 End Class
@@ -133,6 +139,7 @@ End Class
   der Parameter `MyFritzDynDNSEnabled` der Action GetAppRemoteInfo aufgelistet. Dieser Parameter lautet aber `NewMyFritzEnabled`. 
   Es kann nicht ausgeschlossen werden, dann auch anderer Stelle ähnliche Probleme auftreten.
 * Die Services und Actions wurden per Copy&Paste aus den vorliegenden Dokumentationen zusammengestellt. Bitte habt Verständnis, dass ich nicht alles testen kann.  
+* Während einer laufenden Zwei-Faktor-Authentifizierung wird der aufrufende Thread blockiert. 
 
 ### Umsetzung
 folgende angehakte TR-064 Services werden derzeit unterstützt. Falls etwas fehlen sollte, oder etwas nicht funktioniert, dann gebt bitte Bescheid.
