@@ -20,7 +20,7 @@ Imports System.Xml.Serialization
         End Get
     End Property
 
-    <XmlIgnore> Private ReadOnly Property S As XNamespace = "http://schemas.xmlsoap.org/soap/envelope/"
+    <XmlIgnore> Private Property s As XNamespace = "http://schemas.xmlsoap.org/soap/envelope/"
 
     Friend Sub Init(XML As Serializer, Client As WebFunctions)
         _XML = XML
@@ -84,14 +84,14 @@ Imports System.Xml.Serialization
 
 
         With New XDocument(New XDeclaration("1.0", "utf-8", "yes"),
-                           New XElement(S + "Envelope",
-                                        New XAttribute(XNamespace.Xmlns + "s", S),
-                                        If(Token.IsStringNothingOrEmpty, Nothing, New XElement(S + "Header",
+                           New XElement(s + "Envelope",
+                                        New XAttribute(XNamespace.Xmlns + "s", s),
+                                        If(Token.IsStringNothingOrEmpty, Nothing, New XElement(s + "Header",
                                                      New XElement(avm + "token", New XAttribute(XNamespace.Xmlns + "avm", avm),
-                                                                                 New XAttribute(S + "mustUnderstand", "1"),
+                                                                                 New XAttribute(s + "mustUnderstand", "1"),
                                                                                  Token))),
-                                        New XAttribute(S + "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"),
-                                        New XElement(S + "Body",
+                                        New XAttribute(s + "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"),
+                                        New XElement(s + "Body",
                                                      New XElement(u + Action.Name,
                                                                   New XAttribute(XNamespace.Xmlns + "u", u),
                                                                   InputValues?.Select(Function(X) New XElement(X.Key) With {.Value = X.Value})))))
