@@ -20,7 +20,7 @@ Imports System.Xml.Serialization
         End Get
     End Property
 
-    <XmlIgnore> Private Property s As XNamespace = "http://schemas.xmlsoap.org/soap/envelope/"
+    <XmlIgnore> Private Property S As XNamespace = "http://schemas.xmlsoap.org/soap/envelope/"
 
     Friend Sub Init(XML As Serializer, Client As WebFunctions)
         _XML = XML
@@ -84,14 +84,14 @@ Imports System.Xml.Serialization
 
 
         With New XDocument(New XDeclaration("1.0", "utf-8", "yes"),
-                           New XElement(s + "Envelope",
-                                        New XAttribute(XNamespace.Xmlns + "s", s),
-                                        If(Token.IsStringNothingOrEmpty, Nothing, New XElement(s + "Header",
+                           New XElement(S + "Envelope",
+                                        New XAttribute(XNamespace.Xmlns + "s", S),
+                                        If(Token.IsStringNothingOrEmpty, Nothing, New XElement(S + "Header",
                                                      New XElement(avm + "token", New XAttribute(XNamespace.Xmlns + "avm", avm),
-                                                                                 New XAttribute(s + "mustUnderstand", "1"),
+                                                                                 New XAttribute(S + "mustUnderstand", "1"),
                                                                                  Token))),
-                                        New XAttribute(s + "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"),
-                                        New XElement(s + "Body",
+                                        New XAttribute(S + "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"),
+                                        New XElement(S + "Body",
                                                      New XElement(u + Action.Name,
                                                                   New XAttribute(XNamespace.Xmlns + "u", u),
                                                                   InputValues?.Select(Function(X) New XElement(X.Key) With {.Value = X.Value})))))
@@ -109,7 +109,7 @@ Imports System.Xml.Serialization
     Private Function GetResponseDictionary(Action As Action, Response As String) As Dictionary(Of String, String)
         With XDocument.Parse(Response)
 
-            If .Descendants.Where(Function(E) E.Name.Equals(s + "Fault")).Any Then
+            If .Descendants.Where(Function(E) E.Name.Equals(S + "Fault")).Any Then
                 With .Descendants.Where(Function(E) E.Name.LocalName.Equals("UPnPError")).First
                     ' Fehler auslesen
                     Return New Dictionary(Of String, String) From {{"errorCode", .Descendants(.Name.Namespace + "errorCode").First.Value},
