@@ -8,15 +8,15 @@
 		<RepositoryUrl>https://github.com/Kruemelino/FBoxAPI</RepositoryUrl>
 		<PackageTags>Fritz!Box fritzbox api tr-064 soap</PackageTags>
 		<Description>This project is a .NET library for the TR-064 and AHA interfaces of the AVM Fritz!Box.</Description>
-		<Copyright>Gert Michael (Kruemelino) © 2022</Copyright>
+		<Copyright>Gert Michael (Kruemelino) © 2023</Copyright>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<UserSecretsId>a1ddc68d-05e8-499c-aab2-79241460d4c1</UserSecretsId>
 		<Authors>Kruemelino</Authors>
 		<Company />
 		<PackageProjectUrl>https://github.com/Kruemelino/FBoxAPI</PackageProjectUrl>
-		<PackageReleaseNotes>Added 2FA</PackageReleaseNotes>
-		<AssemblyVersion>0.0.1.31</AssemblyVersion>
-		<FileVersion>0.0.1.31</FileVersion>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<AssemblyVersion>0.0.1.32</AssemblyVersion>
+		<FileVersion>0.0.1.32</FileVersion>
 		<OptionStrict>On</OptionStrict>
 		<Configurations>Debug;Release</Configurations>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -59,7 +59,7 @@
 	  </EmbeddedResource>
 	</ItemGroup>
 	<ItemGroup>
-	  <None Update="README.md">
+	  <None Include="README.md">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>
