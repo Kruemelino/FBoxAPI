@@ -1,10 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_HostFilter
-''' Date:  2020-04-01
+''' Date: 2022-02-11
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_hostfilterSCPD.pdf</see>
 ''' </summary>
 Friend Class X_hostfilterSCPD
     Implements IX_hostfilterSCPD
+
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 11) Implements IX_hostfilterSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_hostfilterSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_hostfilterSCPD Implements IX_hostfilterSCPD.Servicefile
 

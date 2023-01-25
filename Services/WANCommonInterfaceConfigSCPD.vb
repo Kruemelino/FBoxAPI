@@ -1,10 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – WANCommonInterfaceConfig
-''' Date: 2018-09-05
+''' Date: 2022-10-17
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wancommonifconfigSCPD.pdf</see>
 ''' </summary>
 Friend Class WANCommonInterfaceConfigSCPD
     Implements IWANCommonInterfaceConfigSCPD
+
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 17) Implements IWANCommonInterfaceConfigSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWANCommonInterfaceConfigSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.wancommonifconfigSCPD Implements IWANCommonInterfaceConfigSCPD.Servicefile
 
@@ -14,17 +16,25 @@ Friend Class WANCommonInterfaceConfigSCPD
 
     End Sub
 
-    Public Function GetCommonLinkProperties(ByRef WANAccessType As AccessTypeEnum,
+    Public Function GetCommonLinkProperties(ByRef WANAccessType As String,
                                             ByRef Layer1UpstreamMaxBitRate As Integer,
                                             ByRef Layer1DownstreamMaxBitRate As Integer,
-                                            ByRef PhysicalLinkStatus As PhysicalLinkStatusEnum) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetCommonLinkProperties
+                                            ByRef PhysicalLinkStatus As PhysicalLinkStatusEnum,
+                                            ByRef DownStreamCurrentUtilization As String,
+                                            ByRef UpstreamCurrentUtilization As String,
+                                            ByRef DownstreamCurrentMaxSpeed As Integer,
+                                            ByRef UpstreamCurrentMaxSpeed As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetCommonLinkProperties
 
         With TR064Start(ServiceFile, "GetCommonLinkProperties", Nothing)
 
             Return .TryGetValueEx("NewWANAccessType", WANAccessType) And
                    .TryGetValueEx("NewLayer1UpstreamMaxBitRate", Layer1UpstreamMaxBitRate) And
                    .TryGetValueEx("NewLayer1DownstreamMaxBitRate", Layer1DownstreamMaxBitRate) And
-                   .TryGetValueEx("NewPhysicalLinkStatus", PhysicalLinkStatus)
+                   .TryGetValueEx("NewPhysicalLinkStatus", PhysicalLinkStatus) And
+                   .TryGetValueEx("NewX_AVM-DE_DownstreamCurrentUtilization ", DownStreamCurrentUtilization) And
+                   .TryGetValueEx("NewX_AVM-DE_UpstreamCurrentUtilization", UpstreamCurrentUtilization) And
+                   .TryGetValueEx("NewX_AVM-DE_DownstreamCurrentMaxSpeed", DownstreamCurrentMaxSpeed) And
+                   .TryGetValueEx("NewX_AVM-DE_UpstreamCurrentMaxSpeed", UpstreamCurrentMaxSpeed)
 
         End With
 
@@ -46,8 +56,12 @@ Friend Class WANCommonInterfaceConfigSCPD
         Return TR064Start(ServiceFile, "GetTotalPacketsReceived", Nothing).TryGetValueEx("NewTotalPacketsReceived", TotalPacketsReceived)
     End Function
 
-    Public Function SetWANAccessType(AccessType As AccessTypeEnum) As Boolean Implements IWANCommonInterfaceConfigSCPD.SetWANAccessType
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetWANAccessType", New Dictionary(Of String, String) From {{"NewAccessType", AccessType.ToString}}).ContainsKey("Error")
+    Public Function SetWANAccessType(AccessType As String) As Boolean Implements IWANCommonInterfaceConfigSCPD.SetWANAccessType
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetWANAccessType", New Dictionary(Of String, String) From {{"NewAccessType", AccessType}}).ContainsKey("Error")
+    End Function
+
+    Function GetActiveProvider(ByRef Provider As String) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetActiveProvider
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_GetActiveProvider", New Dictionary(Of String, String) From {{"NewX_AVM-DE_Provider", Provider}}).ContainsKey("Error")
     End Function
 
     Public Function GetOnlineMonitor(ByRef OnlineMonitor As OnlineMonitor, SyncGroupIndex As Integer) As Boolean Implements IWANCommonInterfaceConfigSCPD.GetOnlineMonitor

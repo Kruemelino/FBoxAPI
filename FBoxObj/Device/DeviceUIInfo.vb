@@ -12,5 +12,10 @@
     Public Property DownloadURL As String
     Public Property InfoURL As String
     Public Property UpdateState As UpdateStateEnum
-    Public Property LaborVersion As String
+
+    ''' <summary>
+    ''' Release, Intern, Work, Personal, Modified, Inhaus, Labor_Beta, Labor_RC, Labor_DSL, Labor_Phone, Labor, Labor_Test, Labor_Plus
+    ''' </summary>
+    Public Property BuildType As String
+    Public Property SetupAssistantStatus As Boolean
 End Class

@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_Homeplug
-''' Date: 2017-01-06 
+''' Date: 2022-02-11
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeplugSCPD.pdf</see>
 ''' </summary>
 Public Interface IX_homeplugSCPD

@@ -1,12 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – WANDSLLinkConfig
-''' Date: 2015-11-20 
+''' Date: 2022-10-17 
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wandsllinkconfigSCPD.pdf</see>
 ''' </summary>
 Friend Class WANDSLLinkConfigSCPD
     Implements IWANDSLLinkConfigSCPD
 
-
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 17) Implements IWANDSLLinkConfigSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWANDSLLinkConfigSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.wandsllinkconfigSCPD Implements IWANDSLLinkConfigSCPD.Servicefile
 

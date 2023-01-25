@@ -8,4 +8,5 @@
     <XmlElement("X_AVM-DE_SignalStrength")> Public Property SignalStrength As Integer
     <XmlElement("AssociatedDeviceChannel")> Public Property AssociatedDeviceChannel As Integer
     <XmlElement("AssociatedDeviceGuest")> Public Property AssociatedDeviceGuest As Integer
+    <XmlElement("X_AVM-DE-ChannelWidth")> Public Property ChannelWidth As Integer
 End Class

@@ -6,6 +6,8 @@
 Friend Class X_filelinksSCPD
     Implements IX_filelinksSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2016, 7, 7) Implements IX_filelinksSCPD.DocumentationDate
+
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_filelinksSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_filelinksSCPD Implements IX_filelinksSCPD.Servicefile
     Private Property XML As Serializer

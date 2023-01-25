@@ -1,11 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_Homeplug
-''' Date: 2017-01-06 
+''' Date: 2022-02-11
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeplugSCPD.pdf</see>
 ''' </summary>
 Friend Class X_homePlugSCPD
     Implements IX_homeplugSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 11) Implements IX_homeplugSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_homeplugSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_homeplugSCPD Implements IX_homeplugSCPD.Servicefile
 

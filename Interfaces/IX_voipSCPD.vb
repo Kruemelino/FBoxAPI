@@ -60,12 +60,12 @@ Public Interface IX_voipSCPD
 
 #Region "VoIP Account"
     Function AddVoIPAccount(VoIPAccountIndex As Integer,
-                                   VoIPRegistrar As String,
-                                   VoIPNumber As String,
-                                   VoIPUsername As String,
-                                   VoIPPassword As String,
-                                   VoIPOutboundProxy As String,
-                                   VoIPSTUNServer As String) As Boolean
+                            VoIPRegistrar As String,
+                            VoIPNumber As String,
+                            VoIPUsername As String,
+                            VoIPPassword As String,
+                            VoIPOutboundProxy As String,
+                            VoIPSTUNServer As String) As Boolean
 
     ''' <summary>
     ''' The action can be used to delete an existing VoIP entry.
@@ -73,6 +73,13 @@ Public Interface IX_voipSCPD
     Function DelVoIPAccount(VoIPAccountIndex As Integer) As Boolean
 
     Function GetVoIPAccount(ByRef Account As VoIPAccount, AccountIndex As Integer) As Boolean
+
+    ''' <summary>
+    ''' The list contains all VoIP accounts as XML-formatted list.
+    ''' </summary>
+    Function GetVoIPAccounts(ByRef AccountList As VoIPAccountList) As Boolean
+
+    Function GetVoIPStatus(ByRef VoIPStatus As String, AccountIndex As Integer) As Boolean
 #End Region
 
 #Region "Client"

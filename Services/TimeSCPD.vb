@@ -1,11 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – Time
-''' Date: 2009-07-15
+''' Date: 2022-02-15
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/timeSCPD.pdf</see>
 ''' </summary>
 Friend Class TimeSCPD
     Implements ITimeSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 15) Implements ITimeSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ITimeSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.timeSCPD Implements ITimeSCPD.Servicefile
 

@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – DeviceInfo
-''' Date: 2009-7-15
+''' Date: 2022-02-16
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf</see>
 ''' </summary>
 ''' 

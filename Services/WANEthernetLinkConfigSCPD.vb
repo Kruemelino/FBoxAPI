@@ -5,7 +5,7 @@
 ''' </summary>
 Friend Class WANEthernetLinkConfigSCPD
     Implements IWANEthernetLinkConfigSCPD
-
+    Public ReadOnly Property DocumentationDate As Date = New Date(2009, 7, 15) Implements IWANEthernetLinkConfigSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWANEthernetLinkConfigSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.wanpppconnSCPD Implements IWANEthernetLinkConfigSCPD.Servicefile
 

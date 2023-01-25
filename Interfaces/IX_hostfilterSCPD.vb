@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_HostFilter
-''' Date: 2020-04-01
+''' Date: 2022-02-11
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_hostfilterSCPD.pdf</see>
 ''' </summary>
 Public Interface IX_hostfilterSCPD
@@ -11,18 +11,21 @@ Public Interface IX_hostfilterSCPD
     ''' Have in mind that even if the state is set to "0", the LAN device may still have no WAN access because Of filter profile.
     ''' Setting the Disallow state variable is an asynchronous process, therefore it may need some time to take effect.
     ''' </summary>
+    ''' <remarks>Required rights: App rights</remarks>
     Function DisallowWANAccessByIP(IPv4Address As String, Disallow As Boolean) As Boolean
 
     ''' <summary>
     ''' Because we have a limit of 10 TickedIDs which can be "marked" (retrieved via MarkTicketID) at the same time, 
     ''' it could be necessary to invalidate all TicketIDs and create a new List of "unmarked" TicketIDs.
     ''' </summary>
+    ''' <remarks>Required rights: App rights</remarks>
     Function DiscardAllTickets() As Boolean
 
     ''' <summary>
     ''' Returns the state of the TicketID.
     ''' </summary>
     ''' <param name="TicketID">Numerical string of 6 character length e.g. "123456"</param>
+    ''' <remarks>Required rights: App rights</remarks>
     Function GetTicketIDStatus(TicketID As String, ByRef TicketIDStatus As TicketIDStatusEnum) As Boolean
 
     ''' <summary>
@@ -30,6 +33,7 @@ Public Interface IX_hostfilterSCPD
     ''' WANAccess represents the state of WAN access derived by configuration settings of
     ''' Disallow (see 2.1 <see cref="DisallowWANAccessByIP(String, Boolean)"/>) and the LAN device’s filter profile.
     ''' </summary>
+    ''' <remarks>Required rights: App rights</remarks>
     Function GetWANAccessByIP(IPv4Address As String, ByRef WANAccess As WANAccessEnum, ByRef Disallow As Boolean) As Boolean
 
     ''' <summary>
@@ -38,6 +42,7 @@ Public Interface IX_hostfilterSCPD
     ''' If a new TicketID is needed, it is necessary to discard all (old) TicketIDs (see 2.2 <see cref="DiscardAllTickets()"/>) or activate at least one of them.
     ''' </summary>
     ''' <param name="TicketID">Numerical string of 6 character length e.g. "123456"</param>
+    ''' <remarks>Required rights: App rights</remarks>
     Function MarkTicket(ByRef TicketID As String) As Boolean
 
 End Interface

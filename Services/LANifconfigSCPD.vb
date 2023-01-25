@@ -6,6 +6,7 @@
 Friend Class LANifconfigSCPD
     Implements ILANifconfigSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2009, 7, 15) Implements ILANifconfigSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ILANifconfigSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.lanifconfigSCPD Implements ILANifconfigSCPD.Servicefile
 

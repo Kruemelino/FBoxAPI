@@ -1,10 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – DeviceInfo
-''' Date: 2009-7-15
+''' Date: 2022-02-16
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf</see>
 ''' </summary>
 Friend Class DeviceinfoSCPD
     Implements IDeviceinfoSCPD
+
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 16) Implements IDeviceinfoSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IDeviceinfoSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IDeviceinfoSCPD.Servicefile
 

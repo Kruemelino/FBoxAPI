@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – WAN IP Connection
-''' Date: 2019-04-09 
+''' Date: 2021-09-08
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wanipconnSCPD.pdf</see>
 ''' </summary>
 ''' <remarks>
@@ -11,6 +11,7 @@
 Friend Class WANIPConnectionSCPD
     Implements IWANIPConnectionSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2021, 9, 8) Implements IWANIPConnectionSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWANIPConnectionSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.wanipconnSCPD Implements IWANIPConnectionSCPD.Servicefile
 

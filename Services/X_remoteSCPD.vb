@@ -1,11 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – X AVM Remote Access
-''' Date: 2017-11-22 
+''' Date: 2022-10-17
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_remoteSCPD.pdf</see>
 ''' </summary>
 Friend Class X_remoteSCPD
     Implements IX_remoteSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 17) Implements IX_remoteSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_remoteSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_remoteSCPD Implements IX_remoteSCPD.Servicefile
 

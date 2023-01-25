@@ -1,11 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – UserInterface
-''' Date: 2019-01-15
+''' Date: 2022-10-17
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/userifSCPD.pdf</see>
 ''' </summary>
 Friend Class UserInterfaceSCPD
     Implements IUserInterfaceSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 17) Implements IUserInterfaceSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IUserInterfaceSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.userifSCPD Implements IUserInterfaceSCPD.Servicefile
     Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
@@ -27,12 +28,13 @@ Friend Class UserInterfaceSCPD
                    .TryGetValueEx("NewX_AVM-DE_DownloadURL", Info.DownloadURL) And
                    .TryGetValueEx("NewX_AVM-DE_InfoURL", Info.InfoURL) And
                    .TryGetValueEx("NewX_AVM-DE_UpdateState", Info.UpdateState) And
-                   .TryGetValueEx("NewX_AVM-DE_LaborVersion", Info.LaborVersion)
+                   .TryGetValueEx("NewX_AVM-DE_BuildType", Info.BuildType) And
+                   .TryGetValueEx("NewX_AVM-DE_SetupAssistantStatus", Info.SetupAssistantStatus)
 
         End With
     End Function
 
-    Public Function CheckUpdate(LaborVersion As String) As Boolean Implements IUserInterfaceSCPD.CheckUpdate
+    <Obsolete> Public Function CheckUpdate(LaborVersion As String) As Boolean Implements IUserInterfaceSCPD.CheckUpdate
         Return Not TR064Start(ServiceFile, "X_AVM-DE_CheckUpdate", New Dictionary(Of String, String) From {{"NewX_AVM-DE_LaborVersion", LaborVersion}}).ContainsKey("Error")
     End Function
 
@@ -62,15 +64,12 @@ Friend Class UserInterfaceSCPD
     Public Function GetInternationalConfig(ByRef Language As String, ByRef Country As String, ByRef Annex As String, ByRef LanguageList As String, ByRef CountryList As String, ByRef AnnexList As String) As Boolean Implements IUserInterfaceSCPD.GetInternationalConfig
         With TR064Start(ServiceFile, "X_AVM-DE_GetInternationalConfig", Nothing)
 
-            With TR064Start(ServiceFile, "GetInfo", Nothing)
-
-                Return .TryGetValueEx("NewX_AVM-DE_Language", Language) And
-                       .TryGetValueEx("NewX_AVM-DE_Country", Country) And
-                       .TryGetValueEx("NewX_AVM-DE_Annex", Annex) And
-                       .TryGetValueEx("NewX_AVM-DE_LanguageList", LanguageList) And
-                       .TryGetValueEx("NewX_AVM-DE_CountryList", CountryList) And
-                       .TryGetValueEx("NewX_AVM-DE_AnnexList", AnnexList)
-            End With
+            Return .TryGetValueEx("NewX_AVM-DE_Language", Language) And
+                   .TryGetValueEx("NewX_AVM-DE_Country", Country) And
+                   .TryGetValueEx("NewX_AVM-DE_Annex", Annex) And
+                   .TryGetValueEx("NewX_AVM-DE_LanguageList", LanguageList) And
+                   .TryGetValueEx("NewX_AVM-DE_CountryList", CountryList) And
+                   .TryGetValueEx("NewX_AVM-DE_AnnexList", AnnexList)
 
         End With
     End Function

@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – Homeauto
-''' Date: 2019-04-29
+''' Date: 2022-02-11
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf</see>
 ''' </summary>
 Public Interface IX_homeautoSCPD

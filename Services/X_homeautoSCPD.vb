@@ -1,11 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – Homeauto
-''' Date: 2019-04-29
+''' Date: 2022-02-11
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf</see>
 ''' </summary>
 Friend Class X_homeautoSCPD
     Implements IX_homeautoSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 11) Implements IX_homeautoSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_homeautoSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_homeautoSCPD Implements IX_homeautoSCPD.Servicefile
 

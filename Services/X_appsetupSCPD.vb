@@ -1,11 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_WebDAVClient  
-''' Date: 2020-09-03
+''' Date: 2022-10-17
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_appsetup.pdf</see>
 ''' </summary>
 Friend Class X_appsetupSCPD
     Implements IX_appsetupSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 17) Implements IX_appsetupSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_appsetupSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_appsetupSCPD Implements IX_appsetupSCPD.Servicefile
 
@@ -137,5 +138,11 @@ Friend Class X_appsetupSCPD
                                                                                                        {"NewIPSecPreSharedKey", IPSecPreSharedKey},
                                                                                                        {"NewIPSecXauthUsername", IPSecXauthUsername},
                                                                                                        {"NewIPSecXauthPassword", IPSecXauthPassword}}).ContainsKey("Error")
+    End Function
+
+    Public Function GetBoxSenderId(AppId As String, ByRef BoxSenderId As String) As Boolean Implements IX_appsetupSCPD.GetBoxSenderId
+        Return TR064Start(ServiceFile, "GetBoxSenderId",
+                          New Dictionary(Of String, String) From {{"NewAppId", AppId}}).TryGetValueEx("NewBoxSenderId", BoxSenderId)
+
     End Function
 End Class

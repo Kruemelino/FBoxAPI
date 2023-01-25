@@ -1,11 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_MyFritz
-''' Date: 2017-05-16
+''' Date: 2022-02-14
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_myfritzSCPD.pdf</see>
 ''' </summary>
 Friend Class X_myfritzSCPD
     Implements IX_myfritzSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 14) Implements IX_myfritzSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_myfritzSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_myfritzSCPD Implements IX_myfritzSCPD.Servicefile
 
@@ -15,17 +16,29 @@ Friend Class X_myfritzSCPD
 
     End Sub
 
-    Public Function GetInfo(ByRef Enabled As Boolean, ByRef DynDNSName As String, ByRef Port As Integer, ByRef DeviceRegistered As Boolean) As Boolean Implements IX_myfritzSCPD.GetInfo
+    Public Function GetInfo(ByRef Enabled As Boolean,
+                            ByRef DynDNSName As String,
+                            ByRef Port As Integer,
+                            ByRef DeviceRegistered As Boolean,
+                            ByRef State As MyFritzStateEnum,
+                            ByRef Email As String) As Boolean Implements IX_myfritzSCPD.GetInfo
 
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
             Return .TryGetValueEx("NewEnable", Enabled) And
                    .TryGetValueEx("NewDynDNSName", DynDNSName) And
                    .TryGetValueEx("NewPort", Port) And
-                   .TryGetValueEx("NewDeviceRegistered", DeviceRegistered)
+                   .TryGetValueEx("NewDeviceRegistered", DeviceRegistered) And
+                   .TryGetValueEx("NewState", State) And
+                   .TryGetValueEx("NewEmail", Email)
 
         End With
 
+    End Function
+
+    Public Function SetMyFritz(Enabled As Boolean, Email As String) As Boolean Implements IX_myfritzSCPD.SetMyFritz
+        Return Not TR064Start(ServiceFile, "SetMyFritz", New Dictionary(Of String, String) From {{"NewEnabled", Enabled.ToBoolStr},
+                                                                                                 {"NewEmail", Email}}).ContainsKey("Error")
     End Function
 
     Public Function GetNumberOfServices(ByRef NumberOfServices As Integer) As Boolean Implements IX_myfritzSCPD.GetNumberOfServices
@@ -73,4 +86,5 @@ Friend Class X_myfritzSCPD
     Public Function DeleteServiceByIndex(NumberOfServices As Integer) As Boolean Implements IX_myfritzSCPD.DeleteServiceByIndex
         Return Not TR064Start(ServiceFile, "DeleteServiceByIndex", New Dictionary(Of String, String) From {{"NewIndex", NumberOfServices.ToString}}).ContainsKey("Error")
     End Function
+
 End Class

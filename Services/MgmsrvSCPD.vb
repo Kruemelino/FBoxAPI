@@ -6,6 +6,7 @@
 Friend Class MgmsrvSCPD
     Implements IMgmsrvSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2013, 1, 23) Implements IMgmsrvSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IMgmsrvSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.mgmsrvSCPD Implements IMgmsrvSCPD.Servicefile
 

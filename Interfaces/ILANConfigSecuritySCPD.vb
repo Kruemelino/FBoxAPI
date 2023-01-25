@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – LANConfigSecurity
-''' Date: 2020-02-27
+''' Date: 2022-06-07
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/lanconfigsecuritySCPD.pdf</see>
 ''' </summary>
 Public Interface ILANConfigSecuritySCPD
@@ -9,7 +9,11 @@ Public Interface ILANConfigSecuritySCPD
     ''' <param name="MaxCharsPassword">32</param>
     ''' <param name="MinCharsPassword">0</param>
     ''' <param name="AllowedCharsPassword">01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!”#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~(*)</param>
-    Function GetInfo(ByRef MaxCharsPassword As Integer, ByRef MinCharsPassword As Integer, ByRef AllowedCharsPassword As String) As Boolean
+    Function GetInfo(ByRef MaxCharsPassword As Integer,
+                     ByRef MinCharsPassword As Integer,
+                     ByRef AllowedCharsPassword As String,
+                     ByRef AllowedCharsUsername As String,
+                     ByRef IsDefaultPasswordActive As Boolean) As Boolean
 
     ''' <summary>
     ''' This action can be invoked without authentication.

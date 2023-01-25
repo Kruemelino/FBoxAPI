@@ -1,16 +1,19 @@
 ﻿Public Class WLANInfo
     Public Property Enable As Boolean
+
     ''' <summary>
     ''' Up, Disabled 
     ''' </summary>
-
     Public Property Status As String
+
+    ''' <summary>
+    ''' Not supported. Returns default string.
+    ''' </summary>
+    Public Property MaxBitRate As String
+
     ''' <summary>
     ''' 0 means auto channel
     ''' </summary>
-
-    Public Property MaxBitRate As String
-
     Public Property Channel As String
 
     Public Property SSID As String
@@ -37,6 +40,9 @@
 
     Public Property BasicEncryptionModes As String
 
+    ''' <summary>
+    ''' Returns fixed string “none”
+    ''' </summary>
     Public Property BasicAuthenticationMode As String
 
     ''' <summary>
@@ -68,4 +74,8 @@
     ''' 01234567890ABCDEFabcdef
     ''' </summary>
     Public Property AllowedCharsPSK As String
+
+    Public Property FrequencyBand As String
+
+    Public Property WLANGlobalEnable As Boolean
 End Class

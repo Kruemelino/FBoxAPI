@@ -6,6 +6,7 @@
 Friend Class X_webdavSCPD
     Implements IX_webdavSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2009, 9, 18) Implements IX_webdavSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_webdavSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_webdavSCPD Implements IX_webdavSCPD.Servicefile
 

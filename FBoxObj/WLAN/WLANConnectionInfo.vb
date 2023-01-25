@@ -1,7 +1,7 @@
 ﻿Public Class WLANConnectionInfo
     Public Property AssociatedDeviceMACAddress As String
     Public Property SSID As String
-    Public Property BSSID As Boolean
+    Public Property BSSID As String
 
     ''' <summary>
     ''' None, Basic, WPA, 11i, WPAand11i, WPA3, 11iandWPA3, OWE, OWETrans
@@ -14,6 +14,9 @@
     ''' </summary>
     ''' <remarks>Only the highest of the active modes is returned.</remarks>
     Public Property Standard As String
+    Public Property AutoChannelEnabled As Boolean
+    Public Property ChannelWidth As Integer
+    Public Property FrequencyBand As String
     Public Property SignalStrength As Integer
     Public Property Speed As Integer
     Public Property SpeedRX As Integer

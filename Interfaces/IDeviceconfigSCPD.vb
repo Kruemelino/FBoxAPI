@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – DeviceConfig
-''' Date: 2021-01-20
+''' Date: 2022-02-16
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf</see>
 ''' </summary>
 Public Interface IDeviceconfigSCPD
@@ -77,6 +77,16 @@ Public Interface IDeviceconfigSCPD
     ''' </summary>
     ''' <param name="SupportDataMode">"normal", "mesh", "unknown"</param>
     Function SendSupportData(SupportDataMode As String) As Boolean
+
+    ''' <summary>
+    ''' Returns if support data can be sent to AVM support. This action does not need bauthentication.
+    ''' </summary>
+    Function GetSupportDataEnable(ByRef SupportDataEnabled As Boolean) As Boolean
+
+    ''' <summary>
+    ''' Enables “1” or disables “0” the possiblity to send support data to AVM support. 
+    ''' </summary>
+    Function SetSupportDataEnable(SupportDataEnabled As Boolean) As Boolean
 
     ''' <summary>
     ''' Inoffizielle Funktion zum Test von Username und Passwort.

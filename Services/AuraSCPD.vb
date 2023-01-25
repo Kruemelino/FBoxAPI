@@ -7,6 +7,7 @@
 Friend Class AuraSCPD
     Implements IAuraSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2020, 2, 26) Implements IAuraSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IAuraSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.auraSCPD Implements IAuraSCPD.Servicefile
 

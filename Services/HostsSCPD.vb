@@ -1,11 +1,14 @@
-﻿''' <summary>
+﻿Imports System.Net
+Imports System.Net.Mail
+''' <summary>
 ''' TR-064 Support – Hosts
-''' Date:  2020-12-01
+''' Date: 2022-10-13
 ''' <see href="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/hostsSCPD.pdf"/>
 ''' </summary>
 Friend Class HostsSCPD
     Implements IHostsSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 13) Implements IHostsSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IHostsSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.hostsSCPD Implements IHostsSCPD.Servicefile
     Private Property XML As Serializer
@@ -43,13 +46,26 @@ Friend Class HostsSCPD
 
         With TR064Start(ServiceFile, "GetGenericHostEntry", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
-            Return .TryGetValueEx("NewMACAddress", Host.MACAddress) And
-                   .TryGetValueEx("NewIPAddress", Host.IPAddress) And
+            Return .TryGetValueEx("NewIPAddress", Host.IPAddress) And
                    .TryGetValueEx("NewAddressSource", Host.AddressSource) And
                    .TryGetValueEx("NewLeaseTimeRemaining", Host.LeaseTimeRemaining) And
                    .TryGetValueEx("NewInterfaceType", Host.InterfaceType) And
                    .TryGetValueEx("NewActive", Host.Active) And
                    .TryGetValueEx("NewHostName", Host.HostName)
+
+        End With
+    End Function
+
+    Public Function GetInfo(ByRef Info As HostsInfo) As Boolean Implements IHostsSCPD.GetInfo
+        If Info Is Nothing Then Info = New HostsInfo
+
+        With TR064Start(ServiceFile, "X_AVM-DE_GetInfo", New Dictionary(Of String, String))
+
+            Return .TryGetValueEx("NewX_AVM-DE_FriendlynameMinChars", Info.FriendlynameMinChars) And
+                   .TryGetValueEx("NewX_AVM-DE_FriendlynameMaxChars", Info.FriendlynameMaxChars) And
+                   .TryGetValueEx("NewX_AVM-DE_HostnameMinChars", Info.HostnameMinChars) And
+                   .TryGetValueEx("NewX_AVM-DE_HostnameMaxChars", Info.HostnameMaxChars) And
+                   .TryGetValueEx("NewX_AVM-DE_HostnameAllowedChars", Info.HostnameAllowedChars)
 
         End With
     End Function
@@ -62,7 +78,6 @@ Friend Class HostsSCPD
         Return TR064Start(ServiceFile, "X_AVM-DE_GetAutoWakeOnLANByMACAddress",
                           New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}}).
                           TryGetValueEx("NewAutoWOLEnabled", AutoWOLEnabled)
-
 
     End Function
 
@@ -88,17 +103,28 @@ Friend Class HostsSCPD
 
             Host.IPAddress = IPAddress
 
-            Return .TryGetValueEx("NewMACAddress", Host.MACAddress) And
+            Return .TryGetValueEx("NewAddressSource", Host.AddressSource) And
+                   .TryGetValueEx("NewLeaseTimeRemaining", Host.LeaseTimeRemaining) And
+                   .TryGetValueEx("NewInterfaceType", Host.InterfaceType) And
                    .TryGetValueEx("NewActive", Host.Active) And
                    .TryGetValueEx("NewHostName", Host.HostName) And
                    .TryGetValueEx("NewInterfaceType", Host.InterfaceType) And
                    .TryGetValueEx("NewX_AVM-DE_Port", Host.Port) And
-                   .TryGetValueEx("NewX_AVM-DE_Speed", Host.Speed) And
                    .TryGetValueEx("NewX_AVM-DE_UpdateAvailable", Host.UpdateAvailable) And
                    .TryGetValueEx("NewX_AVM-DE_UpdateSuccessful", Host.UpdateSuccessful) And
                    .TryGetValueEx("NewX_AVM-DE_InfoURL", Host.InfoURL) And
+                   .TryGetValueEx("NewX_AVM-DE_MACAddressList", Host.MACAddressList) And
                    .TryGetValueEx("NewX_AVM-DE_Model", Host.Model) And
-                   .TryGetValueEx("NewX_AVM-DE_URL", Host.URL)
+                   .TryGetValueEx("NewX_AVM-DE_URL", Host.URL) And
+                   .TryGetValueEx("NewX_AVM-DE_Guest", Host.Guest) And
+                   .TryGetValueEx("NewX_AVM-DE_RequestClient", Host.RequestClient) And
+                   .TryGetValueEx("NewX_AVM-DE_VPN", Host.VPN) And
+                   .TryGetValueEx("NewX_AVM-DE_WANAccess", Host.WANAccess) And
+                   .TryGetValueEx("NewX_AVM-DE_Disallow", Host.Disallow) And
+                   .TryGetValueEx("NewX_AVM-DE_IsMeshable", Host.IsMeshable) And
+                   .TryGetValueEx("NewX_AVM-DE_Priority", Host.Priority) And
+                   .TryGetValueEx("NewX_AVM-DE_FriendlyName", Host.FriendlyName) And
+                   .TryGetValueEx("NewX_AVM-DE_FriendlyNameIsWriteable", Host.FriendlyNameIsWriteable)
 
         End With
     End Function
@@ -109,6 +135,11 @@ Friend Class HostsSCPD
 
     Public Function HostDoUpdate(MACAddress As String) As Boolean Implements IHostsSCPD.HostDoUpdate
         Return Not TR064Start(ServiceFile, "X_AVM-DE_HostDoUpdate", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}}).ContainsKey("Error")
+    End Function
+
+    Public Function SetPrioritizationByIP(IPAddress As String, Priority As Boolean) As Boolean Implements IHostsSCPD.SetPrioritizationByIP
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetPrioritizationByIP", New Dictionary(Of String, String) From {{"NewIPAddress", IPAddress},
+                                                                                                                     {"NewX_AVM-DE_Priority", Priority.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetHostListPath(ByRef HostListPath As String) As Boolean Implements IHostsSCPD.GetHostListPath
@@ -138,4 +169,21 @@ Friend Class HostsSCPD
         Return TR064Start(ServiceFile, "X_AVM-DE_GetMeshListPath", Nothing).TryGetValueEx("NewX_AVM-DE_MeshListPath", MeshListPath)
     End Function
 
+    Public Function GetFriendlyName(ByRef FriendlyName As String) As Boolean Implements IHostsSCPD.GetFriendlyName
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetFriendlyName", Nothing).TryGetValueEx("NewX_AVM-DE_FriendlyName", FriendlyName)
+    End Function
+
+    Public Function SetFriendlyName(FriendlyName As String) As Boolean Implements IHostsSCPD.SetFriendlyName
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetFriendlyName", New Dictionary(Of String, String) From {{"NewX_AVM-DE_FriendlyName", FriendlyName}}).ContainsKey("Error")
+    End Function
+
+    Public Function SetFriendlyNameByIP(IPAddress As String, FriendlyName As String) As Boolean Implements IHostsSCPD.SetFriendlyNameByIP
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetFriendlyNameByIP", New Dictionary(Of String, String) From {{"NewIPAddress", IPAddress},
+                                                                                                                   {"NewX_AVM-DE_FriendlyName", FriendlyName}}).ContainsKey("Error")
+    End Function
+
+    Public Function SetFriendlyNameByMAC(MACAddress As String, FriendlyName As String) As Boolean Implements IHostsSCPD.SetFriendlyNameByMAC
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetFriendlyNameByMAC", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress},
+                                                                                                                    {"NewX_AVM-DE_FriendlyName", FriendlyName}}).ContainsKey("Error")
+    End Function
 End Class

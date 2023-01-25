@@ -1,11 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_TAM 
-''' Date: 2019-06-28
+''' Date: 2022-02-14
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf</see>
 ''' </summary>
 Friend Class X_tamSCPD
     Implements IX_tamSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 14) Implements IX_tamSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_tamSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_tamSCPD Implements IX_tamSCPD.Servicefile
     Private Property XML As Serializer

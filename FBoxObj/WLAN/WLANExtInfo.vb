@@ -1,6 +1,7 @@
 ﻿Public Class WLANExtInfo
     Public Property APEnabled As Boolean
     Public Property APType As String
+    Public Property FrequencyBand As String
     Public Property TimeoutActive As Boolean
     Public Property Timeout As Integer
     Public Property TimeRemain As Integer

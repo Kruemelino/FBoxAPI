@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – Authentication
-''' Date: 2016-10-06
+''' Date: 2022-02-11
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_auth.pdf</see>
 ''' </summary>
 Public Interface IX_authSCPD

@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – Time
-''' Date: 2009-07-15
+''' Date: 2022-02-15
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/timeSCPD.pdf</see>
 ''' </summary>
 Public Interface ITimeSCPD

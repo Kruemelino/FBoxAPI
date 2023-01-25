@@ -3,6 +3,9 @@ Imports System.Xml.Serialization
 
 Public Enum AVMErrorCodes
     InvalidArguments = 402
+    ArgumentValueIsInvalid = 600
+    NotAuthorized = 606
+    InvalidArrayIndex = 713
     InternalError = 820
     AuthenticationRequired = 866
     AuthenticationBlocked = 867
@@ -85,6 +88,8 @@ Public Enum SCPDFiles
 
     <Description("/x_hostfilterSCPD.xml")> x_hostfilterSCPD
 
+    <Description("/x_mediaSCPD.xml")> x_mediaSCPD
+
     <Description("/x_myfritzSCPD.xml")> x_myfritzSCPD
 
     <Description("/x_remoteSCPD.xml")> x_remoteSCPD
@@ -97,7 +102,11 @@ Public Enum SCPDFiles
 
     <Description("/x_upnpSCPD.xml")> x_upnpSCPD
 
+    <Description("/x_uspcontrollerSCPD.xml")> x_uspcontroller
+
     <Description("/x_voipSCPD.xml")> x_voipSCPD
+
+    <Description("/x_wanmobileconnSCPD.xml")> x_wanmobileconn
 
     <Description("/x_webdavSCPD.xml")> x_webdavSCPD
 
@@ -247,9 +256,14 @@ Public Enum DeflectionTypeEnum
     <XmlEnum> fromAnonymous
 
     ''' <summary>
-    ''' Call not from a VIP 
+    ''' The caller is not in the phonebook 
     ''' </summary>
-    <XmlEnum> fromNotVIP
+    <XmlEnum> fromNotInPhonebook
+
+    ''' <summary>
+    ''' Call not from a VIP (obsolate from Version 37)
+    ''' </summary>
+    <Obsolete("Obsolate from Version 37")> <XmlEnum> fromNotVIP
 
     ''' <summary>
     ''' Specific Number 
@@ -341,9 +355,9 @@ Public Enum PhysicalLinkStatusEnum
     Up
 End Enum
 
-Public Enum AccessTypeEnum
-    DSL
-    Ethernet
+Public Enum ATMEncapsulationEnum
+    LLC
+    VCMUX
 End Enum
 
 Public Enum UpdateEnum
@@ -779,5 +793,91 @@ Public Enum HAN_FUN_Interfaces
     <XmlEnum("OPEN_CLOSE_CONFIG")> OPEN_CLOSE_CONFIG = 517
     <XmlEnum("SIMPLE_BUTTON")> SIMPLE_BUTTON = 772
     <XmlEnum("SUOTA-Update")> SUOTAUpdate = 1024
+End Enum
+#End Region
+
+#Region "MyFritz"
+Public Enum MyFritzStateEnum
+    ''' <summary>
+    ''' MyFritz is disabled (Enabled is 0) or the Fritz!Box is not registered
+    ''' </summary>
+    myfritz_disabled
+
+    ''' <summary>
+    ''' Failed to register Fritz!Box. Also the Fritz!Box retries to register
+    ''' </summary>
+    register_failed
+
+    ''' <summary>
+    ''' Fritz!Box will be unregistered
+    ''' </summary>
+    unregister
+
+    ''' <summary>
+    ''' Fritz!Box is registered. DynDNS is unknown
+    ''' </summary>
+    dyndns_unknown
+
+    ''' <summary>
+    ''' Fritz!Box is registered. DynDNS is active
+    ''' </summary>
+    dyndns_active
+
+    ''' <summary>
+    ''' Fritz!Box is registered. DynDNS update failed
+    ''' </summary>
+    dyndns_update_failed
+
+    ''' <summary>
+    ''' Fritz!Box is registered. DynDNS update failed (authentication error)
+    ''' </summary>
+    dyndns_auth_error
+
+    ''' <summary>
+    ''' Fritz!Box is registered. DynDNS update failed (server not reachable)
+    ''' </summary>
+    dyndns_server_unreachable
+
+    ''' <summary>
+    ''' Fritz!Box is registered. DynDNS update failed (server responded with error)
+    ''' </summary>
+    dyndns_server_error
+
+    ''' <summary>
+    ''' Fritz!Box is registered. DynDNS update failed (server responded with no adress update possible)
+    ''' </summary>
+    dyndns_server_update
+
+    ''' <summary>
+    ''' Fritz!Box is registered. DynDNS update succeed, not verified
+    ''' </summary>
+    dyndns_not_verified
+
+    ''' <summary>
+    ''' Fritz!Box is registered. DynDNS update succedd, verified
+    ''' </summary>
+    dyndns_verified
+
+    ''' <summary>
+    ''' This state is reserved but not in use
+    ''' </summary>
+    reserved
+
+    ''' <summary>
+    ''' Unknown state was responded
+    ''' </summary>
+    unknown
+End Enum
+#End Region
+
+#Region "Media"
+Public Enum StationSearchModeEnum
+    start
+    [stop]
+End Enum
+
+Public Enum StationSearchStatusEnum
+    active
+    inactive
 End Enum
 #End Region

@@ -6,6 +6,7 @@
 Friend Class X_upnpSCPD
     Implements IX_upnpSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2009, 9, 22) Implements IX_upnpSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_upnpSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_upnpSCPD Implements IX_upnpSCPD.Servicefile
 

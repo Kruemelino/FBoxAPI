@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – UserInterface
-''' Date: 2019-01-15
+''' Date: 2022-10-17
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/userifSCPD.pdf</see>
 ''' </summary> 
 Public Interface IUserInterfaceSCPD
@@ -9,7 +9,7 @@ Public Interface IUserInterfaceSCPD
     Function GetInfo(ByRef Info As DeviceUIInfo) As Boolean
 
     ''' <param name="LaborVersion">"Current" currently used Version, either Release or Labor XXX Release-Firmware: "" Labor-Firmware: content of CONFIG_LABOR_ID_NAME e.g. phone</param>
-    Function CheckUpdate(LaborVersion As String) As Boolean
+    <Obsolete("The result is displayed by calling the GetInfo action.")> Function CheckUpdate(LaborVersion As String) As Boolean
 
     ''' <summary>
     ''' The CGI has to use the session ID as first parameter. The session ID will be checked at the start of the CGI process.

@@ -1,6 +1,8 @@
 ﻿Public Class UserModeSCPD
     Implements IServiceBase
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2023, 1, 22) Implements IServiceBase.DocumentationDate
+
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IServiceBase.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IServiceBase.Servicefile
     Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))

@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – WAN IP Connection
-''' Date: 2019-04-09 
+''' Date: 2021-09-08
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wanipconnSCPD.pdf</see>
 ''' </summary>
 ''' <remarks>

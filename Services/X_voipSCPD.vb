@@ -1,10 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_VoIP
-''' Date: 2019-08-14
+''' Date: 2022-02-14
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voip-avm.pdf</see>
 ''' </summary>
 Friend Class X_voipSCPD
     Implements IX_voipSCPD
+
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 14) Implements IX_voipSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_voipSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_voipSCPD Implements IX_voipSCPD.Servicefile
     Private Property XML As Serializer
@@ -171,10 +173,34 @@ Friend Class X_voipSCPD
                    .TryGetValueEx("NewVoIPNumber", Account.VoIPNumber) And
                    .TryGetValueEx("NewVoIPUsername", Account.VoIPUsername) And
                    .TryGetValueEx("NewVoIPOutboundProxy", Account.VoIPOutboundProxy) And
-                   .TryGetValueEx("NewVoIPOutboundProxy", Account.VoIPSTUNServer)
-
+                   .TryGetValueEx("NewVoIPSTUNServer", Account.VoIPSTUNServer) And
+                   .TryGetValueEx("NewX_AVM-DE_VoIPStatus", Account.VoIPStatus)
         End With
     End Function
+
+    Public Function GetVoIPAccounts(ByRef AccountList As VoIPAccountList) As Boolean Implements IX_voipSCPD.GetVoIPAccounts
+        With TR064Start(ServiceFile, "X_AVM-DE_GetVoIPAccounts", Nothing)
+
+            If .ContainsKey("NewX_AVM-DE_VoIPAccountList") Then
+
+                XML.Deserialize(.Item("NewX_AVM-DE_VoIPAccountList"), False, AccountList)
+
+                If AccountList Is Nothing Then AccountList = New VoIPAccountList
+
+                Return True
+
+            Else
+                AccountList = Nothing
+
+                Return False
+            End If
+        End With
+    End Function
+
+    Public Function GetVoIPStatus(ByRef VoIPStatus As String, AccountIndex As Integer) As Boolean Implements IX_voipSCPD.GetVoIPStatus
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetVoIPStatus", New Dictionary(Of String, String) From {{"NewVoIPAccountIndex", AccountIndex.ToString}}).TryGetValueEx("NewX_AVM-DE_VoIPStatus", VoIPStatus)
+    End Function
+
 #End Region
 
 #Region "Client"

@@ -1,10 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – DeviceConfig
-''' Date: 2021-01-20
+''' Date: 2022-02-16
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf</see>
 ''' </summary>
 Friend Class DeviceconfigSCPD
     Implements IDeviceconfigSCPD
+
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 16) Implements IDeviceconfigSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IDeviceconfigSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.deviceconfigSCPD Implements IDeviceconfigSCPD.Servicefile
 
@@ -87,9 +89,18 @@ Friend Class DeviceconfigSCPD
         Return Not TR064Start(ServiceFile, "X_AVM-DE_SendSupportData", New Dictionary(Of String, String) From {{"NewX_AVM-DE_SupportDataMode", SupportDataMode}}).ContainsKey("Error")
     End Function
 
+    Public Function GetSupportDataEnable(ByRef SupportDataEnabled As Boolean) As Boolean Implements IDeviceconfigSCPD.GetSupportDataEnable
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetSupportDataEnable", Nothing).TryGetValueEx("NewX_AVM-DE_SupportDataEnabled", SupportDataEnabled)
+    End Function
+
+    Public Function SetSupportDataEnable(SupportDataEnabled As Boolean) As Boolean Implements IDeviceconfigSCPD.SetSupportDataEnable
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetSupportDataEnable", New Dictionary(Of String, String) From {{"NewX_AVM-DE_SupportDataEnabled", SupportDataEnabled.ToBoolStr}}).ContainsKey("Error")
+    End Function
+
     Public Function LoginTest() As Boolean Implements IDeviceconfigSCPD.LoginTest
         Return TR064Start(ServiceFile, "X_AVM-DE_CreateUrlSID", Nothing).ContainsKey("NewX_AVM-DE_UrlSID")
     End Function
+
 #End Region
 
 End Class

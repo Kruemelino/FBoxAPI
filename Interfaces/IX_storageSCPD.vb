@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_Storage  
-''' Date: 2019-02-21
+''' Date: 2022-02-14
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_storageSCPD.pdf</see>
 ''' </summary>
 Public Interface IX_storageSCPD

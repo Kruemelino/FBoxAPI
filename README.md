@@ -167,6 +167,7 @@ folgende angehakte TR-064 Services werden derzeit unterstützt. Falls etwas fehl
 * [x] [X_AVM-DE_Dect](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_dectSCPD.pdf)
 * [x] [X_AVM-DE_Filelinks](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_filelinksSCPD.pdf)
 * [x] [X_AVM-DE_HostFilter](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_hostfilterSCPD.pdf)
+* [x] [X_AVM-DE_Media](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_mediaSCPD.pdf)	
 * [x] [X_AVM-DE_MyFritz](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_myfritzSCPD.pdf)	
 * [x] [X_AVM-DE_OnTel](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf)	
 * [x] [X_AVM-DE_RemoteAccess](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_remoteSCPD.pdf)
@@ -174,12 +175,14 @@ folgende angehakte TR-064 Services werden derzeit unterstützt. Falls etwas fehl
 * [x] [X_AVM-DE_Storage](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_storageSCPD.pdf)
 * [x] [X_AVM-DE_TAM](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf)
 * [x] [X_AVM-DE_UPnP](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_upnp.pdf)
+* [x] [X_AVM-DE_USPController](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_wanmobileconnSCPD.pdf)
+* [x] [X_AVM-DE_WANMobileConnection](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_uspcontrollerSCPD.pdf)
 * [x] [X_AVM-DE_WebDAVClient](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_webdavSCPD.pdf)
 * [x] [X_HomeAuto](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf)
 * [x] [X_HomePlug](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeplugSCPD.pdf)
 * [x] [X_VoIP](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voip-avm.pdf)	
       
-Desweiteren wird das [AVM Home Automation](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf)-Interface unterstützt. 
+Des Weiteren wird das [AVM Home Automation](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf)-Interface unterstützt. 
 
 ### Markenrecht
 Dieses Software wird vom Autor privat in der Freizeit als Hobby gepflegt. Mit der Bereitstellung der Software werden keine gewerblichen Interessen verfolgt. Es wird aus rein ideellen Gründen zum Gemeinwohl aller Nutzer einer Fritz!Box betrieben. 

@@ -1,10 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – LANConfigSecurity
-''' Date: 2020-02-27
+''' Date: 2022-06-07
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/lanconfigsecuritySCPD.pdf</see>
 ''' </summary>
 Friend Class LANConfigSecuritySCPD
     Implements ILANConfigSecuritySCPD
+
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 6, 7) Implements ILANConfigSecuritySCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ILANConfigSecuritySCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.lanconfigsecuritySCPD Implements ILANConfigSecuritySCPD.Servicefile
 
@@ -14,12 +16,19 @@ Friend Class LANConfigSecuritySCPD
 
     End Sub
 
-    Public Function GetInfo(ByRef MaxCharsPassword As Integer, ByRef MinCharsPassword As Integer, ByRef AllowedCharsPassword As String) As Boolean Implements ILANConfigSecuritySCPD.GetInfo
+    Public Function GetInfo(ByRef MaxCharsPassword As Integer,
+                     ByRef MinCharsPassword As Integer,
+                     ByRef AllowedCharsPassword As String,
+                     ByRef AllowedCharsUsername As String,
+                     ByRef IsDefaultPasswordActive As Boolean) As Boolean Implements ILANConfigSecuritySCPD.GetInfo
+
         With TR064Start(ServiceFile, "GetInfo", Nothing)
 
             Return .TryGetValueEx("MaxCharsPassword", MaxCharsPassword) And
                    .TryGetValueEx("MinCharsPassword", MinCharsPassword) And
-                   .TryGetValueEx("AllowedCharsPassword", AllowedCharsPassword)
+                   .TryGetValueEx("AllowedCharsPassword", AllowedCharsPassword) And
+                   .TryGetValueEx("NewAllowedCharsUsername", AllowedCharsUsername) And
+                   .TryGetValueEx("NewX_AVMDE_IsDefaultPasswordActive", IsDefaultPasswordActive)
 
         End With
     End Function

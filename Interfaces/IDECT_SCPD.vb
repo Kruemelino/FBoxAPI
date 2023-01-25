@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – DeviceInfo
-''' Date: 2009-7-15
+''' Date: 2022-10-17
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_dectSCPD.pdf</see>
 ''' </summary>
 Public Interface IDECT_SCPD
@@ -32,4 +32,7 @@ Public Interface IDECT_SCPD
     ''' <param name="ID">ID can have a value from 1 .. 6 for DECT handsets or 16 .. 415 for DECT ULE devices</param>
     ''' <remarks>Required rights: AppRight</remarks>
     Function DectDoUpdate(ByRef ID As String) As Boolean
+
+    Function GetDectListPath(ByRef DectListPath As String) As Boolean
+
 End Interface

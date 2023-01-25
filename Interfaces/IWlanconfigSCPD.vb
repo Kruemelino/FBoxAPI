@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – WLANConfiguration
-''' Date: 2020-11-02
+''' Date: 2022-10-13
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wlanconfigSCPD.pdf</see>
 ''' </summary>
 Public Interface IWlanconfigSCPD
@@ -27,7 +27,7 @@ Public Interface IWlanconfigSCPD
     Function SetSSID(SSID As String) As Boolean
     Function GetBeaconType(ByRef BeaconType As String, ByRef PossibleBeaconTypes As String()) As Boolean
     Function SetBeaconType(BeaconType As String) As Boolean
-    Function GetChannelInfo(ByRef Channel As Integer, ByRef PossibleChannels As String) As Boolean
+    Function GetChannelInfo(ByRef Channel As Integer, ByRef PossibleChannels As String, ByRef AutoChannelEnabled As Boolean, ByRef FrequencyBand As String) As Boolean
     Function SetChannel(Channel As Integer) As Boolean
     Function GetBeaconAdvertisement(ByRef BeaconAdvertisementEnabled As Boolean) As Boolean
     Function SetBeaconAdvertisement(BeaconAdvertisementEnabled As Boolean) As Boolean

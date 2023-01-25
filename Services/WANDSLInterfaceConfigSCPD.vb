@@ -6,6 +6,7 @@
 Friend Class WANDSLInterfaceConfigSCPD
     Implements IWANDSLInterfaceConfigSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2019, 11, 1) Implements IWANDSLInterfaceConfigSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWANDSLInterfaceConfigSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.wandslifconfigSCPD Implements IWANDSLInterfaceConfigSCPD.Servicefile
 

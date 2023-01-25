@@ -1,11 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – Speedtest
-''' Date: 2015-02-06
+''' Date: 2022-01-10
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_speedtestSCPD.pdf</see>
 ''' </summary>
 Friend Class X_SpeedtestSCPD
     Implements IX_speedtestSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 1, 10) Implements IX_speedtestSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_speedtestSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_speedtestSCPD Implements IX_speedtestSCPD.Servicefile
     Private Property XML As Serializer
@@ -39,5 +40,24 @@ Friend Class X_SpeedtestSCPD
                                                                                                 {"NewEnableUdpBidirect", EnableUdpBidirect.ToBoolStr},
                                                                                                 {"NewWANEnableTcp", WANEnableTcp.ToBoolStr},
                                                                                                 {"NewWANEnableUdp", WANEnableUdp.ToBoolStr}}).ContainsKey("Error")
+    End Function
+
+    Public Function GetStatistics(ByRef Statistics As SpeedtestStatistics) As Boolean Implements IX_speedtestSCPD.GetStatistics
+        If Statistics Is Nothing Then Statistics = New SpeedtestStatistics
+
+        With TR064Start(ServiceFile, "GetInfo", Nothing)
+
+            Return .TryGetValueEx("NewByteCount", Statistics.ByteCount) And
+                   .TryGetValueEx("NewKbitsCurrent", Statistics.KbitsCurrent) And
+                   .TryGetValueEx("NewKbitsAvg", Statistics.KbitsAvg) And
+                   .TryGetValueEx("NewPacketCount", Statistics.PacketCount) And
+                   .TryGetValueEx("NewPPSCurrent", Statistics.PPSCurrent) And
+                   .TryGetValueEx("NewPPSAvg", Statistics.PPSAvg)
+
+        End With
+    End Function
+
+    Public Function ResetStatistics() As Boolean Implements IX_speedtestSCPD.ResetStatistics
+        Return Not TR064Start(ServiceFile, "ResetStatistics", Nothing).ContainsKey("Error")
     End Function
 End Class

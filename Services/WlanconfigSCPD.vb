@@ -1,11 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – WLANConfiguration
-''' Date: 2020-11-02
+''' Date: 2022-10-13
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wlanconfigSCPD.pdf</see>
 ''' </summary>
 Friend Class WlanconfigSCPD
     Implements IWlanconfigSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 13) Implements IWlanconfigSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWlanconfigSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.wlanconfigSCPD Implements IWlanconfigSCPD.Servicefile
     Private Property XML As Serializer
@@ -43,7 +44,9 @@ Friend Class WlanconfigSCPD
                        .TryGetValueEx("NewAllowedCharsSSID", Info.AllowedCharsSSID) And
                        .TryGetValueEx("NewMinCharsPSK", Info.MinCharsPSK) And
                        .TryGetValueEx("NewMaxCharsPSK", Info.MaxCharsPSK) And
-                       .TryGetValueEx("NewAllowedCharsPSK", Info.AllowedCharsPSK)
+                       .TryGetValueEx("NewAllowedCharsPSK", Info.AllowedCharsPSK) And
+                       .TryGetValueEx("NewX_AVM-DE_FrequencyBand", Info.FrequencyBand) And
+                       .TryGetValueEx("NewX_AVM-DE_WLANGlobalEnable", Info.WLANGlobalEnable)
 
             Else
                 Return False
@@ -128,11 +131,13 @@ Friend Class WlanconfigSCPD
                               New Dictionary(Of String, String) From {{"NewBeaconType", BeaconType}}).ContainsKey("Error")
     End Function
 
-    Public Function GetChannelInfo(ByRef Channel As Integer, ByRef PossibleChannels As String) As Boolean Implements IWlanconfigSCPD.GetChannelInfo
+    Public Function GetChannelInfo(ByRef Channel As Integer, ByRef PossibleChannels As String, ByRef AutoChannelEnabled As Boolean, ByRef FrequencyBand As String) As Boolean Implements IWlanconfigSCPD.GetChannelInfo
         With TR064Start(ServiceFile, "GetChannelInfo", Nothing)
 
             Return .TryGetValueEx("NewChannel", Channel) And
-                   .TryGetValueEx("NewPossibleChannels", PossibleChannels)
+                   .TryGetValueEx("NewPossibleChannels", PossibleChannels) And
+                   .TryGetValueEx("NewX_AVM-DE_AutoChannelEnabled", AutoChannelEnabled) And
+                   .TryGetValueEx("NewX_AVM-DE_FrequencyBand", FrequencyBand)
 
         End With
     End Function
@@ -165,7 +170,8 @@ Friend Class WlanconfigSCPD
                    .TryGetValueEx("NewAssociatedDeviceIPAddress", DeviceInfo.AssociatedDeviceIPAddress) And
                    .TryGetValueEx("NewAssociatedDeviceAuthState", DeviceInfo.AssociatedDeviceAuthState) And
                    .TryGetValueEx("X_AVM-DE_Speed", DeviceInfo.Speed) And
-                   .TryGetValueEx("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength)
+                   .TryGetValueEx("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength) And
+                   .TryGetValueEx("X_AVM-DE_ChannelWidth", DeviceInfo.ChannelWidth)
 
         End With
     End Function
@@ -182,7 +188,8 @@ Friend Class WlanconfigSCPD
                    .TryGetValueEx("NewAssociatedDeviceIPAddress", DeviceInfo.AssociatedDeviceIPAddress) And
                    .TryGetValueEx("NewAssociatedDeviceAuthState", DeviceInfo.AssociatedDeviceAuthState) And
                    .TryGetValueEx("X_AVM-DE_Speed", DeviceInfo.Speed) And
-                   .TryGetValueEx("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength)
+                   .TryGetValueEx("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength) And
+                   .TryGetValueEx("X_AVM-DE_ChannelWidth", DeviceInfo.ChannelWidth)
 
         End With
     End Function
@@ -198,7 +205,8 @@ Friend Class WlanconfigSCPD
             Return .TryGetValueEx("NewAssociatedDeviceMACAddress", DeviceInfo.AssociatedDeviceMACAddress) And
                    .TryGetValueEx("NewAssociatedDeviceAuthState", DeviceInfo.AssociatedDeviceAuthState) And
                    .TryGetValueEx("X_AVM-DE_Speed", DeviceInfo.Speed) And
-                   .TryGetValueEx("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength)
+                   .TryGetValueEx("X_AVM-DE_SignalStrength", DeviceInfo.SignalStrength) And
+                   .TryGetValueEx("X_AVM-DE_ChannelWidth", DeviceInfo.ChannelWidth)
         End With
     End Function
 
@@ -308,6 +316,7 @@ Friend Class WlanconfigSCPD
 
             Return .TryGetValueEx("NewX_AVM-DE_APEnabled", Info.APEnabled) And
                    .TryGetValueEx("NewX_AVM-DE_APType", Info.APType) And
+                   .TryGetValueEx("NewX_AVM-DE_FrequencyBand", Info.FrequencyBand) And
                    .TryGetValueEx("NewX_AVM-DE_TimeoutActive", Info.TimeoutActive) And
                    .TryGetValueEx("NewX_AVM-DE_Timeout", Info.Timeout) And
                    .TryGetValueEx("NewX_AVM-DE_TimeRemain", Info.TimeRemain) And
@@ -354,6 +363,10 @@ Friend Class WlanconfigSCPD
                    .TryGetValueEx("NewBeaconType", Info.BeaconType) And
                    .TryGetValueEx("NewChannel", Info.Channel) And
                    .TryGetValueEx("NewStandard", Info.Standard) And
+                   .TryGetValueEx("NewX_AVM-DE_AutoChannelEnabled", Info.AutoChannelEnabled) And
+                   .TryGetValueEx("NewX_AVM-DE_ChannelWidth", Info.ChannelWidth) And
+                   .TryGetValueEx("NewX_AVM-DE_FrequencyBand", Info.FrequencyBand) And
+                   .TryGetValueEx("NewX_AVM-DE_SignalStrength", Info.SignalStrength) And
                    .TryGetValueEx("NewX_AVM-DE_Speed", Info.Speed) And
                    .TryGetValueEx("NewX_AVM-DE_SpeedRX", Info.SpeedRX) And
                    .TryGetValueEx("NewX_AVM-DE_SpeedMax", Info.SpeedMax) And

@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_TAM 
-''' Date: 2019-06-28
+''' Date: 2022-02-14 
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf</see>
 ''' </summary>
 Public Interface IX_tamSCPD

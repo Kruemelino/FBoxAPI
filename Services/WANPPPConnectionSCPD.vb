@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – WAN PPP Connection
-''' Date: 2019-04-09  
+''' Date: 2021-09-08  
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wanpppconnSCPD.pdf</see>
 ''' </summary>
 ''' <remarks>
@@ -11,6 +11,7 @@
 Friend Class WANPPPConnectionSCPD
     Implements IWANPPPConnectionSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2021, 9, 8) Implements IWANPPPConnectionSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWANPPPConnectionSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.wanpppconnSCPD Implements IWANPPPConnectionSCPD.Servicefile
 

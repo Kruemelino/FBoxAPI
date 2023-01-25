@@ -1,13 +1,15 @@
 ﻿''' <summary>
 ''' TR-064 Support – Hosts
-''' Date:  2020-12-01
+''' Date: 2022-10-13
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/hostsSCPD.pdf</see>
 ''' </summary>
 Public Interface IHostsSCPD
     Inherits IServiceBase
+
     Function GetHostNumberOfEntries(ByRef HostNumberOfEntries As Integer) As Boolean
     Function GetSpecificHostEntry(MACAddress As String, ByRef Host As HostEntry) As Boolean
     Function GetGenericHostEntry(HostNumberOfEntries As Integer, ByRef Host As HostEntry) As Boolean
+    Function GetInfo(ByRef Info As HostsInfo) As Boolean
     Function GetChangeCounter(ByRef ChangeCounter As Integer) As Boolean
     Function GetAutoWakeOnLANByMACAddress(MACAddress As String, ByRef AutoWOLEnabled As Boolean) As Boolean
     Function SetAutoWakeOnLANByMACAddress(MACAddress As String, AutoWOLEnabled As Boolean) As Boolean
@@ -18,13 +20,19 @@ Public Interface IHostsSCPD
     Function HostDoUpdate(MACAddress As String) As Boolean
 
     ''' <summary>
+    ''' Activate or deactivate the realtime priority for the host with the given IP address
+    ''' </summary>
+    ''' <remarks>Required rights: App or Phone</remarks>
+    Function SetPrioritizationByIP(IPAddress As String, Priority As Boolean) As Boolean
+
+    ''' <summary>
     ''' Gets a path to a lua script file, which generates an XML structured list of hosts.
     ''' </summary>
     ''' <param name="HostListPath">Related path to lua script which generates a formatted list
     ''' <br/>
     ''' e. g. /devicehostlist.lua?sid=97ebd547080a032a
     ''' </param>
-    ''' <remarks>Required rights : PhoneRight, AppRight</remarks>
+    ''' <remarks>Required rights : App or Phone</remarks>
     Function GetHostListPath(ByRef HostListPath As String) As Boolean
 
     ''' <summary>
@@ -65,5 +73,26 @@ Public Interface IHostsSCPD
     ''' </remarks>
     Function GetMeshListPath(ByRef MeshListPath As String) As Boolean
 
+    ''' <summary>
+    ''' Gets the own friendly name of the requesting client
+    ''' </summary>
+    Function GetFriendlyName(ByRef FriendlyName As String) As Boolean
 
+    ''' <summary>
+    ''' Sets the own friendly name only if the current friendly name was auto generated (e.g. PC-192.168.178.20) or from type android-123456789abcdef.
+    ''' </summary>
+    ''' <remarks>Required rights : App, Phone, NAS or HomeAutomation</remarks>
+    Function SetFriendlyName(FriendlyName As String) As Boolean
+
+    ''' <summary>
+    ''' Sets the friendly name for device with given IP
+    ''' </summary>
+    ''' <returns>Required rights : App</returns>
+    Function SetFriendlyNameByIP(IPAddress As String, FriendlyName As String) As Boolean
+
+    ''' <summary>
+    ''' Sets the friendly name for device with given MAC
+    ''' </summary>
+    ''' <returns>Required rights : App</returns>
+    Function SetFriendlyNameByMAC(MACAddress As String, FriendlyName As String) As Boolean
 End Interface

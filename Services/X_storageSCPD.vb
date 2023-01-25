@@ -1,11 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_Storage  
-''' Date: 2019-02-21
+''' Date: 2022-02-14
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_storageSCPD.pdf</see>
 ''' </summary>
 Friend Class X_storageSCPD
     Implements IX_storageSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 14) Implements IX_storageSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_storageSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_storageSCPD Implements IX_storageSCPD.Servicefile
 

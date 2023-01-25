@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_WebDAVClient  
-''' Date: 2020-09-03
+''' Date: 2022-10-17
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_appsetup.pdf</see>
 ''' </summary>
 Public Interface IX_appsetupSCPD
@@ -148,5 +148,13 @@ Public Interface IX_appsetupSCPD
                               IPSecXauthUsername As String,
                               IPSecXauthPassword As String) As Boolean
 
-
+    ''' <summary>
+    ''' Return the box sender id.
+    ''' </summary>
+    ''' <param name="AppId">Identifier of the app instance the message belongs to.</param>
+    ''' <param name="BoxSenderId">Sender Id used in messages from this box to the app. 
+    ''' The app can associate this BoxSenderId to the EncryptionKey to find the needed key to decrypt a received message from a box.</param>
+    ''' <remarks>Required rights: configuration (write access).<br/>
+    ''' The security context of this action must belong to an app instance.</remarks>
+    Function GetBoxSenderId(AppId As String, ByRef BoxSenderId As String) As Boolean
 End Interface

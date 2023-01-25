@@ -6,6 +6,7 @@
 Friend Class Layer3ForwardingSCPD
     Implements ILayer3ForwardingSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2009, 7, 15) Implements ILayer3ForwardingSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ILayer3ForwardingSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.layer3forwardingSCPD Implements ILayer3ForwardingSCPD.Servicefile
 

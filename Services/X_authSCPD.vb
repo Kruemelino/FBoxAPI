@@ -1,10 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – Authentication
-''' Date: 2016-10-06
+''' Date: 2022-02-11
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_auth.pdf</see>
 ''' </summary>
 Friend Class X_authSCPD
     Implements IX_authSCPD
+
+    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 11) Implements IX_authSCPD.DocumentationDate
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_authSCPD.TR064Start
 

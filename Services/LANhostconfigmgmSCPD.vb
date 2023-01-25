@@ -6,6 +6,7 @@
 Friend Class LANhostconfigmgmSCPD
     Implements ILANhostconfigmgmSCPD
 
+    Public ReadOnly Property DocumentationDate As Date = New Date(2015, 11, 20) Implements ILANhostconfigmgmSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ILANhostconfigmgmSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.lanhostconfigmgmSCPD Implements ILANhostconfigmgmSCPD.Servicefile
 

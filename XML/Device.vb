@@ -12,6 +12,8 @@
     <XmlElement("modelURL")> Public Property Display As String
     <XmlElement("UDN")> Public Property UDN As String
     <XmlElement("UPC")> Public Property UPC As String
+    <XmlElement("serialNumber")> Public Property SerialNumber As String
+    <XmlElement("originUDN")> Public Property OriginUDN As String
     <XmlArray("iconList")> <XmlArrayItem("icon")> Public Property IconList As List(Of Icon)
     <XmlArray("serviceList")> <XmlArrayItem("service")> Public Property ServiceList As List(Of Service)
     <XmlArray("deviceList")> <XmlArrayItem("device")> Public Property DeviceList As List(Of Device)
