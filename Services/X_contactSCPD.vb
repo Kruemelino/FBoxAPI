@@ -2,14 +2,14 @@
 Imports System.Xml
 ''' <summary>
 ''' TR-064 Support – X_AVM-DE_OnTel
-''' Date: 2022-10-17
+''' Date: 2023-01-19
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf</see>
 ''' </summary>
 Friend Class X_contactSCPD
     Inherits APIConnectorBase ' Wozu?
     Implements IX_contactSCPD
 
-    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 17) Implements IX_contactSCPD.DocumentationDate
+    Public ReadOnly Property DocumentationDate As Date = New Date(2023, 1, 19) Implements IX_contactSCPD.DocumentationDate
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_contactSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_contactSCPD Implements IX_contactSCPD.Servicefile

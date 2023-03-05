@@ -3,6 +3,7 @@
 <Serializable(), XmlType("telephony")> Public Class Telephony
     <XmlArray("services"), XmlArrayItem("email")> Public Property Emails As List(Of Email)
     <XmlElement("number")> Public Property Numbers As List(Of NumberType)
+    <XmlElement("doorphone")> Public Property Doorphone As DoorPhone
     <XmlAttribute("nid")> Public Property ID As Integer
 
     Public Sub New()

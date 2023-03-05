@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_OnTel
-''' Date: 2022-10-17
+''' Date: 2023-01-19
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf</see>
 ''' </summary>
 Public Interface IX_contactSCPD
