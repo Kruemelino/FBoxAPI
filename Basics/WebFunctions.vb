@@ -163,10 +163,12 @@ Friend Class WebFunctions
                                 SendLog(LogLevel.Warning, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response:{vbCrLf}{reader.ReadToEnd()}")
                             End Using
                         End Using
+
+                        .Close()
                     Else
                         SendLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} ")
                     End If
-                    .Close()
+
                 End With
 
             Finally
@@ -207,10 +209,11 @@ Friend Class WebFunctions
                                 SendLog(LogLevel.Warning, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response:{vbCrLf}{reader.ReadToEnd()}")
                             End Using
                         End Using
+                        .Close()
                     Else
                         SendLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} ")
                     End If
-                    .Close()
+
                 End With
 
             Finally
@@ -255,11 +258,12 @@ Friend Class WebFunctions
                                 SendLog(LogLevel.Warning, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; RequestContent: {vbCrLf}{PostData}{vbCrLf}Response:{vbCrLf}{ReturnString}")
                             End Using
                         End Using
+
+                        ' Prüfen: Potentieller Fehler beim Debuggen: ServerCertificateValidationCallback bereits auf Nothing gesetzt.
+                        .Close()
                     Else
                         SendLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message}; RequestContent: {vbCrLf}{PostData} ")
                     End If
-                    ' Prüfen: Potentieller Fehler beim Debuggen: ServerCertificateValidationCallback bereits auf Nothing gesetzt.
-                    .Close()
                 End With
             Finally
                 ' Restore SSL Certificate Validation Checking
