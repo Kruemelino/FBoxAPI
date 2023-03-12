@@ -111,8 +111,8 @@ Der Ablauf des Authentifizierungsprozesses ist in [X_AVM-DE_Auth](https://avm.de
 Sobald für eine Action eine eine Zwei-Faktor-Authentifizierung erforderlich ist, signalisiert diese API dies über die `FBoxAPIConnector`-Schnittstelle, welche hierfür mit der Routine `Signal2FAuthentication` ergänzt wurde. 
 Der Parameter `Methods` enhält die erlaubten Methoden, z. B. `button,dtmf;*14048`. Sobald der Nutzer die Authentifizierung durchgeführt hat, wird die ursprüngliche Action erneut ausgeführt. 
 Die Ergebnisse des Authentifizierungsprozesses werden über die `LogMessage` ausgegeben. 
-* Über die Eigenschaft `AbortAuthentication` kann der API signalisiert werden, dass der Authentifizierungsporzess abgebrochen werden soll.
-* Über die Eigenschaft `AuthenticationSuccesful` signalisiert die API, dass der Authentifizierungsporzess abgeschlossen wurde.
+* Über die Eigenschaft `AbortAuthentication` kann der API signalisiert werden, dass der Authentifizierungsprozess abgebrochen werden soll.
+* Über die Eigenschaft `AuthenticationSuccesful` signalisiert die API, dass der Authentifizierungsprozess abgeschlossen wurde.
 
 ```vbnet
 Imports FBoxAPI
