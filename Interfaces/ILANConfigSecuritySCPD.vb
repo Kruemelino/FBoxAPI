@@ -9,6 +9,8 @@ Public Interface ILANConfigSecuritySCPD
     ''' <param name="MaxCharsPassword">32</param>
     ''' <param name="MinCharsPassword">0</param>
     ''' <param name="AllowedCharsPassword">01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!”#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~(*)</param>
+    ''' <param name="AllowedCharsUsername">01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -._</param>
+    ''' <param name="IsDefaultPasswordActive">0 – no user with default password<br/>1 – at least one user with default password</param>
     Function GetInfo(ByRef MaxCharsPassword As Integer,
                      ByRef MinCharsPassword As Integer,
                      ByRef AllowedCharsPassword As String,

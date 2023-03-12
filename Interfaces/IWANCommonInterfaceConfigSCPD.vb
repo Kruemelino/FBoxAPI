@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – WANCommonInterfaceConfig
-''' Date: 2018-09-05
+''' Date: 2023-01-20
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wancommonifconfigSCPD.pdf</see>
 ''' </summary>
 Public Interface IWANCommonInterfaceConfigSCPD
@@ -16,22 +16,26 @@ Public Interface IWANCommonInterfaceConfigSCPD
                                      ByRef UpstreamCurrentMaxSpeed As Integer) As Boolean
 
     ''' <summary>
-    ''' Needs IGD to work
+    ''' Returns the total number of bytes sent over all interfaces during their connection interval. 
+    ''' If an interface establish a new connection, its counter gets reset to 0.
     ''' </summary>
     Function GetTotalBytesSent(ByRef TotalBytesSent As Integer) As Boolean
 
     ''' <summary>
-    ''' Needs IGD to work
+    ''' Returns the total number of bytes received over all interfaces during their connection interval. 
+    ''' If an interface establish a new connection, its counter gets reset to 0.
     ''' </summary>
     Function GetTotalBytesReceived(ByRef TotalBytesReceived As Integer) As Boolean
 
     ''' <summary>
-    ''' Needs IGD to work
+    ''' Returns the total number of packets sent over all interfaces during their connection interval. 
+    ''' If an interface establish a new connection, its counter gets reset to 0.
     ''' </summary>
     Function GetTotalPacketsSent(ByRef TotalPacketsSent As Integer) As Boolean
 
     ''' <summary>
-    ''' Needs IGD to work
+    ''' Returns the total number of packets received over all interfaces during their connection interval. 
+    ''' If an interface establish a new connection, its counter gets reset to 0.
     ''' </summary>
     Function GetTotalPacketsReceived(ByRef TotalPacketsReceived As Integer) As Boolean
 

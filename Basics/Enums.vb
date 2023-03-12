@@ -3,10 +3,40 @@ Imports System.Xml.Serialization
 
 Public Enum AVMErrorCodes
     InvalidArguments = 402
+    ActionFailed = 501
     ArgumentValueIsInvalid = 600
+    DeviceIsOutOfMemory = 603
     NotAuthorized = 606
     InvalidArrayIndex = 713
+    NoSuchArrayEntryInArray = 714
+    StringTooShort = 801
+    StringTooLong = 802
+    ArgumentContainsInvalidCharacters = 803
     InternalError = 820
+    AppIDIsTooShort = 821
+    AppIDIsTooLong = 822
+    AppIDContainsInvalidCharacters = 823
+    AppDisplayIsTooShort = 824
+    AppDisplayIsTooLong = 825
+    AppDisplayContainsInvalidCharacters = 826
+    InvalidMACAddress = 827
+    AAppUserNameIsTooShort = 828
+    AAppUserNameIsTooLong = 829
+    AppUserNameContainsInvalidCharacters = 830
+    AppUserNameAlreadyExists = 831
+    AppPasswordIsTooShort = 832
+    AppPasswordIsTooLong = 833
+    AppPasswordContainsInvalidCharacters = 834
+    MaximumNumbersOfAppsHasBeenReached = 835
+    NoAllowedRightValue = 836
+    SecurityContext = 837
+    AppMayNotRegisterApp = 838
+    AppMayNotRegisterAppFromInternet = 839
+    AppNoRights = 840
+    ''' <summary>
+    ''' Does not have to be interpreted as an error. The app instance is created. But HTTPS is inactive.
+    ''' </summary>
+    EnableHTTPSFailedByRegisterApp = 841
     AuthenticationRequired = 866
     AuthenticationBlocked = 867
     AuthenticationBusy = 868
@@ -546,6 +576,14 @@ End Enum
 
 #End Region
 
+#Region "UserInterface"
+Public Enum AutoUpdateModeEnum
+    off
+    all
+    important
+    check
+End Enum
+
 Public Enum UpdateStateEnum
     Started
     Stopped
@@ -555,12 +593,28 @@ Public Enum UpdateStateEnum
     Unknown
 End Enum
 
-Public Enum AutoUpdateModeEnum
-    off
-    all
-    important
-    check
+Public Enum BuildTypeEnum
+    Release
+    Intern
+    Work
+    Personal
+    Modified
+    Inhaus
+    Labor_Beta
+    Labor_RC
+    Labor_DSL
+    Labor_Phone
+    Labor
+    Labor_Test
+    Labor_Plus
 End Enum
+
+Public Enum UpdateSuccessfulEnum
+    unknown
+    failed
+    succeeded
+End Enum
+#End Region
 
 #Region "WAN"
 Public Enum ConnectionStatusEnum

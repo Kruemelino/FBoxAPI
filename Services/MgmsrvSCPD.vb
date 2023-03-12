@@ -66,7 +66,7 @@ Friend Class MgmsrvSCPD
     End Function
 
     Public Function GetTR069FirmwareDownloadEnabled(ByRef TR069FirmwareDownloadEnabled As Boolean) As Boolean Implements IMgmsrvSCPD.GetTR069FirmwareDownloadEnabled
-        Return TR064Start(ServiceFile, "X_AVM_DE_GetTR069FirmwareDownloadEnabled", Nothing).TryGetValueEx("TR069FirmwareDownloadEnabled", TR069FirmwareDownloadEnabled)
+        Return TR064Start(ServiceFile, "X_AVM_DE_GetTR069FirmwareDownloadEnabled", Nothing).TryGetValueEx("NewTR069FirmwareDownloadEnabled", TR069FirmwareDownloadEnabled)
     End Function
 
     Public Function SetTR069FirmwareDownloadEnabled(TR069FirmwareDownloadEnabled As Boolean) As Boolean Implements IMgmsrvSCPD.SetTR069FirmwareDownloadEnabled

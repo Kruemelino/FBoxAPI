@@ -1,12 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – WANCommonInterfaceConfig
-''' Date: 2022-10-17
+''' Date: 2023-01-20
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wancommonifconfigSCPD.pdf</see>
 ''' </summary>
 Friend Class WANCommonInterfaceConfigSCPD
     Implements IWANCommonInterfaceConfigSCPD
 
-    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 17) Implements IWANCommonInterfaceConfigSCPD.DocumentationDate
+    Public ReadOnly Property DocumentationDate As Date = New Date(2023, 1, 20) Implements IWANCommonInterfaceConfigSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWANCommonInterfaceConfigSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.wancommonifconfigSCPD Implements IWANCommonInterfaceConfigSCPD.Servicefile
 
