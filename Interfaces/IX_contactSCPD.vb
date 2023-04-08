@@ -117,8 +117,8 @@ Public Interface IX_contactSCPD
     ''' <param name="PhonebookExtraID">The value of <paramref name="PhonebookExtraID"/> may be an empty string. </param>
     Function GetPhonebook(PhonebookID As Integer,
                           ByRef PhonebookURL As String,
-                          Optional ByRef PhonebookName As String = "",
-                          Optional ByRef PhonebookExtraID As String = "") As Boolean
+                          ByRef PhonebookName As String,
+                          ByRef PhonebookExtraID As String) As Boolean
 
     ''' <summary>
     ''' Inoffizielle asynchrone Action: Ermittelt das Telefonbuches als deserialisiertes Datenobjekt vom Typ <see cref="PhonebooksType"/>.
@@ -152,6 +152,11 @@ Public Interface IX_contactSCPD
     Function GetPhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean
 
     ''' <summary>
+    ''' Inoffizielle Action: GetPhonebookEntry wird als <see cref="Contact"/> deserialisiert zurückgegeben.
+    ''' </summary>
+    Function GetPhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer) As Task(Of Contact)
+
+    ''' <summary>
     ''' Get a single telephone book entry from the specified book using the unique ID from the entry.
     ''' </summary>
     ''' <param name="PhonebookID">Number for a single phonebook.</param>
@@ -159,6 +164,11 @@ Public Interface IX_contactSCPD
     ''' <param name="PhonebookEntryData">XML document with a single entry. </param>
 
     Function GetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryUniqueID As Integer, ByRef PhonebookEntryData As String) As Boolean
+
+    ''' <summary>
+    ''' Inoffizielle Action: GetPhonebookEntryUID wird als <see cref="Contact"/> deserialisiert zurückgegeben.
+    ''' </summary>
+    Function GetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryUniqueID As Integer) As Task(Of Contact)
 
     ''' <summary>
     ''' Add a new or change an existing entry in a telephone book using the unique ID of the entry

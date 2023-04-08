@@ -31,6 +31,15 @@ Friend Module Extensions
     <Extension()> Public Function IsLarger(Val1 As Double, Val2 As Double) As Boolean
         Return Val2 - Val1 < Double.Epsilon
     End Function
+
+    ''' <summary>
+    ''' Prüft, ob die beiden übergebenen Größen gleich sind: <paramref name="Val1"/> == <paramref name="Val2"/>
+    ''' </summary>
+    ''' <param name="Val1">Erste zu prüfende Größe</param>
+    ''' <param name="Val2">Zweite zu prüfende Größe</param>
+    <Extension()> Public Function AreEqual(Val1 As Integer, Val2 As Integer) As Boolean
+        Return (Val1 - Val2).IsZero
+    End Function
 #End Region
 
 #Region "Extensions für Verarbeitung von Zeichenfolgen: String"

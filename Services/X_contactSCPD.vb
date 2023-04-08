@@ -175,8 +175,8 @@ Friend Class X_contactSCPD
 
     Public Function GetPhonebook(PhonebookID As Integer,
                                  ByRef PhonebookURL As String,
-                                 Optional ByRef PhonebookName As String = "",
-                                 Optional ByRef PhonebookExtraID As String = "") As Boolean Implements IX_contactSCPD.GetPhonebook
+                                 ByRef PhonebookName As String,
+                                 ByRef PhonebookExtraID As String) As Boolean Implements IX_contactSCPD.GetPhonebook
 
         With TR064Start(ServiceFile, "GetPhonebook", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString}})
 
@@ -200,7 +200,7 @@ Friend Class X_contactSCPD
         '                                                             xslt)
         Dim PhonebookUrl As String = String.Empty
 
-        If GetPhonebook(PhonebookID, PhonebookUrl) Then
+        If GetPhonebook(PhonebookID, PhonebookUrl, String.Empty, String.Empty) Then
             Return Await XML.DeserializeAsyncFromPath(Of PhonebooksType)(PhonebookUrl, xslt)
         Else
             ' Gib eine leere Liste zurück
@@ -231,12 +231,32 @@ Friend Class X_contactSCPD
                           TryGetValueEx("NewPhonebookEntryData", PhonebookEntryData)
     End Function
 
+    Public Async Function GetPhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer) As Task(Of Contact) Implements IX_contactSCPD.GetPhonebookEntry
+        ' Ermittle den Pfad zu Rufsperre und deserialisiere die Daten
+        Return Await XML.DeserializeAsyncData(Of Contact)((TR064Start(ServiceFile,
+                                                                      "GetPhonebookEntry",
+                                                                      New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
+                                                                                                              {"NewPhonebookEntryID", PhonebookEntryID.ToString}})).
+                                                                      TryGetValueEx(Of String)("NewPhonebookEntryData"))
+    End Function
+
     Public Function GetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryUniqueID As Integer, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetPhonebookEntryUID
         Return TR064Start(ServiceFile, "GetPhonebookEntryUID",
                           New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
                                                                   {"NewPhonebookEntryUniqueID", PhonebookEntryUniqueID.ToString}}).
                           TryGetValueEx("NewPhonebookEntryData", PhonebookEntryData)
     End Function
+
+
+    Public Async Function GetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryUniqueID As Integer) As Task(Of Contact) Implements IX_contactSCPD.GetPhonebookEntryUID
+        ' Ermittle den Pfad zu Rufsperre und deserialisiere die Daten
+        Return Await XML.DeserializeAsyncData(Of Contact)((TR064Start(ServiceFile,
+                                                                      "GetPhonebookEntryUID",
+                                                                      New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
+                                                                                                              {"NewPhonebookEntryUniqueID", PhonebookEntryUniqueID.ToString}})).
+                                                                      TryGetValueEx(Of String)("NewPhonebookEntryData"))
+    End Function
+
 
     Public Function SetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryData As String, ByRef PhonebookEntryUniqueID As Integer) As Boolean Implements IX_contactSCPD.SetPhonebookEntryUID
         Return TR064Start(ServiceFile, "SetPhonebookEntryUID",

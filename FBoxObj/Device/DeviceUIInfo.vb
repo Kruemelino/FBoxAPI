@@ -18,6 +18,4 @@
     ''' </summary>
     Public Property BuildType As BuildTypeEnum
     Public Property SetupAssistantStatus As Boolean
-
-
 End Class
