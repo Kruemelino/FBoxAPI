@@ -1,5 +1,6 @@
 ﻿Imports System.Xml.Serialization
 <Serializable(), XmlType("contact")> Public Class Contact
+    Implements IEquatable(Of Contact)
 
     ''' <summary>
     ''' Wichtige Person = 1, Optional, VIP == 1
@@ -17,4 +18,12 @@
 
     <XmlElement("mod_time")> Public Property Mod_Time As String
 
+    Public Overloads Function Equals(other As Contact) As Boolean Implements IEquatable(Of Contact).Equals
+        ' Vergleich auf Mod_Time und Uniqueid wird übergangen
+        With other
+            Return Category.AreEqual(.Category) AndAlso
+                   Person.Equals(.Person) AndAlso
+                   Telephony.Equals(.Telephony)
+        End With
+    End Function
 End Class

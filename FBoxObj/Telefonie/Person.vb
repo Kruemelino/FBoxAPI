@@ -1,6 +1,8 @@
 ﻿Imports System.Xml.Serialization
 
 <Serializable(), XmlType("person")> Public Class Person
+    Implements IEquatable(Of Person)
+
     <XmlElement("realName")> Public Property RealName As String
 
 
@@ -19,4 +21,7 @@
     ''' <returns>HTTP URL to image for this contact</returns>
     <XmlElement("imageURL")> Public Property ImageURL As String
 
+    Public Overloads Function Equals(other As Person) As Boolean Implements IEquatable(Of Person).Equals
+        Return RealName.AreEqual(other.RealName) AndAlso ImageURL.AreEqual(other.ImageURL)
+    End Function
 End Class
