@@ -7,6 +7,6 @@
     <XmlElement("openkey")> Public Property Openkey As String
 
     Public Overloads Function Equals(other As DoorPhone) As Boolean Implements IEquatable(Of DoorPhone).Equals
-        Return VideoURL.AreEqual(other.VideoURL) AndAlso Openkey.Equals(other.Openkey)
+        Return _VideoURL.AreEqual(other._VideoURL) AndAlso _Openkey.Equals(other._Openkey)
     End Function
 End Class

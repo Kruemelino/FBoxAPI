@@ -13,9 +13,9 @@
     Public Overloads Function Equals(other As NumberType) As Boolean Implements IEquatable(Of NumberType).Equals
         ' Vergleich auf ID, Vanity und Prio wird übergangen
         With other
-            Return Type = .Type AndAlso
-                   QuickDial.AreEqual(.QuickDial) AndAlso
-                   Number.AreEqual(.Number)
+            Return _Type = ._Type AndAlso
+                   _QuickDial.AreEqual(._QuickDial) AndAlso
+                   _Number.AreEqual(._Number)
         End With
 
     End Function

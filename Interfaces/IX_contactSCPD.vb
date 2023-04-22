@@ -106,7 +106,7 @@ Public Interface IX_contactSCPD
     '''     The following URL parameters are supported.
     '''     <list type="bullet">
     '''     <listheader>The following URL parameters are supported.</listheader>
-    '''     <item><term>pbid</term> (number): number of days to look back for calls e.g. 1: calls from today and yesterday, 7: calls from the complete last week, Default 999</item>
+    '''     <item><term>pbid</term> (number): Phonebook ID</item>
     '''     <item><term>max</term> (number): maximum number of entries in call list, default 999</item>
     '''     <item><term>sid</term> (hex-string): Session ID for authentication </item>
     '''     <item><term>timestamp</term> (number): value from timestamp tag, to get the phonebook content only if last modification was made after this timestamp</item>
@@ -123,7 +123,10 @@ Public Interface IX_contactSCPD
     ''' <summary>
     ''' Inoffizielle asynchrone Action: Ermittelt das Telefonbuches als deserialisiertes Datenobjekt vom Typ <see cref="PhonebooksType"/>.
     ''' </summary>
-    Function GetPhonebook(PhonebookID As Integer) As Task(Of PhonebooksType)
+    ''' <param name="PhonebookID">ID of the phonebook.</param>
+    ''' <param name="TimeStamp">value from timestamp tag, to get the phonebook content only if last modification was made after this timestamp</param>
+    Function GetPhonebook(PhonebookID As Integer,
+                          Optional TimeStamp As Integer = 0) As Task(Of PhonebooksType)
 
     ''' <summary>
     ''' Fügt ein neues Telefonbuch hinzu.

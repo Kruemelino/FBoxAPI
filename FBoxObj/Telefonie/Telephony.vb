@@ -17,10 +17,10 @@
         ' Vergleich auf ID wird übergangen
         With other
 
-            Return Emails.SequenceEqual(.Emails) AndAlso
-                   Numbers.SequenceEqual(.Numbers) AndAlso
-                   (Doorphone Is Nothing And .Doorphone Is Nothing) OrElse
-                   (Doorphone IsNot Nothing And .Doorphone IsNot Nothing AndAlso Doorphone.Equals(.Doorphone))
+            Return _Emails.SequenceEqual(._Emails) AndAlso
+                   _Numbers.SequenceEqual(._Numbers) AndAlso
+                   (_Doorphone Is Nothing And ._Doorphone Is Nothing) OrElse
+                   (_Doorphone IsNot Nothing And ._Doorphone IsNot Nothing AndAlso _Doorphone.Equals(._Doorphone))
 
         End With
 

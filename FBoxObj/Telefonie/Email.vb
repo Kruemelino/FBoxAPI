@@ -7,7 +7,7 @@
     <XmlAttribute("classifier")> Public Property Classifier As EMailTypEnum
 
     Public Overloads Function Equals(other As Email) As Boolean Implements IEquatable(Of Email).Equals
-        Return EMail.AreEqual(other.EMail) AndAlso Classifier = other.Classifier
+        Return _EMail.AreEqual(other._EMail) AndAlso _Classifier = other._Classifier
     End Function
 End Class
 

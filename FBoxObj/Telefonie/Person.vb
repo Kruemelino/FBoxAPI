@@ -22,6 +22,6 @@
     <XmlElement("imageURL")> Public Property ImageURL As String
 
     Public Overloads Function Equals(other As Person) As Boolean Implements IEquatable(Of Person).Equals
-        Return RealName.AreEqual(other.RealName) AndAlso ImageURL.AreEqual(other.ImageURL)
+        Return _RealName.AreEqual(other._RealName) AndAlso _ImageURL.AreEqual(other._ImageURL)
     End Function
 End Class

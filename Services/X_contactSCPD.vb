@@ -187,20 +187,19 @@ Friend Class X_contactSCPD
 
     End Function
 
-    Public Async Function GetPhonebook(PhonebookID As Integer) As Task(Of PhonebooksType) Implements IX_contactSCPD.GetPhonebook
+    Public Async Function GetPhonebook(PhonebookID As Integer, Optional Timestamp As Integer = 0) As Task(Of PhonebooksType) Implements IX_contactSCPD.GetPhonebook
 
         ' Lade die xslt Transformationsdatei
         Dim xslt As New Xsl.XslCompiledTransform
         xslt.Load(XmlReader.Create(Assembly.GetExecutingAssembly.GetManifestResourceStream("FBoxAPI.ToLower.xslt")))
 
-        ''Ermittle den Pfad zum Telefonbuch und deserialisiere die Daten
-        'Return Await XML.DeserializeAsyncFromPath(Of PhonebooksType)(TR064Start(ServiceFile,
-        '                                                                         "GetPhonebook",
-        '                                                                         New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString}}).TryGetValueEx(Of String)("NewPhonebookURL"),
-        '                                                             xslt)
         Dim PhonebookUrl As String = String.Empty
 
         If GetPhonebook(PhonebookID, PhonebookUrl, String.Empty, String.Empty) Then
+            ' Erweitere die URL um den timestamp 
+            ' value from timestamp tag, to get the phonebook content only if last modification was made after this timestamp 
+            If Timestamp.IsNotZero Then PhonebookUrl += $"&timestamp={Timestamp}"
+
             Return Await XML.DeserializeAsyncFromPath(Of PhonebooksType)(PhonebookUrl, xslt)
         Else
             ' Gib eine leere Liste zurück

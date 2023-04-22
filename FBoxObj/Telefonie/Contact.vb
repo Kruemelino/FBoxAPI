@@ -16,14 +16,18 @@
 
     <XmlElement("telephony")> Public Property Telephony As Telephony
 
+    <XmlElement("features")> Public Property Features As Features
+
     <XmlElement("mod_time")> Public Property Mod_Time As String
 
     Public Overloads Function Equals(other As Contact) As Boolean Implements IEquatable(Of Contact).Equals
         ' Vergleich auf Mod_Time und Uniqueid wird übergangen
         With other
-            Return Category.AreEqual(.Category) AndAlso
-                   Person.Equals(.Person) AndAlso
-                   Telephony.Equals(.Telephony)
+            Return _Category.AreEqual(._Category) AndAlso
+                   _Person.Equals(._Person) AndAlso
+                   _Telephony.Equals(._Telephony) AndAlso
+                   (_Features Is Nothing And ._Features Is Nothing) OrElse
+                   (_Features IsNot Nothing And ._Features IsNot Nothing AndAlso _Features.Equals(._Features))
         End With
     End Function
 End Class
