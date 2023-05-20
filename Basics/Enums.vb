@@ -42,14 +42,22 @@ Public Enum AVMErrorCodes
     AuthenticationBusy = 868
 End Enum
 
+Public Enum DESCFiles
+    <Description("/igddesc.xml")> igddesc
+
+    <Description("/igd2desc.xml")> igd2desc
+
+    <Description("/tr64desc.xml")> tr64desc
+
+    <Description("/aura.xml")> auradesc
+End Enum
+
 ''' <summary>
 ''' ServiceControlProtocolDefinitions 
 ''' </summary>
 Public Enum SCPDFiles
-
-    '<Description("/any.xml")> any
-
-    <Description("/aura.xml")> auradesc
+    ' TR064
+    <Description("/any.xml")> any
 
     <Description("/aura-scpd.xml")> auraSCPD
 
@@ -60,14 +68,6 @@ Public Enum SCPDFiles
     <Description("/ethifconfigSCPD.xml")> ethifconfigSCPD
 
     <Description("/hostsSCPD.xml")> hostsSCPD
-
-    '<Description("/igdconnSCPD.xml")> igdconnSCPD
-
-    '<Description("/igddesc.xml")> igddesc
-
-    '<Description("/igddslSCPD.xml")> igddslSCPD
-
-    '<Description("/igdicfgSCPD.xml")> igdicfgSCPD
 
     <Description("/lanconfigsecuritySCPD.xml")> lanconfigsecuritySCPD
 
@@ -80,8 +80,6 @@ Public Enum SCPDFiles
     <Description("/mgmsrvSCPD.xml")> mgmsrvSCPD
 
     <Description("/timeSCPD.xml")> timeSCPD
-
-    <Description("/tr64desc.xml")> tr64desc
 
     <Description("/userifSCPD.xml")> userifSCPD
 
@@ -103,9 +101,6 @@ Public Enum SCPDFiles
 
     <Description("/x_authSCPD.xml")> x_authSCPD
 
-    ''' <summary>
-    ''' X_AVM-DE_OnTel
-    ''' </summary>
     <Description("/x_contactSCPD.xml")> x_contactSCPD
 
     <Description("/x_dectSCPD.xml")> x_dectSCPD
@@ -140,6 +135,23 @@ Public Enum SCPDFiles
 
     <Description("/x_webdavSCPD.xml")> x_webdavSCPD
 
+    ' IDG1
+
+    <Description("/igdicfgSCPD.xml")> igd1icfgSCPD
+
+    <Description("/igddslSCPD.xml")> igd1dslSCPD
+
+    <Description("/igdconnSCPD.xml")> igd1connSCPD
+
+    ' IDG2
+
+    <Description("/igdicfgSCPD.xml")> igd2icfgSCPD
+
+    <Description("/igddslSCPD.xml")> igd2dslSCPD
+
+    <Description("/igd2connSCPD.xml")> igd2connSCPD
+
+    <Description("/igd2ipv6fwcSCPD.xml")> igd2ipv6fwcSCPD
 End Enum
 
 #Region "Telefonbuch"
@@ -378,18 +390,6 @@ Public Enum VoiceCodingEnum
     autocompressed
 End Enum
 
-Public Enum PhysicalLinkStatusEnum
-    Unavailable
-    Down
-    Initializing
-    Up
-End Enum
-
-Public Enum ATMEncapsulationEnum
-    LLC
-    VCMUX
-End Enum
-
 Public Enum UpdateEnum
     ''' <summary>
     ''' The update state is unknown
@@ -618,12 +618,36 @@ End Enum
 
 #Region "WAN"
 Public Enum ConnectionStatusEnum
+    ''' <summary>
+    ''' This value indicates that other variables in the service table are uninitialized or in an invalid state. Examples of such variables include PossibleConnectionTypes andnConnectionType.
+    ''' </summary>
     Unconfigured
+
+    ''' <summary>
+    ''' The WANConnectionDevice is in the process of initiating a connection for the first time after the connection became disconnected.
+    ''' </summary>
     Connecting
+
     Authenticating
+
+    ''' <summary>
+    ''' The connection is active (packets are allowed to flow through), but will transition to Disconnecting state after a certain period (indicated by WarnDisconnectDelay).
+    ''' </summary>
     PendingDisconnect
+
+    ''' <summary>
+    ''' The WANConnectionDevice is in the process of terminating a connection. On successful termination, ConnectionStatus transitions to Disconnected.
+    ''' </summary>
     Disconnecting
+
+    ''' <summary>
+    ''' No ISP connection is active (or being activated) from this connection instance. No packets are transiting the gateway. 
+    ''' </summary>
     Disconnected
+
+    ''' <summary>
+    ''' At least one client has successfully initiated an Internet connection using this instance.
+    ''' </summary>
     Connected
 End Enum
 
@@ -681,10 +705,40 @@ Public Enum EthernetLinkStatusEnum
     Unavailable
 End Enum
 
+Public Enum ATMEncapsulationEnum
+    LLC
+    VCMUX
+End Enum
+
 Public Enum LinkTypeEnum
+    ''' <summary>
+    ''' corresponds to RFC1483/2684-bridged "Ethernet over ATM"
+    ''' </summary>
     EoA
+
+    ''' <summary>
+    ''' corresponds to RFC1483/2684-routed "IP over ATM"
+    ''' </summary>
+    IPoA
+
+    ''' <summary>
+    ''' corresponds to RFC2364 "PPP over ATM"
+    ''' </summary>
     PPPoA
+
+    ''' <summary>
+    ''' corresponds to RFC2516 "PPP over Ethernet" on top of RFC1483-bridged "Ethernet over ATM"
+    ''' </summary>
     PPPoE
+
+    ''' <summary>
+    ''' corresponds to RFC1577 "Classical IP over ATM"
+    ''' </summary>
+    CIP
+
+    ''' <summary>
+    ''' corresponds to a free, unconfigured link
+    ''' </summary>
     Unconfigured
 End Enum
 
@@ -693,6 +747,12 @@ Public Enum LinkStatusEnum
     Down
     Initializing
     Unavailable
+End Enum
+Public Enum WANAccessTypeEnum
+    DSL
+    POTS
+    Cable
+    Ethernet
 End Enum
 
 Public Enum DigagnoseStateEnum

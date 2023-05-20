@@ -1,0 +1,52 @@
+﻿''' <summary>
+''' TR-064 Support – Internet Gateway Device Support
+''' Date: 2023-01-20
+''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/IGD1.pdf</see>
+''' </summary>
+''' <remarks>
+''' Based on the Internet Gateway Device (IGD) V1.0 and Internet Gateway Device (IGD) V2.0 
+''' specification proposed by UpnP™ Forum at <see href="http://upnp.org/specs/gw/igd1/"/> and 
+''' <see href="http://upnp.org/specs/gw/igd2/."/><br/>
+''' All information is based on the FRITZ!OS 6.93.<br/>
+''' WANDSLLinkConfig:1<br/>
+''' <seealso href="http://upnp.org/specs/gw/UPnP-gw-WANDSLLinkConfig-v1-Service.pdf"/>
+''' </remarks> 
+Public Class IGDI1dslSCPD
+    Implements IIGDI1dslSCPD
+
+    Public ReadOnly Property DocumentationDate As Date = New Date(2023, 1, 20) Implements IIGDI1dslSCPD.DocumentationDate
+    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IIGDI1dslSCPD.TR064Start
+    Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.igd1dslSCPD Implements IIGDI1dslSCPD.Servicefile
+
+    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+        TR064Start = Start
+    End Sub
+
+    Public Function GetDSLLinkInfo(ByRef LinkType As LinkTypeEnum, LinkStatus As LinkStatusEnum) As Boolean Implements IIGDI1dslSCPD.GetDSLLinkInfo
+        With TR064Start(ServiceFile, "GetDSLLinkInfo", Nothing)
+
+            Return .TryGetValueEx("NewLinkType", LinkType) And
+                   .TryGetValueEx("NewLinkStatus", LinkStatus)
+        End With
+    End Function
+
+    Public Function GetAutoConfig(ByRef AutoConfig As Boolean) As Boolean Implements IIGDI1dslSCPD.GetAutoConfig
+        Return TR064Start(ServiceFile, "GetAutoConfig", Nothing).TryGetValueEx("NewAutoConfig", AutoConfig)
+    End Function
+
+    Public Function GetModulationType(ByRef ModulationType As String) As Boolean Implements IIGDI1dslSCPD.GetModulationType
+        Return TR064Start(ServiceFile, "GetModulationType", Nothing).TryGetValueEx("NewModulationType", ModulationType)
+    End Function
+
+    Public Function GetDestinationAddress(ByRef DestinationAddress As String) As Boolean Implements IIGDI1dslSCPD.GetDestinationAddress
+        Return TR064Start(ServiceFile, "GetDestinationAddress", Nothing).TryGetValueEx("NewDestinationAddress", DestinationAddress)
+    End Function
+
+    Public Function GetATMEncapsulation(ByRef ATMEncapsulation As ATMEncapsulationEnum) As Boolean Implements IIGDI1dslSCPD.GetATMEncapsulation
+        Return TR064Start(ServiceFile, "GetATMEncapsulation", Nothing).TryGetValueEx("NewATMEncapsulation", ATMEncapsulation)
+    End Function
+
+    Public Function GetFCSPreserved(ByRef FCSPreserved As Boolean) As Boolean Implements IIGDI1dslSCPD.GetFCSPreserved
+        Return TR064Start(ServiceFile, "GetFCSPreserved", Nothing).TryGetValueEx("NewFCSPreserved", FCSPreserved)
+    End Function
+End Class

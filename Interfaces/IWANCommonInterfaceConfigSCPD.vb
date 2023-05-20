@@ -9,7 +9,7 @@ Public Interface IWANCommonInterfaceConfigSCPD
     Function GetCommonLinkProperties(ByRef WANAccessType As String,
                                      ByRef Layer1UpstreamMaxBitRate As Integer,
                                      ByRef Layer1DownstreamMaxBitRate As Integer,
-                                     ByRef PhysicalLinkStatus As PhysicalLinkStatusEnum,
+                                     ByRef PhysicalLinkStatus As LinkStatusEnum,
                                      ByRef DownStreamCurrentUtilization As String,
                                      ByRef UpstreamCurrentUtilization As String,
                                      ByRef DownstreamCurrentMaxSpeed As Integer,

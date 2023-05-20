@@ -38,7 +38,7 @@ Public Interface IWANIPConnectionSCPD
     Function GetSpecificPortMappingEntry(RemoteHost As String,
                                          ExternalPort As Integer,
                                          PortMappingProtocol As PortMappingProtocolEnum,
-                                         ByRef GenericPortMappingEntry As PortMappingEntry) As Boolean
+                                         ByRef SpecificPortMappingEntry As PortMappingEntry) As Boolean
 
     ''' <summary>
     ''' Port mapping entries are only allowed for hosts inside of LAN. 

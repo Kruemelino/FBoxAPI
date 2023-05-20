@@ -108,23 +108,23 @@ Friend Class WANIPConnectionSCPD
         End With
     End Function
 
-    Public Function GetSpecificPortMappingEntry(RemoteHost As String, ExternalPort As Integer, PortMappingProtocol As PortMappingProtocolEnum, ByRef GenericPortMappingEntry As PortMappingEntry) As Boolean Implements IWANIPConnectionSCPD.GetSpecificPortMappingEntry
-        If GenericPortMappingEntry Is Nothing Then GenericPortMappingEntry = New PortMappingEntry
+    Public Function GetSpecificPortMappingEntry(RemoteHost As String, ExternalPort As Integer, PortMappingProtocol As PortMappingProtocolEnum, ByRef SpecificPortMappingEntry As PortMappingEntry) As Boolean Implements IWANIPConnectionSCPD.GetSpecificPortMappingEntry
+        If SpecificPortMappingEntry Is Nothing Then SpecificPortMappingEntry = New PortMappingEntry
 
         With TR064Start(ServiceFile, "GetSpecificPortMappingEntry",
                         New Dictionary(Of String, String) From {{"NewRemoteHost", RemoteHost},
                                                                 {"NewExternalPort", ExternalPort.ToString},
                                                                 {"NewProtocol", PortMappingProtocol.ToString}})
 
-            GenericPortMappingEntry.RemoteHost = RemoteHost
-            GenericPortMappingEntry.ExternalPort = ExternalPort
-            GenericPortMappingEntry.PortMappingProtocol = PortMappingProtocol
+            SpecificPortMappingEntry.RemoteHost = RemoteHost
+            SpecificPortMappingEntry.ExternalPort = ExternalPort
+            SpecificPortMappingEntry.PortMappingProtocol = PortMappingProtocol
 
-            Return .TryGetValueEx("NewInternalPort", GenericPortMappingEntry.InternalPort) And
-                   .TryGetValueEx("NewInternalClient", GenericPortMappingEntry.InternalClient) And
-                   .TryGetValueEx("NewEnabled", GenericPortMappingEntry.PortMappingEnabled) And
-                   .TryGetValueEx("NewPortMappingDescription", GenericPortMappingEntry.PortMappingDescription) And
-                   .TryGetValueEx("NewLeaseDuration", GenericPortMappingEntry.PortMappingLeaseDuration)
+            Return .TryGetValueEx("NewInternalPort", SpecificPortMappingEntry.InternalPort) And
+                   .TryGetValueEx("NewInternalClient", SpecificPortMappingEntry.InternalClient) And
+                   .TryGetValueEx("NewEnabled", SpecificPortMappingEntry.PortMappingEnabled) And
+                   .TryGetValueEx("NewPortMappingDescription", SpecificPortMappingEntry.PortMappingDescription) And
+                   .TryGetValueEx("NewLeaseDuration", SpecificPortMappingEntry.PortMappingLeaseDuration)
         End With
     End Function
 

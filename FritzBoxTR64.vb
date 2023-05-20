@@ -6,6 +6,7 @@ Public Class FritzBoxTR64
     Implements IDisposable
 
     Public Property Ready As Boolean = False
+    Private Property UseAura As Boolean = False
     Friend Shared Property FBoxIPAdresse As String
     Private Property FBTR64Desc As TR64Desc
     Friend Property XML As Serializer
@@ -26,6 +27,13 @@ Public Class FritzBoxTR64
     Public Property DECT As IDECT_SCPD
     Public Property Deviceconfig As IDeviceconfigSCPD
     Public Property Deviceinfo As IDeviceinfoSCPD
+    Public Property IGD1conn As IIGD1connSCPD
+    Public Property IGD2conn As IIGD2connSCPD
+    Public Property IGD2ipv6fwc As IIGD2ipv6fwcSCPD
+    Public Property IGDI1cfg As IIGDI1cfgSCPD
+    Public Property IGDI2cfg As IIGDI2cfgSCPD
+    Public Property IGDI1dsl As IIGDI1dslSCPD
+    Public Property IGDI2dsl As IIGDI2dslSCPD
     Public Property Hosts As IHostsSCPD
     Public Property LANConfigSecurity As ILANConfigSecuritySCPD
     Public Property LANhostconfigmgm As ILANhostconfigmgmSCPD
@@ -73,21 +81,21 @@ Public Class FritzBoxTR64
     ''' <param name="FritzBoxAdresse">Die IP Adresse der Fritz!Box.</param>
     ''' <param name="Anmeldeinformationen">Die Anmeldeinformationen (Benutzername und Passwort) als <see cref="NetworkCredential"/>.</param>
     ''' <param name="APIConnector">Eine Klasse, die die Schnittstelle <see cref="IFBoxAPIConnector"/> implementiert und das Logging sowie die 2FA realisiert.</param>
-    Public Sub New(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential, Optional APIConnector As IFBoxAPIConnector = Nothing)
-        SetData(FritzBoxAdresse, Anmeldeinformationen, APIConnector)
+    Public Sub New(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential, Optional AuraService As Boolean = False, Optional APIConnector As IFBoxAPIConnector = Nothing)
+        SetData(FritzBoxAdresse, Anmeldeinformationen, AuraService, APIConnector)
     End Sub
 
     Public Sub New(Settings As Settings)
         If Settings IsNot Nothing Then
             With Settings
-                SetData(.FritzBoxAdresse, .Anmeldeinformationen, .FBAPIConnector)
+                SetData(.FritzBoxAdresse, .Anmeldeinformationen, .AuraService, .FBAPIConnector)
             End With
         End If
     End Sub
 #End Region
 
 #Region "Initialisierung"
-    Private Sub SetData(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential, Optional APIConnector As IFBoxAPIConnector = Nothing)
+    Private Sub SetData(FritzBoxAdresse As String, Anmeldeinformationen As NetworkCredential, Optional AuraService As Boolean = False, Optional APIConnector As IFBoxAPIConnector = Nothing)
         ' Setze die Verknüpfung zum FBAPIConnector
         _FBAPIConnector = APIConnector
 
@@ -100,44 +108,56 @@ Public Class FritzBoxTR64
         ' XML initialisieren
         _XML = New Serializer(Client)
 
+        _UseAura = AuraService
+
         ' Lade die TR064 Services, LUA und UserMode
-        InitServices(False)
+        InitServices()
 
         ' Lade alle relevanten Daten von der Fritz!Box und initialisiere die Services
         Ready = ConnectTR064()
     End Sub
 
     ''' <summary>
-    ''' Lädt alle TR-064Description herunter und initialisiert die Services
+    ''' Lädt alle Description herunter und initialisiert die Services
     ''' </summary>
     Private Async Function ConnectTR064Async() As Task(Of Boolean)
+        Dim Description As String
+        Dim Desc As TR64Desc
+        Services = New List(Of Service)
 
         If Client.Ping(FBoxIPAdresse) Then
 
-            Dim TR064Description As String = Await Client.GetStringWebClientAsync(New Uri($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{49000}{SCPDFiles.tr64desc.Description}"))
+            For Each DESCFile As DESCFiles In [Enum].GetValues(GetType(DESCFiles))
 
-            ' Herunterladen
-            If TR064Description.IsNotStringNothingOrEmpty Then
-                ' Deserialisieren
-                FBTR64Desc = Await XML.DeserializeAsyncData(Of TR64Desc)(TR064Description)
+                ' AURA nur laden, wenn es gewünscht ist
+                If Not DESCFile = DESCFiles.auradesc Or UseAura Then
+                    ' Herunterladen
+                    Description = Await Client.GetStringWebClientAsync(New Uri($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{49000}{DESCFile.Description}"))
 
-                If FBTR64Desc IsNot Nothing Then
-                    ' Ermittle alle vorhandenen Services
-                    Services = FBTR64Desc.Device.GetAllServices()
+                    If Description.IsNotStringNothingOrEmpty Then
+                        ' Deserialisieren
+                        Desc = Await XML.DeserializeAsyncData(Of TR64Desc)(Description)
 
-                    SendLog(LogLevel.Info, $"Fritz!Box TR064 API mit {Services.Count} Services erfolgreich initialisiert.")
+                        If Desc IsNot Nothing Then
+                            ' Ermittle alle vorhandenen Services
+                            Services.AddRange(Desc.Device.GetAllServices())
 
-                    ' Füge das Flag hinzu, dass die TR064-Schnittstelle bereit ist.
-                    Return True
-                Else
-                    SendLog(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der FBTR64Desc.")
+                            SendLog(LogLevel.Trace, $"Description {DESCFile} verarbeitet")
+                        Else
+                            SendLog(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Deserialisieren der {DESCFile}.")
+                        End If
+                    Else
+                        SendLog(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Herunterladen der {DESCFile}.")
+                        Return False
+                    End If
                 End If
-            Else
-                SendLog(LogLevel.Error, "Fritz!Box TR064 API kann nicht initialisiert werden: Fehler beim Herunterladen der FBTR64Desc.")
-            End If
+            Next
+            SendLog(LogLevel.Info, $"Fritz!Box TR064 API mit {Services.Count} Services erfolgreich initialisiert.")
+            Return True
         Else
             SendLog(LogLevel.Error, $"Fritz!Box TR064 API kann nicht initialisiert werden: Fritz!Box unter {FBoxIPAdresse} nicht verfügbar.")
         End If
+
         Return False
     End Function
 
@@ -145,29 +165,6 @@ Public Class FritzBoxTR64
         Dim T As Task(Of Boolean) = Task.Run(Function() ConnectTR064Async())
         T.Wait()
         Return T.Result
-    End Function
-
-    ''' <summary>
-    ''' Fügt den Aura-Service hinzu. Der Zugriff auf die ServiceDefinition wird durch die Fritz!Box blockiert, wenn der Fernzugriff nicht aktiviert wurde.
-    ''' </summary>
-    Public Async Function AddAURAService() As Task(Of Boolean)
-
-        If Services?.Any Then
-            Dim Response As String = Await Client.GetStringWebClientAsync(New Uri($"{Uri.UriSchemeHttp}://{FBoxIPAdresse}:{49000}{SCPDFiles.auradesc.Description}"))
-
-            If Response.IsNotStringNothingOrEmpty Then
-                Dim AuraDesc As New TR64Desc
-                ' Deserialisieren
-                If XML.Deserialize(Response, False, AuraDesc) Then
-                    ' Ermittle alle vorhandenen Services und hänge sie an
-                    Services.AddRange(AuraDesc.Device.GetAllServices)
-
-                    SendLog(LogLevel.Trace, $"Fritz!Box AURA Services geladen.")
-                    Return True
-                End If
-            End If
-        End If
-        Return False
     End Function
 
     ''' <summary>
@@ -180,6 +177,13 @@ Public Class FritzBoxTR64
         Deviceconfig = New DeviceconfigSCPD(AddressOf TR064Start)
         Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start)
         Hosts = New HostsSCPD(AddressOf TR064Start, XML)
+        IGD1conn = New IGD1connSCPD(AddressOf TR064Start)
+        IGD2conn = New IGD2connSCPD(AddressOf TR064Start)
+        IGD2ipv6fwc = New IGD2ipv6fwcSCPD(AddressOf TR064Start)
+        IGDI1cfg = New IGDI1cfgSCPD(AddressOf TR064Start)
+        IGDI2cfg = New IGDI2cfgSCPD(AddressOf TR064Start)
+        IGDI1dsl = New IGDI1dslSCPD(AddressOf TR064Start)
+        IGDI2dsl = New IGDI2dslSCPD(AddressOf TR064Start)
         LANConfigSecurity = New LANConfigSecuritySCPD(AddressOf TR064Start)
         LANhostconfigmgm = New LANhostconfigmgmSCPD(AddressOf TR064Start)
         LANifconfig = New LANifconfigSCPD(AddressOf TR064Start)
@@ -215,12 +219,9 @@ Public Class FritzBoxTR64
 
     End Sub
 
-    Private Async Sub InitServices(UseAura As Boolean)
+    Private Sub InitServices()
         ' Lade die AVM Services unabhängig davon, ob die Verbindung geklappt hat
         InitAVMServices()
-
-        ' Lade den AURA Service
-        If UseAura Then Await AddAURAService()
 
         ' Lade den UserModus
         UserMode = New UserModeSCPD(AddressOf TR064Start)
@@ -300,24 +301,38 @@ Public Class FritzBoxTR64
     Private Function GetService(SCPDURL As SCPDFiles) As Service
 
         If Services IsNot Nothing AndAlso Services.Any Then
-            ' Suche den angeforderten Service, gibt im Fehlerfall Nothing zurück
-            Dim FBoxService As Service = Services.Find(Function(Service) Service.SCPDURL.AreEqual(SCPDURL.Description))
 
-            ' Weise die Fritz!Box IP-Adresse zu
-            If FBoxService IsNot Nothing Then
-                ' Prüfe, ob der Service bereits initialisiert wurde
-                If Not FBoxService.Initialized Then FBoxService.Init(XML, Client)
+            With Services.Where(Function(Service)
 
-            Else
-                SendLog(LogLevel.Error, $"Service für {SCPDURL} nicht vorhanden.")
-            End If
+                                    Select Case SCPDURL
+                                        ' Sonderfall IGD1 und IGD2: Über die SCPDURL kann der Service nicht eineindeutig bestimmt werden
+                                        Case SCPDFiles.igd1icfgSCPD, SCPDFiles.igd1dslSCPD
+                                            Return Service.SCPDURL.AreEqual(SCPDURL.Description) And Service.ControlURL.StartsWith("/igdupnp/")
 
-            Return FBoxService
+                                        Case SCPDFiles.igd2icfgSCPD, SCPDFiles.igd2dslSCPD
+                                            Return Service.SCPDURL.AreEqual(SCPDURL.Description) And Service.ControlURL.StartsWith("/igd2upnp/")
+
+                                        Case Else
+                                            Return Service.SCPDURL.AreEqual(SCPDURL.Description)
+
+                                    End Select
+                                End Function)
+                If .Any Then
+
+                    ' Prüfe, ob der Service bereits initialisiert wurde
+                    If Not .First.Initialized Then .First.Init(XML, Client)
+
+                    Return .First
+                Else
+                    SendLog(LogLevel.Error, $"Service für {SCPDURL} nicht vorhanden.")
+                End If
+            End With
+
         Else
             SendLog(LogLevel.Error, $"Keine Services geladen.")
             Return Nothing
         End If
-
+        Return Nothing
     End Function
 
 #Region "Abfragen"
