@@ -270,82 +270,82 @@ Public Enum DeflectionTypeEnum
     ''' <summary>
     ''' Phone port 1 is selected
     ''' </summary>
-    <XmlEnum> fon1
+    <XmlEnum> fon1 = 1
 
     ''' <summary>
     ''' Phone port 2 is selected
     ''' </summary>
-    <XmlEnum> fon2
+    <XmlEnum> fon2 = 2
 
     ''' <summary>
     ''' Phone port 3 is selected
     ''' </summary>
-    <XmlEnum> fon3
+    <XmlEnum> fon3 = 3
 
     ''' <summary>
     ''' Phone port 4 is selected
     ''' </summary>
-    <XmlEnum> fon4
+    <XmlEnum> fon4 = 4
 
     ''' <summary>
     ''' From all
     ''' </summary>
-    <XmlEnum> fromAll
+    <XmlEnum> fromAll = 5
 
     ''' <summary>
     ''' From a anonymous call 
     ''' </summary>
-    <XmlEnum> fromAnonymous
+    <XmlEnum> fromAnonymous = 6
 
     ''' <summary>
     ''' The caller is not in the phonebook 
     ''' </summary>
-    <XmlEnum> fromNotInPhonebook
+    <XmlEnum> fromNotInPhonebook = 7
 
     ''' <summary>
     ''' Call not from a VIP (obsolate from Version 37)
     ''' </summary>
-    <Obsolete("Obsolate from Version 37")> <XmlEnum> fromNotVIP
+    <Obsolete("Obsolate from Version 37")> <XmlEnum> fromNotVIP = 8
 
     ''' <summary>
     ''' Specific Number 
     ''' </summary>
-    <XmlEnum> fromNumber
+    <XmlEnum> fromNumber = 9
 
     ''' <summary>
     ''' The caller is in the phonebook
     ''' </summary>
-    <XmlEnum> fromPB
+    <XmlEnum> fromPB = 10
 
     ''' <summary>
     ''' Call from a VIP
     ''' </summary>
-    <XmlEnum> fromVIP
+    <XmlEnum> fromVIP = 11
 
     ''' <summary>
     ''' To Any
     ''' </summary>
-    <XmlEnum> toAny
+    <XmlEnum> toAny = 12
 
     ''' <summary>
     ''' To MSN
     ''' </summary>
-    <XmlEnum> toMSN
+    <XmlEnum> toMSN = 13
 
     ''' <summary>
     ''' To POTS
     ''' </summary>
-    <XmlEnum> toPOTS
+    <XmlEnum> toPOTS = 14
 
     ''' <summary>
     ''' To VoIP
     ''' </summary>
-    <XmlEnum> toVoIP
+    <XmlEnum> toVoIP = 15
 
     ''' <summary>
     ''' Type unknown
     ''' </summary>
-    <XmlEnum> unknown
+    <XmlEnum> unknown = 16
 End Enum
 
 Public Enum SIPTypeEnum
