@@ -187,12 +187,12 @@ Public Interface IX_contactSCPD
     '''     </listheader>
     '''     <item>set phonebook ID and XML entry data structure with the unique ID tag (e.g. <uniqueid>28</uniqueid>)</item>
     ''' </list>
-    ''' The action returns the unique ID of the new or changed entry
+    ''' Changes to online phonebooks are not allowed.
     ''' </summary>
     ''' <param name="PhonebookID">ID of the phonebook.</param>
     ''' <param name="PhonebookEntryData">XML document with a single entry</param>
     ''' <param name="PhonebookEntryUniqueID">The action returns the unique ID of the new or changed entry.</param>
-
+    ''' <returns>The action returns the unique ID of the new or changed entry.</returns>
     Function SetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryData As String, ByRef PhonebookEntryUniqueID As Integer) As Boolean
 
     ''' <summary>

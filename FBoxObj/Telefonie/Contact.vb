@@ -14,6 +14,14 @@
     ''' </summary> 
     <XmlElement("uniqueid", GetType(Integer))> Public Property Uniqueid As Integer
 
+    ''' <summary>
+    ''' Angabe, ob Uniqueid serialisiert werden soll. Der Standard-Wert für Integer 0 führt ggf. zu Problemen beim Upload.
+    ''' </summary>
+    ''' <see href="http://msdn.microsoft.com/en-us/library/53b8022e(VS.71).aspx"/>
+    Public Function ShouldSerializeUniqueid() As Boolean
+        Return Uniqueid.IsNotZero
+    End Function
+
     <XmlElement("telephony")> Public Property Telephony As Telephony
 
     <XmlElement("features")> Public Property Features As Features
