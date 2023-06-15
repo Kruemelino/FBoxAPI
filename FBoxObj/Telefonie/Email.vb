@@ -5,6 +5,7 @@
 
     <XmlText()> Public Property EMail As String
     <XmlAttribute("classifier")> Public Property Classifier As EMailTypEnum
+    <XmlAttribute("id")> Public Property ID As Integer
 
     Public Overloads Function Equals(other As Email) As Boolean Implements IEquatable(Of Email).Equals
         Return _EMail.AreEqual(other._EMail) AndAlso _Classifier = other._Classifier
