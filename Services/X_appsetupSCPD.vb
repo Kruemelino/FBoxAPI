@@ -7,22 +7,23 @@ Friend Class X_appsetupSCPD
     Implements IX_appsetupSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 17) Implements IX_appsetupSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_appsetupSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_appsetupSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_appsetupSCPD Implements IX_appsetupSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IX_appsetupSCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
         TR064Start = Start
     End Sub
 
     Public Function GetAppMessageFilter(AppId As String, ByRef FilterList As String) As Boolean Implements IX_appsetupSCPD.GetAppMessageFilter
-        Return TR064Start(ServiceFile, "GetAppMessageFilter",
+        Return TR064Start(ServiceFile, "GetAppMessageFilter", ServiceID,
                           New Dictionary(Of String, String) From {{"NewAppId", AppId}}).TryGetValueEx("NewFilterList", FilterList)
     End Function
 
     Public Function GetAppRemoteInfo(ByRef Info As RemoteInfo) As Boolean Implements IX_appsetupSCPD.GetAppRemoteInfo
         If Info Is Nothing Then Info = New RemoteInfo
 
-        With TR064Start(ServiceFile, "GetAppRemoteInfo", Nothing)
+        With TR064Start(ServiceFile, "GetAppRemoteInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewSubnetMask", Info.SubnetMask) And
                    .TryGetValueEx("NewIPAddress", Info.IPAddress) And
@@ -38,7 +39,7 @@ Friend Class X_appsetupSCPD
     Public Function GetConfig(ByRef Rights As ConfigRights) As Boolean Implements IX_appsetupSCPD.GetConfig
         If Rights Is Nothing Then Rights = New ConfigRights
 
-        With TR064Start(ServiceFile, "GetConfig", Nothing)
+        With TR064Start(ServiceFile, "GetConfig", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewConfigRight", Rights.ConfigRight) And
                    .TryGetValueEx("NewAppRight", Rights.AppRight) And
@@ -54,7 +55,7 @@ Friend Class X_appsetupSCPD
     Public Function GetInfo(ByRef Info As AppInfo) As Boolean Implements IX_appsetupSCPD.GetInfo
         If Info Is Nothing Then Info = New AppInfo
 
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewMinCharsAppId", Info.MinCharsAppId) And
                    .TryGetValueEx("NewMaxCharsAppId", Info.MaxCharsAppId) And
@@ -89,7 +90,7 @@ Friend Class X_appsetupSCPD
 
     Public Function RegisterApp(App As AppData) As Boolean Implements IX_appsetupSCPD.RegisterApp
         Return App IsNot Nothing AndAlso
-            Not TR064Start(ServiceFile, "RegisterApp",
+            Not TR064Start(ServiceFile, "RegisterApp", ServiceID,
                            New Dictionary(Of String, String) From {{"NewAppId", App.AppId},
                                                                    {"NewAppDisplayName", App.AppDisplayName},
                                                                    {"NewAppDeviceMAC", App.AppDeviceMAC},
@@ -104,20 +105,23 @@ Friend Class X_appsetupSCPD
     End Function
 
     Public Function ResetEvent(EventId As Integer) As Boolean Implements IX_appsetupSCPD.ResetEvent
-        Return Not TR064Start(ServiceFile, "ResetEvent", New Dictionary(Of String, String) From {{"NewEventId", EventId.ToString}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "ResetEvent", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewEventId", EventId.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function SetAppMessageFilter(AppId As String, Type As String, Filter As String) As Boolean Implements IX_appsetupSCPD.SetAppMessageFilter
-        Return Not TR064Start(ServiceFile, "SetAppMessageFilter", New Dictionary(Of String, String) From {{"NewAppId", AppId},
-                                                                                                          {"NewType", Type},
-                                                                                                          {"NewFilter", Filter}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetAppMessageFilter", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewAppId", AppId},
+                                                                      {"NewType", Type},
+                                                                      {"NewFilter", Filter}}).ContainsKey("Error")
     End Function
 
     Public Function SetAppMessageReceiver(AppId As String, CryptAlgos As String, AppAVMAddress As String, AppAVMPasswordHash As String, ByRef EncryptionSecret As String, ByRef BoxSenderId As String) As Boolean Implements IX_appsetupSCPD.SetAppMessageReceiver
-        With TR064Start(ServiceFile, "SetAppMessageReceiver", New Dictionary(Of String, String) From {{"NewAppId", AppId},
-                                                                                                      {"NewCryptAlgos", CryptAlgos},
-                                                                                                      {"NewAppAVMAddress", AppAVMAddress},
-                                                                                                      {"NewAppAVMPasswordHash", AppAVMPasswordHash}})
+        With TR064Start(ServiceFile, "SetAppMessageReceiver", ServiceID,
+                        New Dictionary(Of String, String) From {{"NewAppId", AppId},
+                                                                {"NewCryptAlgos", CryptAlgos},
+                                                                {"NewAppAVMAddress", AppAVMAddress},
+                                                                {"NewAppAVMPasswordHash", AppAVMPasswordHash}})
 
             Return .TryGetValueEx("NewEncryptionSecret", EncryptionSecret) And
                    .TryGetValueEx("NewBoxSenderId", BoxSenderId)
@@ -125,23 +129,25 @@ Friend Class X_appsetupSCPD
     End Function
 
     Public Function SetAppVPN(AppId As String, IPSecIdentifier As String, IPSecPreSharedKey As String, IPSecXauthUsername As String, IPSecXauthPassword As String) As Boolean Implements IX_appsetupSCPD.SetAppVPN
-        Return Not TR064Start(ServiceFile, "SetAppVPN", New Dictionary(Of String, String) From {{"NewAppId", AppId},
-                                                                                                {"NewIPSecIdentifier", IPSecIdentifier},
-                                                                                                {"NewIPSecPreSharedKey", IPSecPreSharedKey},
-                                                                                                {"NewIPSecXauthUsername", IPSecXauthUsername},
-                                                                                                {"NewIPSecXauthPassword", IPSecXauthPassword}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetAppVPN", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewAppId", AppId},
+                                                                      {"NewIPSecIdentifier", IPSecIdentifier},
+                                                                      {"NewIPSecPreSharedKey", IPSecPreSharedKey},
+                                                                      {"NewIPSecXauthUsername", IPSecXauthUsername},
+                                                                      {"NewIPSecXauthPassword", IPSecXauthPassword}}).ContainsKey("Error")
     End Function
 
     Public Function SetAppVPNwithPFS(AppId As String, IPSecIdentifier As String, IPSecPreSharedKey As String, IPSecXauthUsername As String, IPSecXauthPassword As String) As Boolean Implements IX_appsetupSCPD.SetAppVPNwithPFS
-        Return Not TR064Start(ServiceFile, "SetAppVPNwithPFS", New Dictionary(Of String, String) From {{"NewAppId", AppId},
-                                                                                                       {"NewIPSecIdentifier", IPSecIdentifier},
-                                                                                                       {"NewIPSecPreSharedKey", IPSecPreSharedKey},
-                                                                                                       {"NewIPSecXauthUsername", IPSecXauthUsername},
-                                                                                                       {"NewIPSecXauthPassword", IPSecXauthPassword}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetAppVPNwithPFS", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewAppId", AppId},
+                                                                      {"NewIPSecIdentifier", IPSecIdentifier},
+                                                                      {"NewIPSecPreSharedKey", IPSecPreSharedKey},
+                                                                      {"NewIPSecXauthUsername", IPSecXauthUsername},
+                                                                      {"NewIPSecXauthPassword", IPSecXauthPassword}}).ContainsKey("Error")
     End Function
 
     Public Function GetBoxSenderId(AppId As String, ByRef BoxSenderId As String) As Boolean Implements IX_appsetupSCPD.GetBoxSenderId
-        Return TR064Start(ServiceFile, "GetBoxSenderId",
+        Return TR064Start(ServiceFile, "GetBoxSenderId", ServiceID,
                           New Dictionary(Of String, String) From {{"NewAppId", AppId}}).TryGetValueEx("NewBoxSenderId", BoxSenderId)
 
     End Function

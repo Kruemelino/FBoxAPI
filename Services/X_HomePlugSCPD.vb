@@ -7,23 +7,24 @@ Friend Class X_homePlugSCPD
     Implements IX_homeplugSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 11) Implements IX_homeplugSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_homeplugSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_homeplugSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_homeplugSCPD Implements IX_homeplugSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IX_homeplugSCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
 
         TR064Start = Start
 
     End Sub
 
     Public Function GetNumberOfDeviceEntries(NumberOfEntries As Integer) As Boolean Implements IX_homeplugSCPD.GetNumberOfDeviceEntries
-        Return TR064Start(ServiceFile, "GetNumberOfDeviceEntries", Nothing).TryGetValueEx("NewNumberOfEntries", NumberOfEntries)
+        Return TR064Start(ServiceFile, "GetNumberOfDeviceEntries", ServiceID, Nothing).TryGetValueEx("NewNumberOfEntries", NumberOfEntries)
     End Function
 
     Public Function GetNumberOfDeviceEntries(Index As Integer, ByRef Device As HomePlugDevice) As Boolean Implements IX_homeplugSCPD.GetNumberOfDeviceEntries
         If Device Is Nothing Then Device = New HomePlugDevice
 
-        With TR064Start(ServiceFile, "GetGenericDeviceEntry", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
+        With TR064Start(ServiceFile, "GetGenericDeviceEntry", ServiceID, New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
             Device.Index = Index
 
@@ -39,7 +40,7 @@ Friend Class X_homePlugSCPD
     Public Function GetSpecificDeviceEntry(MACAddress As String, ByRef Device As HomePlugDevice) As Boolean Implements IX_homeplugSCPD.GetSpecificDeviceEntry
         If Device Is Nothing Then Device = New HomePlugDevice
 
-        With TR064Start(ServiceFile, "GetSpecificDeviceEntry", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}})
+        With TR064Start(ServiceFile, "GetSpecificDeviceEntry", ServiceID, New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}})
 
             Device.MACAddress = MACAddress
 
@@ -52,6 +53,6 @@ Friend Class X_homePlugSCPD
     End Function
 
     Public Function DeviceDoUpdate(MACAddress As String) As Boolean Implements IX_homeplugSCPD.DeviceDoUpdate
-        Return Not TR064Start(ServiceFile, "DeviceDoUpdate", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "DeviceDoUpdate", ServiceID, New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}}).ContainsKey("Error")
     End Function
 End Class

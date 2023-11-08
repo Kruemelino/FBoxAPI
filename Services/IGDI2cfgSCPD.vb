@@ -14,10 +14,11 @@ Public Class IGDI2cfgSCPD
     Implements IIGDI2cfgSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2023, 1, 20) Implements IIGDI2cfgSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IIGDI2cfgSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IIGDI2cfgSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.igd2icfgSCPD Implements IIGDI2cfgSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IIGDI2cfgSCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
 
         TR064Start = Start
 
@@ -28,7 +29,7 @@ Public Class IGDI2cfgSCPD
                                             ByRef Layer1DownstreamMaxBitRate As Integer,
                                             ByRef PhysicalLinkStatus As LinkStatusEnum) As Boolean Implements IIGDI1cfgSCPD.GetCommonLinkProperties
 
-        With TR064Start(ServiceFile, "GetCommonLinkProperties", Nothing)
+        With TR064Start(ServiceFile, "GetCommonLinkProperties", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewWANAccessType", WANAccessType) And
                    .TryGetValueEx("NewLayer1UpstreamMaxBitRate", Layer1UpstreamMaxBitRate) And
@@ -39,25 +40,25 @@ Public Class IGDI2cfgSCPD
     End Function
 
     Public Function GetTotalBytesSent(ByRef TotalBytesSent As Integer) As Boolean Implements IIGDI1cfgSCPD.GetTotalBytesSent
-        Return TR064Start(ServiceFile, "GetTotalBytesSent", Nothing).TryGetValueEx("NewTotalBytesSent", TotalBytesSent)
+        Return TR064Start(ServiceFile, "GetTotalBytesSent", ServiceID, Nothing).TryGetValueEx("NewTotalBytesSent", TotalBytesSent)
     End Function
 
     Public Function GetTotalBytesReceived(ByRef TotalBytesReceived As Integer) As Boolean Implements IIGDI1cfgSCPD.GetTotalBytesReceived
-        Return TR064Start(ServiceFile, "GetTotalBytesReceived", Nothing).TryGetValueEx("NewTotalBytesReceived", TotalBytesReceived)
+        Return TR064Start(ServiceFile, "GetTotalBytesReceived", ServiceID, Nothing).TryGetValueEx("NewTotalBytesReceived", TotalBytesReceived)
     End Function
 
     Public Function GetTotalPacketsSent(ByRef TotalPacketsSent As Integer) As Boolean Implements IIGDI1cfgSCPD.GetTotalPacketsSent
-        Return TR064Start(ServiceFile, "GetTotalPacketsSent", Nothing).TryGetValueEx("NewTotalPacketsSent", TotalPacketsSent)
+        Return TR064Start(ServiceFile, "GetTotalPacketsSent", ServiceID, Nothing).TryGetValueEx("NewTotalPacketsSent", TotalPacketsSent)
     End Function
 
     Public Function GetTotalPacketsReceived(ByRef TotalPacketsReceived As Integer) As Boolean Implements IIGDI1cfgSCPD.GetTotalPacketsReceived
-        Return TR064Start(ServiceFile, "GetTotalPacketsReceived", Nothing).TryGetValueEx("NewTotalPacketsReceived", TotalPacketsReceived)
+        Return TR064Start(ServiceFile, "GetTotalPacketsReceived", ServiceID, Nothing).TryGetValueEx("NewTotalPacketsReceived", TotalPacketsReceived)
     End Function
 
     Public Function GetAddonInfos(ByRef Info As WANAddonInfo) As Boolean Implements IIGDI1cfgSCPD.GetAddonInfos
         If Info Is Nothing Then Info = New WANAddonInfo
 
-        With TR064Start(ServiceFile, "GetAddonInfos", Nothing)
+        With TR064Start(ServiceFile, "GetAddonInfos", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewByteSendRate", Info.ByteSendRate) And
                    .TryGetValueEx("NewByteReceiveRate", Info.ByteReceiveRate) And
@@ -81,14 +82,14 @@ Public Class IGDI2cfgSCPD
     End Function
 
     Public Function GetDsliteStatus(ByRef DsliteStatus As Boolean) As Boolean Implements IIGDI1cfgSCPD.GetDsliteStatus
-        Return TR064Start(ServiceFile, "X_AVM_DE_GetDsliteStatus", Nothing).TryGetValueEx("NewX_AVM_DE_DsliteStatus", DsliteStatus)
+        Return TR064Start(ServiceFile, "X_AVM_DE_GetDsliteStatus", ServiceID, Nothing).TryGetValueEx("NewX_AVM_DE_DsliteStatus", DsliteStatus)
     End Function
 
     Public Function GetIPTVInfos(ByRef IPTV_Enabled As Boolean,
                                  ByRef IPTV_Provider As String,
                                  ByRef IPTV_URL As String) As Boolean Implements IIGDI1cfgSCPD.GetIPTVInfos
 
-        With TR064Start(ServiceFile, "X_AVM_DE_GetIPTVInfos", Nothing)
+        With TR064Start(ServiceFile, "X_AVM_DE_GetIPTVInfos", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewX_AVM_DE_IPTV_Enabled", IPTV_Enabled) And
                    .TryGetValueEx("NewX_AVM_DE_IPTV_Provider", IPTV_Provider) And

@@ -7,28 +7,29 @@ Friend Class Layer3ForwardingSCPD
     Implements ILayer3ForwardingSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2009, 7, 15) Implements ILayer3ForwardingSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ILayer3ForwardingSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ILayer3ForwardingSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.layer3forwardingSCPD Implements ILayer3ForwardingSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements ILayer3ForwardingSCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
         TR064Start = Start
     End Sub
 
     Public Function SetDefaultConnectionService(DefaultConnectionService As String) As Boolean Implements ILayer3ForwardingSCPD.SetDefaultConnectionService
-        Return Not TR064Start(ServiceFile, "SetDefaultConnectionService", New Dictionary(Of String, String) From {{"NewDefaultConnectionService", DefaultConnectionService}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetDefaultConnectionService", ServiceID, New Dictionary(Of String, String) From {{"NewDefaultConnectionService", DefaultConnectionService}}).ContainsKey("Error")
     End Function
 
     Public Function GetDefaultConnectionService(ByRef DefaultConnectionService As String) As Boolean Implements ILayer3ForwardingSCPD.GetDefaultConnectionService
-        Return TR064Start(ServiceFile, "GetDefaultConnectionService", Nothing).TryGetValueEx("NewDefaultConnectionService", DefaultConnectionService)
+        Return TR064Start(ServiceFile, "GetDefaultConnectionService", ServiceID, Nothing).TryGetValueEx("NewDefaultConnectionService", DefaultConnectionService)
     End Function
 
     Public Function GetForwardNumberOfEntries(ByRef ForwardNumberOfEntries As Integer) As Boolean Implements ILayer3ForwardingSCPD.GetForwardNumberOfEntries
-        Return TR064Start(ServiceFile, "GetForwardNumberOfEntries", Nothing).TryGetValueEx("NewForwardNumberOfEntries", ForwardNumberOfEntries)
+        Return TR064Start(ServiceFile, "GetForwardNumberOfEntries", ServiceID, Nothing).TryGetValueEx("NewForwardNumberOfEntries", ForwardNumberOfEntries)
     End Function
 
     Public Function AddForwardingEntry(Entry As ForwardingEntry) As Boolean Implements ILayer3ForwardingSCPD.AddForwardingEntry
         Return Entry IsNot Nothing AndAlso
-            Not TR064Start(ServiceFile, "AddForwardingEntry",
+            Not TR064Start(ServiceFile, "AddForwardingEntry", ServiceID,
                            New Dictionary(Of String, String) From {{"NewType", Entry.Type},
                                                                    {"NewDestIPAddress", Entry.DestIPAddress},
                                                                    {"NewDestSubnetMask", Entry.DestSubnetMask},
@@ -41,7 +42,7 @@ Friend Class Layer3ForwardingSCPD
     End Function
 
     Public Function DeleteForwardingEntry(DestIPAddress As String, DestSubnetMask As String, SourceIPAddress As String, SourceSubnetMask As String) As Boolean Implements ILayer3ForwardingSCPD.DeleteForwardingEntry
-        Return Not TR064Start(ServiceFile, "DeleteForwardingEntry",
+        Return Not TR064Start(ServiceFile, "DeleteForwardingEntry", ServiceID,
                               New Dictionary(Of String, String) From {{"NewDestIPAddress", DestIPAddress},
                                                                       {"NewDestSubnetMask", DestSubnetMask},
                                                                       {"NewSourceIPAddress", SourceIPAddress},
@@ -54,7 +55,7 @@ Friend Class Layer3ForwardingSCPD
 
         If Entry Is Nothing Then Entry = New ForwardingEntry
 
-        With TR064Start(ServiceFile, "GetSpecificForwardingEntry",
+        With TR064Start(ServiceFile, "GetSpecificForwardingEntry", ServiceID,
                         New Dictionary(Of String, String) From {{"NewDestIPAddress", DestIPAddress},
                                                                 {"NewDestSubnetMask", DestSubnetMask},
                                                                 {"NewSourceIPAddress", SourceIPAddress},
@@ -77,7 +78,7 @@ Friend Class Layer3ForwardingSCPD
     Public Function GetGenericForwardingEntry(Index As Integer, ByRef Entry As ForwardingEntry) As Boolean Implements ILayer3ForwardingSCPD.GetGenericForwardingEntry
         If Entry Is Nothing Then Entry = New ForwardingEntry
 
-        With TR064Start(ServiceFile, "GetGenericForwardingEntry", New Dictionary(Of String, String) From {{"NewForwardingIndex", Index.ToString}})
+        With TR064Start(ServiceFile, "GetGenericForwardingEntry", ServiceID, New Dictionary(Of String, String) From {{"NewForwardingIndex", Index.ToString}})
 
             Return .TryGetValueEx("NewEnable", Entry.Enable) And
                    .TryGetValueEx("NewStatus", Entry.Status) And
@@ -94,7 +95,7 @@ Friend Class Layer3ForwardingSCPD
     End Function
 
     Public Function SetForwardingEntryEnable(DestIPAddress As String, DestSubnetMask As String, SourceIPAddress As String, SourceSubnetMask As String, Enable As Boolean) As Boolean Implements ILayer3ForwardingSCPD.SetForwardingEntryEnable
-        Return Not TR064Start(ServiceFile, "SetForwardingEntryEnable",
+        Return Not TR064Start(ServiceFile, "SetForwardingEntryEnable", ServiceID,
                               New Dictionary(Of String, String) From {{"NewDestIPAddress", DestIPAddress},
                                                                       {"NewDestSubnetMask", DestSubnetMask},
                                                                       {"NewSourceIPAddress", SourceIPAddress},

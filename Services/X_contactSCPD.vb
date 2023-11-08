@@ -11,11 +11,12 @@ Friend Class X_contactSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2023, 1, 19) Implements IX_contactSCPD.DocumentationDate
 
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_contactSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_contactSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_contactSCPD Implements IX_contactSCPD.Servicefile
+    Private ReadOnly Property ServID As Integer = 1 Implements IX_contactSCPD.ServiceID
     Private Property XML As Serializer
     Public Sub New(Start As Func(Of SCPDFiles,
-                                 String,
+                                 String, Integer,
                                  Dictionary(Of String, String),
                                  Dictionary(Of String, String)),
                    XMLSerializer As Serializer)
@@ -34,7 +35,7 @@ Friend Class X_contactSCPD
                                    Optional ByRef Username As String = "",
                                    Optional ByRef Name As String = "") As Boolean Implements IX_contactSCPD.GetInfoByIndex
 
-        With TR064Start(ServiceFile, "GetInfoByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
+        With TR064Start(ServiceFile, "GetInfoByIndex", ServID, New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
 
             Return .TryGetValueEx("NewEnable", Enable) And
@@ -52,7 +53,7 @@ Friend Class X_contactSCPD
     Public Function GetInfoByIndex(Index As Integer, ByRef Info As OnTelInfo) As Boolean Implements IX_contactSCPD.GetInfoByIndex
         If Info Is Nothing Then Info = New OnTelInfo With {.Index = Index}
 
-        With TR064Start(ServiceFile, "GetInfoByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
+        With TR064Start(ServiceFile, "GetInfoByIndex", ServID, New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
             Return .TryGetValueEx("NewEnable", Info.Enable) And
                    .TryGetValueEx("NewStatus", Info.Status) And
@@ -65,13 +66,13 @@ Friend Class X_contactSCPD
     End Function
 
     Public Function SetEnableByIndex(Index As Integer, Enable As Boolean) As Boolean Implements IX_contactSCPD.SetEnableByIndex
-        Return Not TR064Start(ServiceFile, "SetEnableByIndex",
+        Return Not TR064Start(ServiceFile, "SetEnableByIndex", ServID,
                               New Dictionary(Of String, String) From {{"NewIndex", Index.ToString},
                                                                       {"NewEnable", Enable.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function SetConfigByIndex(Index As Integer, Enable As Boolean, Url As String, ServiceId As String, Username As String, Password As String, Name As String) As Boolean Implements IX_contactSCPD.SetConfigByIndex
-        Return Not TR064Start(ServiceFile, "SetConfigByIndex",
+        Return Not TR064Start(ServiceFile, "SetConfigByIndex", ServID,
                               New Dictionary(Of String, String) From {{"NewIndex", Index.ToString},
                                                                       {"NewEnable", Enable.ToBoolStr},
                                                                       {"NewUrl", Url},
@@ -82,11 +83,11 @@ Friend Class X_contactSCPD
     End Function
 
     Public Function GetNumberOfEntries(ByRef OntelNumberOfEntries As Integer) As Boolean Implements IX_contactSCPD.GetNumberOfEntries
-        Return TR064Start(ServiceFile, "GetNumberOfEntries", Nothing).TryGetValueEx("NewOntelNumberOfEntries", OntelNumberOfEntries)
+        Return TR064Start(ServiceFile, "GetNumberOfEntries", ServID, Nothing).TryGetValueEx("NewOntelNumberOfEntries", OntelNumberOfEntries)
     End Function
 
     Public Function DeleteByIndex(Index As Integer) As Boolean Implements IX_contactSCPD.DeleteByIndex
-        Return Not TR064Start(ServiceFile, "DeleteByIndex",
+        Return Not TR064Start(ServiceFile, "DeleteByIndex", ServID,
                               New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}}).ContainsKey("Error")
     End Function
 
@@ -100,7 +101,7 @@ Friend Class X_contactSCPD
                                 Optional typeCSV As Boolean = False) As Boolean Implements IX_contactSCPD.GetCallList
 
         ' Ermittle die Basisurl: https://192.168.178.1:49443/calllist.lua?sid=0000000000000000
-        If TR064Start(ServiceFile, "GetCallList", Nothing).TryGetValueEx("NewCallListURL", CallListURL) Then
+        If TR064Start(ServiceFile, "GetCallList", ServID, Nothing).TryGetValueEx("NewCallListURL", CallListURL) Then
             ' Eine SessionID ist bereits vorhanden.
             ' Wenn eine SessionID übergeben wurde und diese nicht der SessionID 0000000000000000 entspricht, dann ersetze diese.
             If sid.IsNotStringNothingOrEmpty AndAlso Not sid.Contains(My.Resources.DfltFritzBoxSessionID) Then
@@ -157,7 +158,7 @@ Friend Class X_contactSCPD
 #Region "Phonebook"
     Public Function GetPhonebookList(ByRef PhonebookList As Integer()) As Boolean Implements IX_contactSCPD.GetPhonebookList
 
-        With TR064Start(ServiceFile, "GetPhonebookList", Nothing)
+        With TR064Start(ServiceFile, "GetPhonebookList", ServID, Nothing)
 
             If .ContainsKey("NewPhonebookList") Then
                 ' Comma separated list of PhonebookID 
@@ -178,7 +179,7 @@ Friend Class X_contactSCPD
                                  ByRef PhonebookName As String,
                                  ByRef PhonebookExtraID As String) As Boolean Implements IX_contactSCPD.GetPhonebook
 
-        With TR064Start(ServiceFile, "GetPhonebook", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString}})
+        With TR064Start(ServiceFile, "GetPhonebook", ServID, New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString}})
 
             Return .TryGetValueEx("NewPhonebookURL", PhonebookURL) And
                    .TryGetValueEx("NewPhonebookName", PhonebookName) And
@@ -209,14 +210,14 @@ Friend Class X_contactSCPD
 
     Public Function AddPhonebook(PhonebookName As String, Optional PhonebookExtraID As String = "") As Boolean Implements IX_contactSCPD.AddPhonebook
         Return Not TR064Start(ServiceFile,
-                                   "AddPhonebook",
+                                   "AddPhonebook", ServID,
                                    New Dictionary(Of String, String) From {{"NewPhonebookName", PhonebookName},
                                                                            {"NewPhonebookExtraID", PhonebookExtraID}}).ContainsKey("Error")
     End Function
 
     Public Function DeletePhonebook(NewPhonebookID As Integer, Optional PhonebookExtraID As String = "") As Boolean Implements IX_contactSCPD.DeletePhonebook
         Return Not TR064Start(ServiceFile,
-                                   "DeletePhonebook",
+                                   "DeletePhonebook", ServID,
                                    New Dictionary(Of String, String) From {{"NewPhonebookID", NewPhonebookID.ToString},
                                                                            {"NewPhonebookExtraID", PhonebookExtraID}}).ContainsKey("Error")
     End Function
@@ -224,7 +225,7 @@ Friend Class X_contactSCPD
 
 #Region "PhonebookEntry"
     Public Function GetPhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetPhonebookEntry
-        Return TR064Start(ServiceFile, "GetPhonebookEntry",
+        Return TR064Start(ServiceFile, "GetPhonebookEntry", ServID,
                           New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
                                                                   {"NewPhonebookEntryID", PhonebookEntryID.ToString}}).
                           TryGetValueEx("NewPhonebookEntryData", PhonebookEntryData)
@@ -233,14 +234,14 @@ Friend Class X_contactSCPD
     Public Async Function GetPhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer) As Task(Of Contact) Implements IX_contactSCPD.GetPhonebookEntry
         ' Ermittle den Pfad zu Rufsperre und deserialisiere die Daten
         Return Await XML.DeserializeAsyncData(Of Contact)((TR064Start(ServiceFile,
-                                                                      "GetPhonebookEntry",
+                                                                      "GetPhonebookEntry", ServID,
                                                                       New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
                                                                                                               {"NewPhonebookEntryID", PhonebookEntryID.ToString}})).
                                                                       TryGetValueEx(Of String)("NewPhonebookEntryData"))
     End Function
 
     Public Function GetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryUniqueID As Integer, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetPhonebookEntryUID
-        Return TR064Start(ServiceFile, "GetPhonebookEntryUID",
+        Return TR064Start(ServiceFile, "GetPhonebookEntryUID", ServID,
                           New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
                                                                   {"NewPhonebookEntryUniqueID", PhonebookEntryUniqueID.ToString}}).
                           TryGetValueEx("NewPhonebookEntryData", PhonebookEntryData)
@@ -250,7 +251,7 @@ Friend Class X_contactSCPD
     Public Async Function GetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryUniqueID As Integer) As Task(Of Contact) Implements IX_contactSCPD.GetPhonebookEntryUID
         ' Ermittle den Pfad zu Rufsperre und deserialisiere die Daten
         Return Await XML.DeserializeAsyncData(Of Contact)((TR064Start(ServiceFile,
-                                                                      "GetPhonebookEntryUID",
+                                                                      "GetPhonebookEntryUID", ServID,
                                                                       New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
                                                                                                               {"NewPhonebookEntryUniqueID", PhonebookEntryUniqueID.ToString}})).
                                                                       TryGetValueEx(Of String)("NewPhonebookEntryData"))
@@ -258,28 +259,30 @@ Friend Class X_contactSCPD
 
 
     Public Function SetPhonebookEntryUID(PhonebookID As Integer, PhonebookEntryData As String, ByRef PhonebookEntryUniqueID As Integer) As Boolean Implements IX_contactSCPD.SetPhonebookEntryUID
-        Return TR064Start(ServiceFile, "SetPhonebookEntryUID",
+        Return TR064Start(ServiceFile, "SetPhonebookEntryUID", ServID,
                           New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
                                                                   {"NewPhonebookEntryData", PhonebookEntryData}}).
                           TryGetValueEx("NewPhonebookEntryUniqueID", PhonebookEntryUniqueID)
     End Function
 
     Public Function DeletePhonebookEntry(PhonebookID As Integer, PhonebookEntryID As Integer) As Boolean Implements IX_contactSCPD.DeletePhonebookEntry
-        Return Not TR064Start(ServiceFile, "DeletePhonebookEntry", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
-                                                                                                           {"NewPhonebookEntryID", PhonebookEntryID.ToString}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "DeletePhonebookEntry", ServID,
+                              New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
+                                                                      {"NewPhonebookEntryID", PhonebookEntryID.ToString}}).ContainsKey("Error")
 
     End Function
 
     Public Function DeletePhonebookEntryUID(PhonebookID As Integer, NewPhonebookEntryUniqueID As Integer) As Boolean Implements IX_contactSCPD.DeletePhonebookEntryUID
-        Return Not TR064Start(ServiceFile, "DeletePhonebookEntryUID", New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
-                                                                                                              {"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID.ToString}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "DeletePhonebookEntryUID", ServID,
+                              New Dictionary(Of String, String) From {{"NewPhonebookID", PhonebookID.ToString},
+                                                                      {"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID.ToString}}).ContainsKey("Error")
     End Function
 #End Region
 
 #Region "CallBarring"
     Public Function GetCallBarringEntry(PhonebookEntryID As Integer, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetCallBarringEntry
         Return TR064Start(ServiceFile,
-                          "GetCallBarringEntry",
+                          "GetCallBarringEntry", ServID,
                           New Dictionary(Of String, String) From {{"NewPhonebookEntryID", PhonebookEntryID.ToString}}).
                           TryGetValueEx("NewPhonebookEntryData", PhonebookEntryData)
     End Function
@@ -287,13 +290,13 @@ Friend Class X_contactSCPD
     Public Async Function GetCallBarringEntry(PhonebookEntryID As Integer) As Task(Of Contact) Implements IX_contactSCPD.GetCallBarringEntry
         ' Ermittle den Pfad zu Rufsperre und deserialisiere die Daten
         Return Await XML.DeserializeAsyncData(Of Contact)((TR064Start(ServiceFile,
-                                                                      "GetCallBarringEntry",
+                                                                      "GetCallBarringEntry", ServID,
                                                                       New Dictionary(Of String, String) From {{"NewPhonebookEntryID", PhonebookEntryID.ToString}})).
                                                                       TryGetValueEx(Of String)("NewPhonebookEntryData"))
     End Function
 
     Public Function GetCallBarringEntryByNum(Number As String, ByRef PhonebookEntryData As String) As Boolean Implements IX_contactSCPD.GetCallBarringEntryByNum
-        Return TR064Start(ServiceFile, "GetCallBarringEntryByNum",
+        Return TR064Start(ServiceFile, "GetCallBarringEntryByNum", ServID,
                           New Dictionary(Of String, String) From {{"NewNumber", Number}}).
                           TryGetValueEx("NewPhonebookEntryData", PhonebookEntryData)
     End Function
@@ -301,13 +304,13 @@ Friend Class X_contactSCPD
     Public Async Function GetCallBarringEntryByNum(Number As String) As Task(Of Contact) Implements IX_contactSCPD.GetCallBarringEntryByNum
         ' Ermittle den Pfad zu Rufsperre und deserialisiere die Daten
         Return Await XML.DeserializeAsyncData(Of Contact)((TR064Start(ServiceFile,
-                                                                      "GetCallBarringList",
+                                                                      "GetCallBarringList", ServID,
                                                                       New Dictionary(Of String, String) From {{"NewNumber", Number}})).
                                                                       TryGetValueEx(Of String)("NewPhonebookEntryData"))
     End Function
 
     Public Function GetCallBarringList(ByRef PhonebookURL As String) As Boolean Implements IX_contactSCPD.GetCallBarringList
-        Return TR064Start(ServiceFile, "GetCallBarringList", Nothing).TryGetValueEx("NewPhonebookURL", PhonebookURL)
+        Return TR064Start(ServiceFile, "GetCallBarringList", ServID, Nothing).TryGetValueEx("NewPhonebookURL", PhonebookURL)
     End Function
 
     Public Async Function GetCallBarringList() As Task(Of PhonebooksType) Implements IX_contactSCPD.GetCallBarringList
@@ -332,13 +335,13 @@ Friend Class X_contactSCPD
     End Function
 
     Public Function SetCallBarringEntry(PhonebookEntryData As String, Optional ByRef PhonebookEntryUniqueID As Integer = 0) As Boolean Implements IX_contactSCPD.SetCallBarringEntry
-        Return TR064Start(ServiceFile, "SetCallBarringEntry",
+        Return TR064Start(ServiceFile, "SetCallBarringEntry", ServID,
                           New Dictionary(Of String, String) From {{"NewPhonebookEntryData", PhonebookEntryData}}).
                           TryGetValueEx("NewPhonebookEntryUniqueID", PhonebookEntryUniqueID)
     End Function
 
     Public Function DeleteCallBarringEntryUID(NewPhonebookEntryUniqueID As Integer) As Boolean Implements IX_contactSCPD.DeleteCallBarringEntryUID
-        Return Not TR064Start(ServiceFile, "DeleteCallBarringEntryUID",
+        Return Not TR064Start(ServiceFile, "DeleteCallBarringEntryUID", ServID,
                               New Dictionary(Of String, String) From {{"NewPhonebookEntryUniqueID", NewPhonebookEntryUniqueID.ToString}}).ContainsKey("Error")
     End Function
 
@@ -347,7 +350,7 @@ Friend Class X_contactSCPD
 #Region "DECTHandset"
     Public Function GetDECTHandsetList(ByRef DectIDList As String()) As Boolean Implements IX_contactSCPD.GetDECTHandsetList
 
-        With TR064Start(ServiceFile, "GetDECTHandsetList", Nothing)
+        With TR064Start(ServiceFile, "GetDECTHandsetList", ServID, Nothing)
 
             If .ContainsKey("NewDectIDList") Then
                 ' Comma separated list of DectID 
@@ -367,7 +370,7 @@ Friend Class X_contactSCPD
                                        ByRef HandsetName As String,
                                        ByRef PhonebookID As String) As Boolean Implements IX_contactSCPD.GetDECTHandsetInfo
 
-        With TR064Start(ServiceFile, "GetDECTHandsetInfo", New Dictionary(Of String, String) From {{"NewDectID", DectID.ToString}})
+        With TR064Start(ServiceFile, "GetDECTHandsetInfo", ServID, New Dictionary(Of String, String) From {{"NewDectID", DectID.ToString}})
 
             Return .TryGetValueEx("NewHandsetName", HandsetName) And
                    .TryGetValueEx("NewPhonebookID", PhonebookID)
@@ -377,21 +380,22 @@ Friend Class X_contactSCPD
 
 
     Public Function SetDECTHandsetPhonebook(DectID As Integer, PhonebookID As Integer) As Boolean Implements IX_contactSCPD.SetDECTHandsetPhonebook
-        Return Not TR064Start(ServiceFile, "SetDECTHandsetPhonebook", New Dictionary(Of String, String) From {{"NewDectID", DectID.ToString},
-                                                                                                              {"NewPhonebookID", PhonebookID.ToString}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetDECTHandsetPhonebook", ServID,
+                              New Dictionary(Of String, String) From {{"NewDectID", DectID.ToString},
+                                                                      {"NewPhonebookID", PhonebookID.ToString}}).ContainsKey("Error")
     End Function
 #End Region
 
 #Region "Deflections"
     Public Function GetNumberOfDeflections(ByRef NumberOfDeflections As String) As Boolean Implements IX_contactSCPD.GetNumberOfDeflections
-        Return TR064Start(ServiceFile, "GetNumberOfDeflections", Nothing).TryGetValueEx("NewNumberOfDeflections", NumberOfDeflections)
+        Return TR064Start(ServiceFile, "GetNumberOfDeflections", ServID, Nothing).TryGetValueEx("NewNumberOfDeflections", NumberOfDeflections)
     End Function
 
     Public Function GetDeflection(ByRef DeflectionInfo As Deflection, DeflectionId As Integer) As Boolean Implements IX_contactSCPD.GetDeflection
 
         If DeflectionInfo Is Nothing Then DeflectionInfo = New Deflection
 
-        With TR064Start(ServiceFile, "GetInfo", New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId.ToString}})
+        With TR064Start(ServiceFile, "GetInfo", ServID, New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId.ToString}})
 
             Return .TryGetValueEx("NewEnable", DeflectionInfo.Enable) And
                    .TryGetValueEx("NewType", DeflectionInfo.Type) And
@@ -405,7 +409,7 @@ Friend Class X_contactSCPD
     End Function
 
     Public Function GetDeflections(ByRef DeflectionList As String) As Boolean Implements IX_contactSCPD.GetDeflections
-        Return TR064Start(ServiceFile, "GetDeflections", Nothing).TryGetValueEx("NewDeflectionList", DeflectionList)
+        Return TR064Start(ServiceFile, "GetDeflections", ServID, Nothing).TryGetValueEx("NewDeflectionList", DeflectionList)
     End Function
 
     Public Function GetDeflections(ByRef DeflectionList As DeflectionList) As Boolean Implements IX_contactSCPD.GetDeflections
@@ -424,12 +428,12 @@ Friend Class X_contactSCPD
     Public Async Function GetDeflections() As Task(Of DeflectionList) Implements IX_contactSCPD.GetDeflections
         'Ermittle Die Rufbehandlungen und deserialisiere die Daten
         Return Await XML.DeserializeAsyncData(Of DeflectionList)((TR064Start(ServiceFile,
-                                                                             "GetDeflections",
+                                                                             "GetDeflections", ServID,
                                                                              Nothing)).TryGetValueEx(Of String)("NewDeflectionList"))
     End Function
 
     Public Function SetDeflectionEnable(DeflectionId As Integer, Enable As Boolean) As Boolean Implements IX_contactSCPD.SetDeflectionEnable
-        Return Not TR064Start(ServiceFile, "SetDeflectionEnable",
+        Return Not TR064Start(ServiceFile, "SetDeflectionEnable", ServID,
                               New Dictionary(Of String, String) From {{"NewDeflectionId", DeflectionId.ToString},
                                                                       {"NewEnable", Enable.ToBoolStr}}).ContainsKey("Error")
     End Function

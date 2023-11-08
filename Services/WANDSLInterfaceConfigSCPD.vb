@@ -7,17 +7,18 @@ Friend Class WANDSLInterfaceConfigSCPD
     Implements IWANDSLInterfaceConfigSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2019, 11, 1) Implements IWANDSLInterfaceConfigSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWANDSLInterfaceConfigSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWANDSLInterfaceConfigSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.wandslifconfigSCPD Implements IWANDSLInterfaceConfigSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IWANDSLInterfaceConfigSCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
         TR064Start = Start
     End Sub
 
     Public Function GetInfo(ByRef Info As DSLLinkConfigInfo) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetInfo
         If Info Is Nothing Then Info = New DSLLinkConfigInfo
 
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewEnable", Info.Enable) And
                    .TryGetValueEx("NewStatus", Info.Status) And
@@ -40,7 +41,7 @@ Friend Class WANDSLInterfaceConfigSCPD
     Public Function GetStatisticsTotal(ByRef StatisticsTotal As DSLLinkStatTotal) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetStatisticsTotal
         If StatisticsTotal Is Nothing Then StatisticsTotal = New DSLLinkStatTotal
 
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewReceiveBlocks", StatisticsTotal.ReceiveBlocks) And
                    .TryGetValueEx("NewTransmitBlocks", StatisticsTotal.TransmitBlocks) And
@@ -63,7 +64,7 @@ Friend Class WANDSLInterfaceConfigSCPD
     Public Function GetDSLDiagnoseInfo(ByRef Info As DSLDiagnoseInfo) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetDSLDiagnoseInfo
         If Info Is Nothing Then Info = New DSLDiagnoseInfo
 
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewX_AVM-DE_DSLDigagnoseState", Info.DSLDigagnoseState) And
                    .TryGetValueEx("NewX_AVM-DE_CableNokDistance", Info.CableNokDistance) And
@@ -77,7 +78,7 @@ Friend Class WANDSLInterfaceConfigSCPD
     Public Function GetDSLInfo(ByRef Info As DSLInfo) As Boolean Implements IWANDSLInterfaceConfigSCPD.GetDSLInfo
         If Info Is Nothing Then Info = New DSLInfo
 
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewSNRGds", Info.SNRGds) And
                    .TryGetValueEx("NewSNRGus", Info.SNRGus) And

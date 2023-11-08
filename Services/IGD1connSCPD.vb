@@ -17,20 +17,21 @@ Public Class IGD1connSCPD
     Implements IIGD1connSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2023, 1, 20) Implements IIGD1connSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IIGD1connSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IIGD1connSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.igd1connSCPD Implements IIGD1connSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IIGD1connSCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
         TR064Start = Start
     End Sub
 
 #Region "WANIPConnection:1"
     Public Function SetConnectionType(ConnectionType As ConnectionTypeEnum) As Boolean Implements IIGD1connSCPD.SetConnectionType
-        Return Not TR064Start(ServiceFile, "SetConnectionType", New Dictionary(Of String, String) From {{"NewConnectionType", ConnectionType.ToString}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetConnectionType", ServiceID, New Dictionary(Of String, String) From {{"NewConnectionType", ConnectionType.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetConnectionTypeInfo(ByRef ConnectionType As ConnectionTypeEnum, ByRef PossibleConnectionTypes As String) As Boolean Implements IIGD1connSCPD.GetConnectionTypeInfo
-        With TR064Start(ServiceFile, "GetConnectionTypeInfo", Nothing)
+        With TR064Start(ServiceFile, "GetConnectionTypeInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewConnectionType", ConnectionType) And
                    .TryGetValueEx("NewPossibleConnectionTypes", PossibleConnectionTypes)
@@ -38,19 +39,19 @@ Public Class IGD1connSCPD
     End Function
 
     Public Function RequestConnection() As Boolean Implements IIGD1connSCPD.RequestConnection
-        Return Not TR064Start(ServiceFile, "RequestConnection", Nothing).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "RequestConnection", ServiceID, Nothing).ContainsKey("Error")
     End Function
 
     Public Function RequestTermination() As Boolean Implements IIGD1connSCPD.RequestTermination
-        Return Not TR064Start(ServiceFile, "RequestTermination", Nothing).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "RequestTermination", ServiceID, Nothing).ContainsKey("Error")
     End Function
 
     Public Function ForceTermination() As Boolean Implements IIGD1connSCPD.ForceTermination
-        Return Not TR064Start(ServiceFile, "ForceTermination", Nothing).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "ForceTermination", ServiceID, Nothing).ContainsKey("Error")
     End Function
 
     Public Function GetStatusInfo(ByRef ConnectionStatus As ConnectionStatusEnum, ByRef LastConnectionError As LastConnectionErrorEnum, ByRef Uptime As Integer) As Boolean Implements IIGD1connSCPD.GetStatusInfo
-        With TR064Start(ServiceFile, "GetStatusInfo", Nothing)
+        With TR064Start(ServiceFile, "GetStatusInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewConnectionStatus", ConnectionStatus) And
                    .TryGetValueEx("NewLastConnectionError", LastConnectionError) And
@@ -59,15 +60,15 @@ Public Class IGD1connSCPD
     End Function
 
     Public Function GetAutoDisconnectTime(ByRef AutoDisconnectTime As Integer) As Boolean Implements IIGD1connSCPD.GetAutoDisconnectTime
-        Return TR064Start(ServiceFile, "GetAutoDisconnectTime", Nothing).TryGetValueEx("NewAutoDisconnectTime", AutoDisconnectTime)
+        Return TR064Start(ServiceFile, "GetAutoDisconnectTime", ServiceID, Nothing).TryGetValueEx("NewAutoDisconnectTime", AutoDisconnectTime)
     End Function
 
     Public Function GetIdleDisconnectTime(ByRef IdleDisconnectTime As Integer) As Boolean Implements IIGD1connSCPD.GetIdleDisconnectTime
-        Return TR064Start(ServiceFile, "GetIdleDisconnectTime", Nothing).TryGetValueEx("NewIdleDisconnectTime", IdleDisconnectTime)
+        Return TR064Start(ServiceFile, "GetIdleDisconnectTime", ServiceID, Nothing).TryGetValueEx("NewIdleDisconnectTime", IdleDisconnectTime)
     End Function
 
     Public Function GetNATRSIPStatus(ByRef RSIPAvailable As Boolean, ByRef NATEnabled As Boolean) As Boolean Implements IIGD1connSCPD.GetNATRSIPStatus
-        With TR064Start(ServiceFile, "GetNATRSIPStatus", Nothing)
+        With TR064Start(ServiceFile, "GetNATRSIPStatus", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewRSIPAvailable", RSIPAvailable) And
                    .TryGetValueEx("NewNATEnabled", NATEnabled)
@@ -77,7 +78,7 @@ Public Class IGD1connSCPD
     Public Function GetGenericPortMappingEntry(PortMappingIndex As Integer, ByRef GenericPortMappingEntry As PortMappingEntry) As Boolean Implements IIGD1connSCPD.GetGenericPortMappingEntry
         If GenericPortMappingEntry Is Nothing Then GenericPortMappingEntry = New PortMappingEntry
 
-        With TR064Start(ServiceFile, "GetGenericPortMappingEntry", New Dictionary(Of String, String) From {{"NewPortMappingIndex", PortMappingIndex.ToString}})
+        With TR064Start(ServiceFile, "GetGenericPortMappingEntry", ServiceID, New Dictionary(Of String, String) From {{"NewPortMappingIndex", PortMappingIndex.ToString}})
 
             Return .TryGetValueEx("NewRemoteHost", GenericPortMappingEntry.RemoteHost) And
                    .TryGetValueEx("NewExternalPort", GenericPortMappingEntry.ExternalPort) And
@@ -93,7 +94,7 @@ Public Class IGD1connSCPD
     Public Function GetSpecificPortMappingEntry(RemoteHost As String, ExternalPort As Integer, PortMappingProtocol As PortMappingProtocolEnum, ByRef SpecificPortMappingEntry As PortMappingEntry) As Boolean Implements IIGD1connSCPD.GetSpecificPortMappingEntry
         If SpecificPortMappingEntry Is Nothing Then SpecificPortMappingEntry = New PortMappingEntry
 
-        With TR064Start(ServiceFile, "GetSpecificPortMappingEntry",
+        With TR064Start(ServiceFile, "GetSpecificPortMappingEntry", ServiceID,
                         New Dictionary(Of String, String) From {{"NewRemoteHost", RemoteHost},
                                                                 {"NewExternalPort", ExternalPort.ToString},
                                                                 {"NewProtocol", PortMappingProtocol.ToString}})
@@ -113,7 +114,7 @@ Public Class IGD1connSCPD
     Public Function AddPortMapping(NewPortMappingEntry As PortMappingEntry) As Boolean Implements IIGD1connSCPD.AddPortMapping
         If NewPortMappingEntry IsNot Nothing Then
             With NewPortMappingEntry
-                Return Not TR064Start(ServiceFile, "AddPortMapping",
+                Return Not TR064Start(ServiceFile, "AddPortMapping", ServiceID,
                                       New Dictionary(Of String, String) From {{"NewRemoteHost", .RemoteHost},
                                                                               {"NewExternalPort", .ExternalPort.ToString},
                                                                               {"NewProtocol", .PortMappingProtocol.ToString},
@@ -130,7 +131,7 @@ Public Class IGD1connSCPD
     End Function
 
     Public Function DeletePortMapping(RemoteHost As String, ExternalPort As Integer, PortMappingProtocol As PortMappingProtocolEnum) As Boolean Implements IIGD1connSCPD.DeletePortMapping
-        Return TR064Start(ServiceFile, "DeletePortMapping",
+        Return TR064Start(ServiceFile, "DeletePortMapping", ServiceID,
                 New Dictionary(Of String, String) From {{"NewRemoteHost", RemoteHost},
                                                         {"NewExternalPort", ExternalPort.ToString},
                                                         {"NewProtocol", PortMappingProtocol.ToString}}).ContainsKey("Error")
@@ -138,20 +139,20 @@ Public Class IGD1connSCPD
     End Function
 
     Public Function GetExternalIPAddress(ByRef ExternalIPAddress As String) As Boolean Implements IIGD1connSCPD.GetExternalIPAddress
-        Return TR064Start(ServiceFile, "GetExternalIPAddress", Nothing).TryGetValueEx("NewExternalIPAddress", ExternalIPAddress)
+        Return TR064Start(ServiceFile, "GetExternalIPAddress", ServiceID, Nothing).TryGetValueEx("NewExternalIPAddress", ExternalIPAddress)
     End Function
 #End Region
 
 #Region "Additional actions"
     Public Function GetDNSServer(ByRef IPv4DNSServer1 As String, ByRef IPv4DNSServer2 As String) As Boolean Implements IIGD1connSCPD.GetDNSServer
-        With TR064Start(ServiceFile, "X_AVM_DE_GetDNSServer", Nothing)
+        With TR064Start(ServiceFile, "X_AVM_DE_GetDNSServer", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewIPv4DNSServer1", IPv4DNSServer1) And
                    .TryGetValueEx("NewIPv4DNSServer2", IPv4DNSServer2)
         End With
     End Function
     Public Function GetIPv6DNSServer(ByRef IPv6DNSServer1 As String, ByRef ValidLifetime1 As Integer, ByRef IPv6DNSServer2 As String, ByRef ValidLifetime2 As Integer) As Boolean Implements IIGD1connSCPD.GetIPv6DNSServer
-        With TR064Start(ServiceFile, "X_AVM_DE_GetIPv6DNSServer", Nothing)
+        With TR064Start(ServiceFile, "X_AVM_DE_GetIPv6DNSServer", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewIPv6DNSServer1", IPv6DNSServer1) And
                    .TryGetValueEx("NewValidLifetime1", ValidLifetime1) And
@@ -161,7 +162,7 @@ Public Class IGD1connSCPD
     End Function
 
     Public Function GetExternalIPv6Address(ByRef ExternalIPv6Address As String, ByRef PrefixLength As Integer, ByRef ValidLifetime As Integer, ByRef PreferedLifetime As Integer) As Boolean Implements IIGD1connSCPD.GetExternalIPv6Address
-        With TR064Start(ServiceFile, "X_AVM_DE_GetExternalIPv6Address", Nothing)
+        With TR064Start(ServiceFile, "X_AVM_DE_GetExternalIPv6Address", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewExternalIPv6Address", ExternalIPv6Address) And
                    .TryGetValueEx("NewPrefixLength", PrefixLength) And
@@ -171,7 +172,7 @@ Public Class IGD1connSCPD
     End Function
 
     Public Function GetIPv6Prefix(ByRef IPv6Prefix As String, ByRef PrefixLength As Integer, ByRef ValidLifetime As Integer, ByRef PreferedLifetime As Integer) As Boolean Implements IIGD1connSCPD.GetIPv6Prefix
-        With TR064Start(ServiceFile, "X_AVM_DE_GetIPv6Prefix", Nothing)
+        With TR064Start(ServiceFile, "X_AVM_DE_GetIPv6Prefix", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewIPv6Prefix", IPv6Prefix) And
                    .TryGetValueEx("NewPrefixLength", PrefixLength) And

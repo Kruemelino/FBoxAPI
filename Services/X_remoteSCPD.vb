@@ -7,12 +7,13 @@ Friend Class X_remoteSCPD
     Implements IX_remoteSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 17) Implements IX_remoteSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_remoteSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_remoteSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_remoteSCPD Implements IX_remoteSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IX_remoteSCPD.ServiceID
 
     Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)), XMLSerializer As Serializer)
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)), XMLSerializer As Serializer)
 
         TR064Start = Start
 
@@ -21,7 +22,7 @@ Friend Class X_remoteSCPD
     End Sub
 
     Public Function GetInfo(ByRef Enabled As Boolean, ByRef Port As Integer, ByRef Username As String) As Boolean Implements IX_remoteSCPD.GetInfo
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
             Return .TryGetValueEx("NewEnabled", Enabled) And
                    .TryGetValueEx("NewPort", Port) And
                    .TryGetValueEx("NewUsername", Username)
@@ -31,7 +32,7 @@ Friend Class X_remoteSCPD
     Public Function GetInfo(ByRef Info As XRemoteInfo) As Boolean Implements IX_remoteSCPD.GetInfo
         If Info Is Nothing Then Info = New XRemoteInfo
 
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewEnabled", Info.Enabled) And
                    .TryGetValueEx("NewPort", Info.Port) And
@@ -40,7 +41,7 @@ Friend Class X_remoteSCPD
     End Function
 
     Public Function SetConfig(Enabled As Boolean, Port As Integer, Username As String, Password As String) As Boolean Implements IX_remoteSCPD.SetConfig
-        Return Not TR064Start(ServiceFile, "SetConfig",
+        Return Not TR064Start(ServiceFile, "SetConfig", ServiceID,
                               New Dictionary(Of String, String) From {{"NewEnabled", Enabled.ToBoolStr},
                                                                       {"NewPort", Port.ToString},
                                                                       {"NewUsername", Username},
@@ -51,7 +52,7 @@ Friend Class X_remoteSCPD
     Public Function GetDDNSInfo(ByRef Info As DDNSInfo) As Boolean Implements IX_remoteSCPD.GetDDNSInfo
         If Info Is Nothing Then Info = New DDNSInfo
 
-        With TR064Start(ServiceFile, "GetDDNSInfo", Nothing)
+        With TR064Start(ServiceFile, "GetDDNSInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewDomain", Info.Domain) And
                    .TryGetValueEx("NewEnabled", Info.Enabled) And
@@ -68,7 +69,7 @@ Friend Class X_remoteSCPD
     End Function
 
     Public Function GetDDNSProviders(ByRef ProviderList As String) As Boolean Implements IX_remoteSCPD.GetDDNSProviders
-        Return TR064Start(ServiceFile, "GetDDNSProviders", Nothing).TryGetValueEx("NewProviderList", ProviderList)
+        Return TR064Start(ServiceFile, "GetDDNSProviders", ServiceID, Nothing).TryGetValueEx("NewProviderList", ProviderList)
     End Function
 
     Public Function GetDDNSProviders(ByRef List As ProviderList) As Boolean Implements IX_remoteSCPD.GetDDNSProviders
@@ -77,7 +78,7 @@ Friend Class X_remoteSCPD
     End Function
 
     Public Function SetDDNSConfig(Info As DDNSInfo, Password As String) As Boolean Implements IX_remoteSCPD.SetDDNSConfig
-        Return Not TR064Start(ServiceFile, "SetDDNSConfig",
+        Return Not TR064Start(ServiceFile, "SetDDNSConfig", ServiceID,
                       New Dictionary(Of String, String) From {{"NewEnabled", Info.Enabled.ToBoolStr},
                                                               {"NewProviderName", Info.ProviderName},
                                                               {"NewUpdateURL", Info.UpdateURL},
@@ -90,6 +91,6 @@ Friend Class X_remoteSCPD
     End Function
 
     Public Function SetEnable(Enabled As Boolean, ByRef Port As Integer) As Boolean Implements IX_remoteSCPD.SetEnable
-        Return TR064Start(ServiceFile, "SetEnable", New Dictionary(Of String, String) From {{"NewEnabled", Enabled.ToBoolStr}}).TryGetValueEx("NewPort", Port)
+        Return TR064Start(ServiceFile, "SetEnable", ServiceID, New Dictionary(Of String, String) From {{"NewEnabled", Enabled.ToBoolStr}}).TryGetValueEx("NewPort", Port)
     End Function
 End Class

@@ -7,17 +7,18 @@ Friend Class X_USPControllerSCPD
     Implements IX_USPControllerSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2022, 11, 7) Implements IX_USPControllerSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_USPControllerSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_USPControllerSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_uspcontroller Implements IX_USPControllerSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IX_USPControllerSCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
         TR064Start = Start
     End Sub
 
     Public Function GetInfo(ByRef Info As USPInfo) As Boolean Implements IX_USPControllerSCPD.GetInfo
         If Info Is Nothing Then Info = New USPInfo
 
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
             If .ContainsKey("NewMinCharsEndpointID") Then
 
@@ -42,7 +43,7 @@ Friend Class X_USPControllerSCPD
     Public Function GetUSPControllerByIndex(ByRef USPCntrlr As USPController, Index As Integer) As Boolean Implements IX_USPControllerSCPD.GetUSPControllerByIndex
         If USPCntrlr Is Nothing Then USPCntrlr = New USPController
 
-        With TR064Start(ServiceFile, "GetUSPControllerByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
+        With TR064Start(ServiceFile, "GetUSPControllerByIndex", ServiceID, New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
             If .ContainsKey("NewEnable") Then
 
@@ -70,12 +71,12 @@ Friend Class X_USPControllerSCPD
     End Function
 
     Public Function GetUSPControllerNumberOfEntries(ByRef USPControllerNumberOfEntries As Integer) As Boolean Implements IX_USPControllerSCPD.GetUSPControllerNumberOfEntries
-        Return Not TR064Start(ServiceFile, "GetUSPControllerNumberOfEntries", Nothing).TryGetValueEx("NewUSPControllerNumberOfEntries", USPControllerNumberOfEntries)
+        Return Not TR064Start(ServiceFile, "GetUSPControllerNumberOfEntries", ServiceID, Nothing).TryGetValueEx("NewUSPControllerNumberOfEntries", USPControllerNumberOfEntries)
     End Function
 
     Public Function AddUSPController(USPCntrlr As USPController, Password As String, ByRef Index As Integer) As Boolean Implements IX_USPControllerSCPD.AddUSPController
         Return Not TR064Start(ServiceFile,
-                              "AddUSPController",
+                              "AddUSPController", ServiceID,
                               New Dictionary(Of String, String) From {{"NewEnable", USPCntrlr.Enable.ToBoolStr},
                                                                       {"NewEndpointID", USPCntrlr.EndpointID},
                                                                       {"NewMTP", USPCntrlr.MTP},
@@ -97,19 +98,21 @@ Friend Class X_USPControllerSCPD
     End Function
 
     Public Function DeleteUSPControllerByIndex(Index As Integer) As Boolean Implements IX_USPControllerSCPD.DeleteUSPControllerByIndex
-        Return Not TR064Start(ServiceFile, "DeleteUSPControllerByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "DeleteUSPControllerByIndex", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function SetUSPControllerEnableByIndex(Index As Integer, Enable As Boolean) As Boolean Implements IX_USPControllerSCPD.SetUSPControllerEnableByIndex
-        Return Not TR064Start(ServiceFile, "SetUSPControllerEnableByIndex", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString},
-                                                                                                                    {"NewEnable", Enable.ToBoolStr}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetUSPControllerEnableByIndex", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewIndex", Index.ToString},
+                                                                      {"NewEnable", Enable.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetUSPMyFRITZEnable(ByRef USPMyFRITZEnabled As Boolean) As Boolean Implements IX_USPControllerSCPD.GetUSPMyFRITZEnable
-        Return TR064Start(ServiceFile, "GetUSPMyFRITZEnable", Nothing).TryGetValueEx("NewUSPMyFRITZEnabled", USPMyFRITZEnabled.ToBoolStr)
+        Return TR064Start(ServiceFile, "GetUSPMyFRITZEnable", ServiceID, Nothing).TryGetValueEx("NewUSPMyFRITZEnabled", USPMyFRITZEnabled.ToBoolStr)
     End Function
 
     Public Function SetUSPMyFRITZEnable(USPMyFRITZEnabled As Boolean) As Boolean Implements IX_USPControllerSCPD.SetUSPMyFRITZEnable
-        Return Not TR064Start(ServiceFile, "SetUSPMyFRITZEnable", New Dictionary(Of String, String) From {{"NewUSPMyFRITZEnabled", USPMyFRITZEnabled.ToBoolStr}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetUSPMyFRITZEnable", ServiceID, New Dictionary(Of String, String) From {{"NewUSPMyFRITZEnabled", USPMyFRITZEnabled.ToBoolStr}}).ContainsKey("Error")
     End Function
 End Class

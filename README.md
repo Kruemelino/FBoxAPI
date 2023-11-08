@@ -168,7 +168,7 @@ folgende angehakte TR-064 Services werden derzeit unterstützt. Falls etwas fehl
 * [x] [WANDSLLinkConfig](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wandsllinkconfigSCPD.pdf)
 * [x] [WANIPConnection](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wanipconnSCPD.pdf)
 * [x] [WANPPPConnection](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wanpppconnSCPD.pdf)
-* [x] [WLANConfiguration](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wlanconfigSCPD.pdf)
+* [x] [WLANConfiguration](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wlanconfigSCPD.pdf) (#1, #2, #3, #4)
 * [x] [X_AVM-DE_AppSetup](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_appsetup.pdf) (Hinweis: Alle Argumente sind in der Dokumentation falsch angegeben. Der übliche Präfix `New` wurde nicht dargestellt.)
 * [x] [X_AVM-DE_Auth](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_auth.pdf)
 * [x] [X_AVM-DE_Dect](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_dectSCPD.pdf)

@@ -7,9 +7,10 @@ Friend Class UserInterfaceSCPD
     Implements IUserInterfaceSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 17) Implements IUserInterfaceSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IUserInterfaceSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IUserInterfaceSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.userifSCPD Implements IUserInterfaceSCPD.Servicefile
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IUserInterfaceSCPD.ServiceID
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
 
         TR064Start = Start
 
@@ -18,7 +19,7 @@ Friend Class UserInterfaceSCPD
     Public Function GetInfo(ByRef Info As DeviceUIInfo) As Boolean Implements IUserInterfaceSCPD.GetInfo
         If Info Is Nothing Then Info = New DeviceUIInfo
 
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewUpgradeAvailable", Info.UpgradeAvailable) And
                    .TryGetValueEx("NewPasswordRequired", Info.PasswordRequired) And
@@ -35,11 +36,11 @@ Friend Class UserInterfaceSCPD
     End Function
 
     <Obsolete> Public Function CheckUpdate(LaborVersion As String) As Boolean Implements IUserInterfaceSCPD.CheckUpdate
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_CheckUpdate", New Dictionary(Of String, String) From {{"NewX_AVM-DE_LaborVersion", LaborVersion}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_CheckUpdate", ServiceID, New Dictionary(Of String, String) From {{"NewX_AVM-DE_LaborVersion", LaborVersion}}).ContainsKey("Error")
     End Function
 
     Public Function DoPrepareCGI(ByRef CGI As String, ByRef SessionID As String) As Boolean Implements IUserInterfaceSCPD.DoPrepareCGI
-        With TR064Start(ServiceFile, "X_AVM-DE_DoPrepareCGI", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_DoPrepareCGI", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewX_AVM-DE_CGI", CGI) And
                    .TryGetValueEx("NewX_AVM-DE_SesssionID", SessionID)
@@ -48,7 +49,7 @@ Friend Class UserInterfaceSCPD
     End Function
 
     Public Function DoUpdate(ByRef UpgradeAvailable As Boolean, ByRef UpdateState As UpdateStateEnum) As Boolean Implements IUserInterfaceSCPD.DoUpdate
-        With TR064Start(ServiceFile, "X_AVM-DE_DoUpdate", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_DoUpdate", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewUpgradeAvailable", UpgradeAvailable) And
                    .TryGetValueEx("NewX_AVM-DE_UpdateState", UpdateState)
@@ -57,12 +58,13 @@ Friend Class UserInterfaceSCPD
     End Function
 
     Public Function DoManualUpdate(DownloadURL As String, AllowDowngrade As Boolean) As Boolean Implements IUserInterfaceSCPD.DoManualUpdate
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_DoManualUpdate", New Dictionary(Of String, String) From {{"NewX_AVM-DE_DownloadURL", DownloadURL},
-                                                                                                              {"NewX_AVM-DE_AllowDowngrade", AllowDowngrade.ToBoolStr}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_DoManualUpdate", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewX_AVM-DE_DownloadURL", DownloadURL},
+                                                                      {"NewX_AVM-DE_AllowDowngrade", AllowDowngrade.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetInternationalConfig(ByRef Language As String, ByRef Country As String, ByRef Annex As String, ByRef LanguageList As String, ByRef CountryList As String, ByRef AnnexList As String) As Boolean Implements IUserInterfaceSCPD.GetInternationalConfig
-        With TR064Start(ServiceFile, "X_AVM-DE_GetInternationalConfig", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_GetInternationalConfig", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewX_AVM-DE_Language", Language) And
                    .TryGetValueEx("NewX_AVM-DE_Country", Country) And
@@ -76,16 +78,17 @@ Friend Class UserInterfaceSCPD
 
     Public Function SetInternationalConfig(Language As String, Country As String, Annex As String) As Boolean Implements IUserInterfaceSCPD.SetInternationalConfig
 
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetInternationalConfig", New Dictionary(Of String, String) From {{"NewX_AVM-DE_Language", Language},
-                                                                                                                      {"NewX_AVM-DE_Country", Country},
-                                                                                                                      {"NewX_AVM-DE_Annex", Annex}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetInternationalConfig", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewX_AVM-DE_Language", Language},
+                                                                      {"NewX_AVM-DE_Country", Country},
+                                                                      {"NewX_AVM-DE_Annex", Annex}}).ContainsKey("Error")
 
     End Function
 
     Public Function GetInfo(ByRef Info As DeviceUIAVMInfo) As Boolean Implements IUserInterfaceSCPD.GetInfo
         If Info Is Nothing Then Info = New DeviceUIAVMInfo
 
-        With TR064Start(ServiceFile, "X_AVM-DE_GetInfo", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_GetInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewX_AVM-DE_AutoUpdateMode", Info.AutoUpdateMode) And
                    .TryGetValueEx("NewX_AVM-DE_UpdateTime", Info.UpdateTime) And
@@ -98,7 +101,7 @@ Friend Class UserInterfaceSCPD
     End Function
 
     Public Function SetConfig(AutoUpdateMode As AutoUpdateModeEnum) As Boolean Implements IUserInterfaceSCPD.SetConfig
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetConfig", New Dictionary(Of String, String) From {{"NewX_AVM-DE_AutoUpdateMode", AutoUpdateMode.ToString}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetConfig", ServiceID, New Dictionary(Of String, String) From {{"NewX_AVM-DE_AutoUpdateMode", AutoUpdateMode.ToString}}).ContainsKey("Error")
     End Function
 
 End Class

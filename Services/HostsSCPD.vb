@@ -9,11 +9,12 @@ Friend Class HostsSCPD
     Implements IHostsSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 13) Implements IHostsSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IHostsSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IHostsSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.hostsSCPD Implements IHostsSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IHostsSCPD.ServiceID
     Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)),
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)),
                    XMLSerializer As Serializer)
 
         TR064Start = Start
@@ -21,13 +22,13 @@ Friend Class HostsSCPD
     End Sub
 
     Public Function GetHostNumberOfEntries(ByRef HostNumberOfEntries As Integer) As Boolean Implements IHostsSCPD.GetHostNumberOfEntries
-        Return TR064Start(ServiceFile, "GetHostNumberOfEntries", Nothing).TryGetValueEx("NewHostNumberOfEntries", HostNumberOfEntries)
+        Return TR064Start(ServiceFile, "GetHostNumberOfEntries", ServiceID, Nothing).TryGetValueEx("NewHostNumberOfEntries", HostNumberOfEntries)
     End Function
 
     Public Function GetSpecificHostEntry(MACAddress As String, ByRef Host As HostEntry) As Boolean Implements IHostsSCPD.GetSpecificHostEntry
         If Host Is Nothing Then Host = New HostEntry
 
-        With TR064Start(ServiceFile, "GetSpecificHostEntry", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}})
+        With TR064Start(ServiceFile, "GetSpecificHostEntry", ServiceID, New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}})
 
             Host.MACAddress = MACAddress
 
@@ -44,7 +45,7 @@ Friend Class HostsSCPD
     Public Function GetGenericHostEntry(Index As Integer, ByRef Host As HostEntry) As Boolean Implements IHostsSCPD.GetGenericHostEntry
         If Host Is Nothing Then Host = New HostEntry With {.Index = Index}
 
-        With TR064Start(ServiceFile, "GetGenericHostEntry", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
+        With TR064Start(ServiceFile, "GetGenericHostEntry", ServiceID, New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
             Return .TryGetValueEx("NewIPAddress", Host.IPAddress) And
                    .TryGetValueEx("NewAddressSource", Host.AddressSource) And
@@ -59,7 +60,7 @@ Friend Class HostsSCPD
     Public Function GetInfo(ByRef Info As HostsInfo) As Boolean Implements IHostsSCPD.GetInfo
         If Info Is Nothing Then Info = New HostsInfo
 
-        With TR064Start(ServiceFile, "X_AVM-DE_GetInfo", New Dictionary(Of String, String))
+        With TR064Start(ServiceFile, "X_AVM-DE_GetInfo", ServiceID, New Dictionary(Of String, String))
 
             Return .TryGetValueEx("NewX_AVM-DE_FriendlynameMinChars", Info.FriendlynameMinChars) And
                    .TryGetValueEx("NewX_AVM-DE_FriendlynameMaxChars", Info.FriendlynameMaxChars) And
@@ -71,34 +72,37 @@ Friend Class HostsSCPD
     End Function
 
     Public Function GetChangeCounter(ByRef ChangeCounter As Integer) As Boolean Implements IHostsSCPD.GetChangeCounter
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetChangeCounter", Nothing).TryGetValueEx("NewX_AVM-DE_ChangeCounter", ChangeCounter)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetChangeCounter", ServiceID, Nothing).TryGetValueEx("NewX_AVM-DE_ChangeCounter", ChangeCounter)
     End Function
 
     Public Function GetAutoWakeOnLANByMACAddress(MACAddress As String, ByRef AutoWOLEnabled As Boolean) As Boolean Implements IHostsSCPD.GetAutoWakeOnLANByMACAddress
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetAutoWakeOnLANByMACAddress",
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetAutoWakeOnLANByMACAddress", ServiceID,
                           New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}}).
                           TryGetValueEx("NewAutoWOLEnabled", AutoWOLEnabled)
 
     End Function
 
     Public Function SetAutoWakeOnLANByMACAddress(MACAddress As String, AutoWOLEnabled As Boolean) As Boolean Implements IHostsSCPD.SetAutoWakeOnLANByMACAddress
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetAutoWakeOnLANByMACAddress", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress},
-                                                                                                                            {"NewAutoWOLEnabled", AutoWOLEnabled.ToBoolStr}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetAutoWakeOnLANByMACAddress", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress},
+                                                                      {"NewAutoWOLEnabled", AutoWOLEnabled.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function SetHostNameByMACAddress(MACAddress As String, HostName As String) As Boolean Implements IHostsSCPD.SetHostNameByMACAddress
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetAutoWakeOnLANByMACAddress", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress},
-                                                                                                                            {"NewHostName", HostName}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetAutoWakeOnLANByMACAddress", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress},
+                                                                      {"NewHostName", HostName}}).ContainsKey("Error")
     End Function
 
     Public Function WakeOnLANByMACAddress(MACAddress As String) As Boolean Implements IHostsSCPD.WakeOnLANByMACAddress
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_WakeOnLANByMACAddress", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_WakeOnLANByMACAddress", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}}).ContainsKey("Error")
     End Function
 
     Public Function GetSpecificHostEntryByIp(IPAddress As String, ByRef Host As HostEntry) As Boolean Implements IHostsSCPD.GetSpecificHostEntryByIp
         If Host Is Nothing Then Host = New HostEntry
 
-        With TR064Start(ServiceFile, "X_AVM-DE_GetSpecificHostEntryByIp",
+        With TR064Start(ServiceFile, "X_AVM-DE_GetSpecificHostEntryByIp", ServiceID,
                         New Dictionary(Of String, String) From {{"NewIPAddress", IPAddress}})
 
             Host.IPAddress = IPAddress
@@ -130,20 +134,20 @@ Friend Class HostsSCPD
     End Function
 
     Public Function HostsCheckUpdate() As Boolean Implements IHostsSCPD.HostsCheckUpdate
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_HostsCheckUpdate", Nothing).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_HostsCheckUpdate", ServiceID, Nothing).ContainsKey("Error")
     End Function
 
     Public Function HostDoUpdate(MACAddress As String) As Boolean Implements IHostsSCPD.HostDoUpdate
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_HostDoUpdate", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_HostDoUpdate", ServiceID, New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}}).ContainsKey("Error")
     End Function
 
     Public Function SetPrioritizationByIP(IPAddress As String, Priority As Boolean) As Boolean Implements IHostsSCPD.SetPrioritizationByIP
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetPrioritizationByIP", New Dictionary(Of String, String) From {{"NewIPAddress", IPAddress},
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetPrioritizationByIP", ServiceID, New Dictionary(Of String, String) From {{"NewIPAddress", IPAddress},
                                                                                                                      {"NewX_AVM-DE_Priority", Priority.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function GetHostListPath(ByRef HostListPath As String) As Boolean Implements IHostsSCPD.GetHostListPath
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetHostListPath", Nothing).TryGetValueEx("NewX_AVM-DE_HostListPath", HostListPath)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetHostListPath", ServiceID, Nothing).TryGetValueEx("NewX_AVM-DE_HostListPath", HostListPath)
     End Function
 
     <Obsolete> Public Function GetHostList(ByRef Hosts As HostList) As Boolean Implements IHostsSCPD.GetHostList
@@ -166,24 +170,24 @@ Friend Class HostsSCPD
     End Function
 
     Public Function GetMeshListPath(ByRef MeshListPath As String) As Boolean Implements IHostsSCPD.GetMeshListPath
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetMeshListPath", Nothing).TryGetValueEx("NewX_AVM-DE_MeshListPath", MeshListPath)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetMeshListPath", ServiceID, Nothing).TryGetValueEx("NewX_AVM-DE_MeshListPath", MeshListPath)
     End Function
 
     Public Function GetFriendlyName(ByRef FriendlyName As String) As Boolean Implements IHostsSCPD.GetFriendlyName
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetFriendlyName", Nothing).TryGetValueEx("NewX_AVM-DE_FriendlyName", FriendlyName)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetFriendlyName", ServiceID, Nothing).TryGetValueEx("NewX_AVM-DE_FriendlyName", FriendlyName)
     End Function
 
     Public Function SetFriendlyName(FriendlyName As String) As Boolean Implements IHostsSCPD.SetFriendlyName
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetFriendlyName", New Dictionary(Of String, String) From {{"NewX_AVM-DE_FriendlyName", FriendlyName}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetFriendlyName", ServiceID, New Dictionary(Of String, String) From {{"NewX_AVM-DE_FriendlyName", FriendlyName}}).ContainsKey("Error")
     End Function
 
     Public Function SetFriendlyNameByIP(IPAddress As String, FriendlyName As String) As Boolean Implements IHostsSCPD.SetFriendlyNameByIP
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetFriendlyNameByIP", New Dictionary(Of String, String) From {{"NewIPAddress", IPAddress},
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetFriendlyNameByIP", ServiceID, New Dictionary(Of String, String) From {{"NewIPAddress", IPAddress},
                                                                                                                    {"NewX_AVM-DE_FriendlyName", FriendlyName}}).ContainsKey("Error")
     End Function
 
     Public Function SetFriendlyNameByMAC(MACAddress As String, FriendlyName As String) As Boolean Implements IHostsSCPD.SetFriendlyNameByMAC
-        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetFriendlyNameByMAC", New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress},
+        Return Not TR064Start(ServiceFile, "X_AVM-DE_SetFriendlyNameByMAC", ServiceID, New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress},
                                                                                                                     {"NewX_AVM-DE_FriendlyName", FriendlyName}}).ContainsKey("Error")
     End Function
 End Class

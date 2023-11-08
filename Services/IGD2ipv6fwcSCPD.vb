@@ -15,16 +15,17 @@ Public Class IGD2ipv6fwcSCPD
     Implements IIGD2ipv6fwcSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2023, 1, 20) Implements IIGD2ipv6fwcSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IIGD2ipv6fwcSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IIGD2ipv6fwcSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.igd2ipv6fwcSCPD Implements IIGD2ipv6fwcSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IIGD2ipv6fwcSCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
         TR064Start = Start
     End Sub
 
     Public Function GetFirewallStatus(ByRef FirewallEnabled As Boolean, ByRef InboundPinholeAllowed As Boolean) As Boolean Implements IIGD2ipv6fwcSCPD.GetFirewallStatus
 
-        With TR064Start(ServiceFile, "GetFirewallStatus", Nothing)
+        With TR064Start(ServiceFile, "GetFirewallStatus", ServiceID, Nothing)
 
             Return .TryGetValueEx("FirewallEnabled", FirewallEnabled) And
                    .TryGetValueEx("InboundPinholeAllowed", InboundPinholeAllowed)
@@ -34,7 +35,7 @@ Public Class IGD2ipv6fwcSCPD
 
     Public Function GetOutboundPinholeTimeout(RemoteHost As String, RemotePort As Integer, InternalClient As String, InternalPort As Integer, Protocol As Integer, ByRef OutboundPinholeTimeout As Integer) As Boolean Implements IIGD2ipv6fwcSCPD.GetOutboundPinholeTimeout
 
-        Return TR064Start(ServiceFile, "GetFirewallStatus", New Dictionary(Of String, String) From {{"RemoteHost", RemoteHost},
+        Return TR064Start(ServiceFile, "GetFirewallStatus", ServiceID, New Dictionary(Of String, String) From {{"RemoteHost", RemoteHost},
                                                                                                     {"RemotePort", RemotePort.ToString},
                                                                                                     {"InternalClient", InternalClient},
                                                                                                     {"InternalPort", InternalPort.ToString},
@@ -44,7 +45,7 @@ Public Class IGD2ipv6fwcSCPD
     End Function
 
     Public Function AddPinhole(RemoteHost As String, RemotePort As Integer, InternalClient As String, InternalPort As Integer, Protocol As Integer, LeaseTime As Integer, ByRef UniqueID As Integer) As Boolean Implements IIGD2ipv6fwcSCPD.AddPinhole
-        Return TR064Start(ServiceFile, "AddPinhole", New Dictionary(Of String, String) From {{"RemoteHost", RemoteHost},
+        Return TR064Start(ServiceFile, "AddPinhole", ServiceID, New Dictionary(Of String, String) From {{"RemoteHost", RemoteHost},
                                                                                              {"RemotePort", RemotePort.ToString},
                                                                                              {"InternalClient", InternalClient},
                                                                                              {"InternalPort", InternalPort.ToString},
@@ -54,18 +55,18 @@ Public Class IGD2ipv6fwcSCPD
     End Function
 
     Public Function UpdatePinhole(UniqueID As Integer, NewLeaseTime As Integer) As Boolean Implements IIGD2ipv6fwcSCPD.UpdatePinhole
-        Return Not TR064Start(ServiceFile, "UpdatePinhole", New Dictionary(Of String, String) From {{"UniqueID", UniqueID.ToString}, {"NewLeaseTime", NewLeaseTime.ToString}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "UpdatePinhole", ServiceID, New Dictionary(Of String, String) From {{"UniqueID", UniqueID.ToString}, {"NewLeaseTime", NewLeaseTime.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function DeletePinhole(UniqueID As Integer) As Boolean Implements IIGD2ipv6fwcSCPD.DeletePinhole
-        Return Not TR064Start(ServiceFile, "DeletePinhole", New Dictionary(Of String, String) From {{"UniqueID", UniqueID.ToString}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "DeletePinhole", ServiceID, New Dictionary(Of String, String) From {{"UniqueID", UniqueID.ToString}}).ContainsKey("Error")
     End Function
 
     Public Function GetPinholePackets(UniqueID As Integer, ByRef PinholePackets As Integer) As Boolean Implements IIGD2ipv6fwcSCPD.GetPinholePackets
-        Return TR064Start(ServiceFile, "GetPinholePackets", New Dictionary(Of String, String) From {{"UniqueID", UniqueID.ToString}}).TryGetValueEx("PinholePackets", PinholePackets)
+        Return TR064Start(ServiceFile, "GetPinholePackets", ServiceID, New Dictionary(Of String, String) From {{"UniqueID", UniqueID.ToString}}).TryGetValueEx("PinholePackets", PinholePackets)
     End Function
 
     Public Function CheckPinholeWorking(UniqueID As Integer, ByRef IsWorking As Boolean) As Boolean Implements IIGD2ipv6fwcSCPD.CheckPinholeWorking
-        Return TR064Start(ServiceFile, "CheckPinholeWorking", New Dictionary(Of String, String) From {{"UniqueID", UniqueID.ToString}}).TryGetValueEx("IsWorking", IsWorking)
+        Return TR064Start(ServiceFile, "CheckPinholeWorking", ServiceID, New Dictionary(Of String, String) From {{"UniqueID", UniqueID.ToString}}).TryGetValueEx("IsWorking", IsWorking)
     End Function
 End Class

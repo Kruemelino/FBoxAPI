@@ -14,6 +14,7 @@ Imports System.Xml.Serialization
     <XmlIgnore> Private Property SCPD As ServiceControlProtocolDefinition
     <XmlIgnore> Private Property XML As Serializer
     <XmlIgnore> Private Property Client As WebFunctions
+
     <XmlIgnore> Friend ReadOnly Property Initialized As Boolean
         Get
             Return SCPD IsNot Nothing

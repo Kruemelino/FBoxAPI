@@ -8,16 +8,17 @@ Friend Class X_WANMobileConnectionSCPD
     Implements IX_WANMobileConnectionSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2022, 11, 7) Implements IX_WANMobileConnectionSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_WANMobileConnectionSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_WANMobileConnectionSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_wanmobileconn Implements IX_WANMobileConnectionSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IX_WANMobileConnectionSCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
         TR064Start = Start
     End Sub
     Public Function GetInfo(ByRef Info As WANMobileConnectionInfo) As Boolean Implements IX_WANMobileConnectionSCPD.GetInfo
         If Info Is Nothing Then Info = New WANMobileConnectionInfo
 
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
             If .ContainsKey("NewEnable") Then
 
@@ -35,7 +36,7 @@ Friend Class X_WANMobileConnectionSCPD
     Public Function GetInfoEx(ByRef Info As WANMobileConnectionInfoEx) As Boolean Implements IX_WANMobileConnectionSCPD.GetInfoEx
         If Info Is Nothing Then Info = New WANMobileConnectionInfoEx
 
-        With TR064Start(ServiceFile, "GetInfoEx", Nothing)
+        With TR064Start(ServiceFile, "GetInfoEx", ServiceID, Nothing)
 
             If .ContainsKey("NewSerialNumber") Then
 
@@ -62,23 +63,23 @@ Friend Class X_WANMobileConnectionSCPD
     End Function
 
     Public Function SetPIN(PIN As String) As Boolean Implements IX_WANMobileConnectionSCPD.SetPIN
-        Return Not TR064Start(ServiceFile, "SetPIN", New Dictionary(Of String, String) From {{"NewPIN", PIN}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetPIN", ServiceID, New Dictionary(Of String, String) From {{"NewPIN", PIN}}).ContainsKey("Error")
     End Function
 
     Public Function SetPUK(PUK As String, PIN As String) As Boolean Implements IX_WANMobileConnectionSCPD.SetPUK
-        Return Not TR064Start(ServiceFile, "SetPUK", New Dictionary(Of String, String) From {{"NewPUK", PUK},
+        Return Not TR064Start(ServiceFile, "SetPUK", ServiceID, New Dictionary(Of String, String) From {{"NewPUK", PUK},
                                                                                              {"NewPIN", PIN}}).ContainsKey("Error")
     End Function
 
     Public Function SetAccessTechnology(AccessTechnology As String) As Boolean Implements IX_WANMobileConnectionSCPD.SetAccessTechnology
-        Return Not TR064Start(ServiceFile, "SetAccessTechnology", New Dictionary(Of String, String) From {{"NewAccessTechnology", AccessTechnology}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetAccessTechnology", ServiceID, New Dictionary(Of String, String) From {{"NewAccessTechnology", AccessTechnology}}).ContainsKey("Error")
     End Function
 
     Public Function GetAccessTechnology(ByRef AccessTechnology As String,
                                         ByRef PossibleAccessTechnology As String,
                                         ByRef CurrentAccessTechnology As String) As Boolean Implements IX_WANMobileConnectionSCPD.GetAccessTechnology
 
-        With TR064Start(ServiceFile, "GetAccessTechnology", Nothing)
+        With TR064Start(ServiceFile, "GetAccessTechnology", ServiceID, Nothing)
             Return .TryGetValueEx("NewAccessTechnology", AccessTechnology) And
                    .TryGetValueEx("NewPossibleAccessTechnology", PossibleAccessTechnology) And
                    .TryGetValueEx("NewCurrentAccessTechnology", CurrentAccessTechnology)
@@ -90,7 +91,7 @@ Friend Class X_WANMobileConnectionSCPD
                                                BandCapabilities5GNSA As String,
                                                BandCapabilities5GSA As String) As Boolean Implements IX_WANMobileConnectionSCPD.SetEnabledBandCapabilities
 
-        Return Not TR064Start(ServiceFile, "SetEnabledBandCapabilities", New Dictionary(Of String, String) From {{"NewBandCapabilitiesLTE", BandCapabilitiesLTE},
+        Return Not TR064Start(ServiceFile, "SetEnabledBandCapabilities", ServiceID, New Dictionary(Of String, String) From {{"NewBandCapabilitiesLTE", BandCapabilitiesLTE},
                                                                                                                  {"NewBandCapabilities5GNSA", BandCapabilities5GNSA},
                                                                                                                  {"NewBandCapabilities5GSA", BandCapabilities5GSA}}).ContainsKey("Error")
 
@@ -100,7 +101,7 @@ Friend Class X_WANMobileConnectionSCPD
                                                ByRef BandCapabilities5GNSA As String,
                                                ByRef BandCapabilities5GSA As String) As Boolean Implements IX_WANMobileConnectionSCPD.GetEnabledBandCapabilities
 
-        With TR064Start(ServiceFile, "GetEnabledBandCapabilities", Nothing)
+        With TR064Start(ServiceFile, "GetEnabledBandCapabilities", ServiceID, Nothing)
             Return .TryGetValueEx("NewBandCapabilitiesLTE", BandCapabilitiesLTE) And
                    .TryGetValueEx("NewBandCapabilities5GNSA", BandCapabilities5GNSA) And
                    .TryGetValueEx("NewBandCapabilities5GSA", BandCapabilities5GSA)
@@ -110,7 +111,7 @@ Friend Class X_WANMobileConnectionSCPD
 
     Public Function GetBandCapabilities(ByRef BandCapabilitiesLTE As String, ByRef BandCapabilities5GNSA As String, ByRef BandCapabilities5GSA As String) As Boolean Implements IX_WANMobileConnectionSCPD.GetBandCapabilities
 
-        With TR064Start(ServiceFile, "GetBandCapabilities", Nothing)
+        With TR064Start(ServiceFile, "GetBandCapabilities", ServiceID, Nothing)
             Return .TryGetValueEx("NewBandCapabilitiesLTE", BandCapabilitiesLTE) And
                    .TryGetValueEx("NewBandCapabilities5GNSA", BandCapabilities5GNSA) And
                    .TryGetValueEx("NewBandCapabilities5GSA", BandCapabilities5GSA)

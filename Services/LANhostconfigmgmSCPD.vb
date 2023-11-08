@@ -7,10 +7,11 @@ Friend Class LANhostconfigmgmSCPD
     Implements ILANhostconfigmgmSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2015, 11, 20) Implements ILANhostconfigmgmSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ILANhostconfigmgmSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ILANhostconfigmgmSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.lanhostconfigmgmSCPD Implements ILANhostconfigmgmSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements ILANhostconfigmgmSCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
 
         TR064Start = Start
 
@@ -19,7 +20,7 @@ Friend Class LANhostconfigmgmSCPD
     Public Function GetInfo(ByRef Info As LANInfo) As Boolean Implements ILANhostconfigmgmSCPD.GetInfo
         If Info Is Nothing Then Info = New LANInfo
 
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewDHCPServerConfigurable", Info.DHCPServerConfigurable) And
                    .TryGetValueEx("NewDHCPRelay", Info.DHCPRelay) And
@@ -36,27 +37,27 @@ Friend Class LANhostconfigmgmSCPD
     End Function
 
     Public Function SetDHCPServerEnable(DHCPServerEnable As Boolean) As Boolean Implements ILANhostconfigmgmSCPD.SetDHCPServerEnable
-        Return Not TR064Start(ServiceFile, "SetDHCPServerEnable", New Dictionary(Of String, String) From {{"NewDHCPServerEnable", DHCPServerEnable.ToBoolStr}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetDHCPServerEnable", ServiceID, New Dictionary(Of String, String) From {{"NewDHCPServerEnable", DHCPServerEnable.ToBoolStr}}).ContainsKey("Error")
     End Function
 
     Public Function SetSubnetMask(SubnetMask As String) As Boolean Implements ILANhostconfigmgmSCPD.SetSubnetMask
-        Return Not TR064Start(ServiceFile, "SetSubnetMask", New Dictionary(Of String, String) From {{"NewSubnetMask", SubnetMask}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetSubnetMask", ServiceID, New Dictionary(Of String, String) From {{"NewSubnetMask", SubnetMask}}).ContainsKey("Error")
     End Function
 
     Public Function GetSubnetMask(ByRef SubnetMask As String) As Boolean Implements ILANhostconfigmgmSCPD.GetSubnetMask
-        Return TR064Start(ServiceFile, "GetSubnetMask", Nothing).TryGetValueEx("NewSubnetMask", SubnetMask)
+        Return TR064Start(ServiceFile, "GetSubnetMask", ServiceID, Nothing).TryGetValueEx("NewSubnetMask", SubnetMask)
     End Function
 
     Public Function SetIPRouter(IPRouters As String) As Boolean Implements ILANhostconfigmgmSCPD.SetIPRouter
-        Return Not TR064Start(ServiceFile, "SetIPRouter", New Dictionary(Of String, String) From {{"NewIPRouters", IPRouters}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetIPRouter", ServiceID, New Dictionary(Of String, String) From {{"NewIPRouters", IPRouters}}).ContainsKey("Error")
     End Function
 
     Public Function GetIPRoutersList(ByRef IPRouters As String) As Boolean Implements ILANhostconfigmgmSCPD.GetIPRoutersList
-        Return TR064Start(ServiceFile, "GetIPRoutersList", Nothing).TryGetValueEx("NewIPRouters", IPRouters)
+        Return TR064Start(ServiceFile, "GetIPRoutersList", ServiceID, Nothing).TryGetValueEx("NewIPRouters", IPRouters)
     End Function
 
     Public Function SetIPInterface(Enable As Boolean, IPAddress As String, SubnetMask As String, IPAddressingType As String) As Boolean Implements ILANhostconfigmgmSCPD.SetIPInterface
-        Return Not TR064Start(ServiceFile, "SetIPInterface",
+        Return Not TR064Start(ServiceFile, "SetIPInterface", ServiceID,
                               New Dictionary(Of String, String) From {{"NewEnable", Enable.ToBoolStr},
                                                                       {"NewIPAddress", IPAddress},
                                                                       {"NewSubnetMask", SubnetMask},
@@ -66,7 +67,7 @@ Friend Class LANhostconfigmgmSCPD
     End Function
 
     Public Function GetAddressRange(ByRef MinAddress As String, ByRef MaxAddress As String) As Boolean Implements ILANhostconfigmgmSCPD.GetAddressRange
-        With TR064Start(ServiceFile, "GetAddressRange", Nothing)
+        With TR064Start(ServiceFile, "GetAddressRange", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewMinAddress", MinAddress) And
                    .TryGetValueEx("NewMaxAddress", MaxAddress)
@@ -75,7 +76,7 @@ Friend Class LANhostconfigmgmSCPD
     End Function
 
     Public Function SetAddressRange(MinAddress As String, MaxAddress As String) As Boolean Implements ILANhostconfigmgmSCPD.SetAddressRange
-        Return Not TR064Start(ServiceFile, "SetAddressRange",
+        Return Not TR064Start(ServiceFile, "SetAddressRange", ServiceID,
                               New Dictionary(Of String, String) From {{"NewMinAddress", MinAddress},
                                                                       {"NewMaxAddress", MaxAddress}}).ContainsKey("Error")
 
@@ -83,10 +84,10 @@ Friend Class LANhostconfigmgmSCPD
     End Function
 
     Public Function GetIPInterfaceNumberOfEntries(ByRef IPInterfaceNumberOfEntries As Integer) As Boolean Implements ILANhostconfigmgmSCPD.GetIPInterfaceNumberOfEntries
-        Return TR064Start(ServiceFile, "GetIPInterfaceNumberOfEntries", Nothing).TryGetValueEx("NewIPInterfaceNumberOfEntries", IPInterfaceNumberOfEntries)
+        Return TR064Start(ServiceFile, "GetIPInterfaceNumberOfEntries", ServiceID, Nothing).TryGetValueEx("NewIPInterfaceNumberOfEntries", IPInterfaceNumberOfEntries)
     End Function
 
     Public Function GetDNSServer(ByRef DNSServers As String) As Boolean Implements ILANhostconfigmgmSCPD.GetDNSServer
-        Return TR064Start(ServiceFile, "GetDNSServer", Nothing).TryGetValueEx("NewDNSServers", DNSServers)
+        Return TR064Start(ServiceFile, "GetDNSServer", ServiceID, Nothing).TryGetValueEx("NewDNSServers", DNSServers)
     End Function
 End Class

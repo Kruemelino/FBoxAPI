@@ -7,10 +7,11 @@ Friend Class X_homeautoSCPD
     Implements IX_homeautoSCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 11) Implements IX_homeautoSCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_homeautoSCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_homeautoSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_homeautoSCPD Implements IX_homeautoSCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements IX_homeautoSCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
 
         TR064Start = Start
 
@@ -18,7 +19,7 @@ Friend Class X_homeautoSCPD
 
     Public Function GetInfo(ByRef AllowedCharsAIN As String, ByRef MaxCharsAIN As Integer, ByRef MinCharsAIN As Integer, ByRef MaxCharsDeviceName As Integer, ByRef MinCharsDeviceName As Integer) As Boolean Implements IX_homeautoSCPD.GetInfo
 
-        With TR064Start(ServiceFile, "GetMessageList", Nothing)
+        With TR064Start(ServiceFile, "GetMessageList", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewAllowedCharsAIN", AllowedCharsAIN) And
                    .TryGetValueEx("MaxCharsAIN", MaxCharsAIN) And
@@ -34,7 +35,7 @@ Friend Class X_homeautoSCPD
 
         If DeviceInfo Is Nothing Then DeviceInfo = New HomeAutoDeviceInfo
 
-        With TR064Start(ServiceFile, "GetGenericDeviceInfos", New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
+        With TR064Start(ServiceFile, "GetGenericDeviceInfos", ServiceID, New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
             Return .TryGetValueEx("NewAIN", DeviceInfo.AIN) And
                    .TryGetValueEx("NewDeviceId", DeviceInfo.DeviceId) And
@@ -75,7 +76,7 @@ Friend Class X_homeautoSCPD
 
         If DeviceInfo Is Nothing Then DeviceInfo = New HomeAutoDeviceInfo
 
-        With TR064Start(ServiceFile, "GetSpecificDeviceInfos", New Dictionary(Of String, String) From {{"NewAIN", AIN}})
+        With TR064Start(ServiceFile, "GetSpecificDeviceInfos", ServiceID, New Dictionary(Of String, String) From {{"NewAIN", AIN}})
 
             DeviceInfo.AIN = AIN
 
@@ -112,12 +113,14 @@ Friend Class X_homeautoSCPD
     End Function
 
     Public Function SetDeviceName(AIN As String, DeviceName As String) As Boolean Implements IX_homeautoSCPD.SetDeviceName
-        Return Not TR064Start(ServiceFile, "SetDeviceName", New Dictionary(Of String, String) From {{"NewAIN", AIN},
-                                                                                                    {"NewDeviceName", DeviceName}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetDeviceName", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewAIN", AIN},
+                                                                      {"NewDeviceName", DeviceName}}).ContainsKey("Error")
     End Function
 
     Public Function SetSwitch(AIN As String, SwitchState As SwStateEnum) As Boolean Implements IX_homeautoSCPD.SetSwitch
-        Return Not TR064Start(ServiceFile, "SetSwitch", New Dictionary(Of String, String) From {{"NewAIN", AIN},
-                                                                                                {"NewSwitchState", SwitchState.ToString}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetSwitch", ServiceID,
+                              New Dictionary(Of String, String) From {{"NewAIN", AIN},
+                                                                      {"NewSwitchState", SwitchState.ToString}}).ContainsKey("Error")
     End Function
 End Class

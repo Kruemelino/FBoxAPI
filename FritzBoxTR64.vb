@@ -48,7 +48,10 @@ Public Class FritzBoxTR64
     Public Property WANEthernetLinkConfig As IWANEthernetLinkConfigSCPD
     Public Property WANIPConnection As IWANIPConnectionSCPD
     Public Property WANPPPConnection As IWANPPPConnectionSCPD
-    Public Property Wlanconfig As IWlanconfigSCPD
+    Public Property Wlanconfig1 As IWlanconfigSCPD
+    Public Property Wlanconfig2 As IWlanconfigSCPD
+    Public Property Wlanconfig3 As IWlanconfigSCPD
+    Public Property Wlanconfig4 As IWlanconfigSCPD
     Public Property X_appsetup As IX_appsetupSCPD
     Public Property X_auth As IX_authSCPD
     Public Property X_contact As IX_contactSCPD
@@ -197,7 +200,10 @@ Public Class FritzBoxTR64
         WANEthernetLinkConfig = New WANEthernetLinkConfigSCPD(AddressOf TR064Start)
         WANIPConnection = New WANIPConnectionSCPD(AddressOf TR064Start)
         WANPPPConnection = New WANPPPConnectionSCPD(AddressOf TR064Start)
-        Wlanconfig = New WlanconfigSCPD(AddressOf TR064Start, XML)
+        Wlanconfig1 = New WlanconfigSCPD(AddressOf TR064Start, 1, XML)
+        Wlanconfig2 = New WlanconfigSCPD(AddressOf TR064Start, 2, XML)
+        Wlanconfig3 = New WlanconfigSCPD(AddressOf TR064Start, 3, XML)
+        Wlanconfig4 = New WlanconfigSCPD(AddressOf TR064Start, 4, XML)
         X_appsetup = New X_appsetupSCPD(AddressOf TR064Start)
         X_auth = New X_authSCPD(AddressOf TR064Start)
         X_contact = New X_contactSCPD(AddressOf TR064Start, XML)
@@ -249,7 +255,10 @@ Public Class FritzBoxTR64
     End Sub
 #End Region
 
-    Private Function TR064Start(SCPDURL As SCPDFiles, ActionName As String, Optional InputArguments As Dictionary(Of String, String) = Nothing) As Dictionary(Of String, String)
+    Private Function TR064Start(SCPDURL As SCPDFiles,
+                                ActionName As String,
+                                ServiceID As Integer,
+                                Optional InputArguments As Dictionary(Of String, String) = Nothing) As Dictionary(Of String, String)
 
         Dim ReturnValues As New Dictionary(Of String, String) From {{"Error", $"Service für {SCPDURL} und {ActionName} nicht vorhanden!"}}
 
@@ -259,7 +268,7 @@ Public Class FritzBoxTR64
         ' Prüfe, ob die Schnittstelle grundsätzlich verbunden ist.
         If Ready Then
             ' Ermittle den Service, welcher zu der übergebenen SCPD gehört
-            Dim Service As Service = GetService(SCPDURL)
+            Dim Service As Service = GetService(SCPDURL, ServiceID)
 
             If Service IsNot Nothing Then
                 ReturnValues = Service.StartAction(ActionName, InputArguments, AuthToken)
@@ -298,7 +307,8 @@ Public Class FritzBoxTR64
         Return ReturnValues
     End Function
 
-    Private Function GetService(SCPDURL As SCPDFiles) As Service
+
+    Private Function GetService(SCPDURL As SCPDFiles, ServiceID As Integer) As Service
 
         If Services IsNot Nothing AndAlso Services.Any Then
 
@@ -311,6 +321,10 @@ Public Class FritzBoxTR64
 
                                         Case SCPDFiles.igd2icfgSCPD, SCPDFiles.igd2dslSCPD
                                             Return Service.SCPDURL.AreEqual(SCPDURL.Description) And Service.ControlURL.StartsWith("/igd2upnp/")
+
+                                        ' Sonderfall WLAN: Es kann mehrere geben. Hier ist die ServiceID relevant.
+                                        Case SCPDFiles.wlanconfigSCPD
+                                            Return Service.SCPDURL.AreEqual(SCPDURL.Description) And Service.ServiceType.EndsWith(ServiceID.ToString)
 
                                         Case Else
                                             Return Service.SCPDURL.AreEqual(SCPDURL.Description)

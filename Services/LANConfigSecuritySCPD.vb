@@ -7,10 +7,11 @@ Friend Class LANConfigSecuritySCPD
     Implements ILANConfigSecuritySCPD
 
     Public ReadOnly Property DocumentationDate As Date = New Date(2022, 6, 7) Implements ILANConfigSecuritySCPD.DocumentationDate
-    Private Property TR064Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ILANConfigSecuritySCPD.TR064Start
+    Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements ILANConfigSecuritySCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.lanconfigsecuritySCPD Implements ILANConfigSecuritySCPD.Servicefile
+    Private ReadOnly Property ServiceID As Integer = 1 Implements ILANConfigSecuritySCPD.ServiceID
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
 
         TR064Start = Start
 
@@ -22,7 +23,7 @@ Friend Class LANConfigSecuritySCPD
                      ByRef AllowedCharsUsername As String,
                      ByRef IsDefaultPasswordActive As Boolean) As Boolean Implements ILANConfigSecuritySCPD.GetInfo
 
-        With TR064Start(ServiceFile, "GetInfo", Nothing)
+        With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
             Return .TryGetValueEx("MaxCharsPassword", MaxCharsPassword) And
                    .TryGetValueEx("MinCharsPassword", MinCharsPassword) And
@@ -34,11 +35,11 @@ Friend Class LANConfigSecuritySCPD
     End Function
 
     Public Function GetAnonymousLogin(ByRef AnonymousLoginEnabled As Boolean) As Boolean Implements ILANConfigSecuritySCPD.GetAnonymousLogin
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetAnonymousLogin", Nothing).TryGetValueEx("NewX_AVM-DE_AnonymousLoginEnabled", AnonymousLoginEnabled)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetAnonymousLogin", ServiceID, Nothing).TryGetValueEx("NewX_AVM-DE_AnonymousLoginEnabled", AnonymousLoginEnabled)
     End Function
 
     Public Function GetCurrentUser(ByRef CurrentUsername As String, ByRef CurrentUserRights As String) As Boolean Implements ILANConfigSecuritySCPD.GetCurrentUser
-        With TR064Start(ServiceFile, "X_AVM-DE_GetCurrentUser", Nothing)
+        With TR064Start(ServiceFile, "X_AVM-DE_GetCurrentUser", ServiceID, Nothing)
 
             Return .TryGetValueEx("NewX_AVM-DE_CurrentUsername", CurrentUsername) And
                    .TryGetValueEx("NewX_AVM-DE_CurrentUserRights", CurrentUserRights)
@@ -47,11 +48,11 @@ Friend Class LANConfigSecuritySCPD
     End Function
 
     Public Function SetConfigPassword(ConfigPassword As String) As Boolean Implements ILANConfigSecuritySCPD.SetConfigPassword
-        Return Not TR064Start(ServiceFile, "SetConfigPassword", New Dictionary(Of String, String) From {{"NewPassword", ConfigPassword}}).ContainsKey("Error")
+        Return Not TR064Start(ServiceFile, "SetConfigPassword", ServiceID, New Dictionary(Of String, String) From {{"NewPassword", ConfigPassword}}).ContainsKey("Error")
     End Function
 
     Public Function GetUserList(ByRef UserList As String) As Boolean Implements ILANConfigSecuritySCPD.GetUserList
-        Return TR064Start(ServiceFile, "X_AVM-DE_GetUserList", Nothing).TryGetValueEx("NewX_AVM-DE_UserList", UserList)
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetUserList", ServiceID, Nothing).TryGetValueEx("NewX_AVM-DE_UserList", UserList)
     End Function
 
 End Class
