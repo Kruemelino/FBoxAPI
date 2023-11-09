@@ -3,7 +3,7 @@
 		<RootNamespace>FBoxAPI</RootNamespace>
 		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net472;net48;net481;net60;net70</TargetFrameworks>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<Version>0.1.37</Version>
+		<Version>0.1.38</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/Kruemelino/FBoxAPI</RepositoryUrl>
 		<PackageTags>Fritz!Box fritzbox api tr-064 soap</PackageTags>

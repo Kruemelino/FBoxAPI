@@ -287,6 +287,8 @@ Friend Class WebFunctions
                 .Headers.Set("SOAPACTION", SOAPActionHeader)
             End With
 
+            SendLog(LogLevel.Trace, $"SOAPActionHeader: SOAPACTION={SOAPActionHeader}")
+
             ReturnString = Await PostBase(Client, UniformResourceIdentifier, PostData)
 
         End Using
