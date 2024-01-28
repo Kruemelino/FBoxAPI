@@ -13,7 +13,7 @@
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template match="email/@classifier">
+  <xsl:template match="email/@classifier">
 		<xsl:attribute name="classifier" namespace="{namespace-uri()}">
 			
 			<!--Führe eine ToLower Operation durch-->
@@ -30,5 +30,25 @@
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>
-	
+
+  <xsl:template match="number/@type">
+    <xsl:attribute name="type" namespace="{namespace-uri()}">
+
+      <!--Führe eine ToLower Operation durch-->
+      <xsl:variable name="LowerType" select="translate(., $vUpper, $vLower)"/>
+
+      <!--Erlaube nur die nachfolgenden Werte:-->
+      <xsl:choose>
+        <xsl:when test="(LowerType='intern') or (LowerType='work') or (LowerType='home') or 
+												(LowerType='mobile') or (LowerType='fax_work') or (LowerType='fax_home') or 
+												(LowerType='memo') or (LowerType='other')">
+          <xsl:value-of select="LowerType"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="''"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:attribute>
+  </xsl:template>
+  
 </xsl:stylesheet>

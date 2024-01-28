@@ -168,6 +168,8 @@ Public Enum TelNrTypEnum
 
     <XmlEnum("fax_work")> fax_work
 
+    <XmlEnum("fax_home")> fax_home
+
     <XmlEnum("memo")> memo
 
     <XmlEnum("other")> other
