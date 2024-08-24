@@ -1,8 +1,6 @@
-﻿Imports System.Net
-Imports System.Net.Mail
-''' <summary>
+﻿''' <summary>
 ''' TR-064 Support – Hosts
-''' Date: 2022-10-13
+''' Date: 2024-07-02
 ''' <see href="https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/hostsSCPD.pdf"/>
 ''' </summary>
 Friend Class HostsSCPD
@@ -47,7 +45,8 @@ Friend Class HostsSCPD
 
         With TR064Start(ServiceFile, "GetGenericHostEntry", ServiceID, New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
-            Return .TryGetValueEx("NewIPAddress", Host.IPAddress) And
+            Return .TryGetValueEx("NewMACAddress", Host.MACAddress) And
+                   .TryGetValueEx("NewIPAddress", Host.IPAddress) And
                    .TryGetValueEx("NewAddressSource", Host.AddressSource) And
                    .TryGetValueEx("NewLeaseTimeRemaining", Host.LeaseTimeRemaining) And
                    .TryGetValueEx("NewInterfaceType", Host.InterfaceType) And
@@ -99,10 +98,10 @@ Friend Class HostsSCPD
                               New Dictionary(Of String, String) From {{"NewMACAddress", MACAddress}}).ContainsKey("Error")
     End Function
 
-    Public Function GetSpecificHostEntryByIp(IPAddress As String, ByRef Host As HostEntry) As Boolean Implements IHostsSCPD.GetSpecificHostEntryByIp
+    Public Function GetSpecificHostEntryByIP(IPAddress As String, ByRef Host As HostEntry) As Boolean Implements IHostsSCPD.GetSpecificHostEntryByIP
         If Host Is Nothing Then Host = New HostEntry
 
-        With TR064Start(ServiceFile, "X_AVM-DE_GetSpecificHostEntryByIp", ServiceID,
+        With TR064Start(ServiceFile, "X_AVM-DE_GetSpecificHostEntryByIP", ServiceID,
                         New Dictionary(Of String, String) From {{"NewIPAddress", IPAddress}})
 
             Host.IPAddress = IPAddress

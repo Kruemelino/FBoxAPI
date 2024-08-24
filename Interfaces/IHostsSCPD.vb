@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – Hosts
-''' Date: 2022-10-13
+''' Date: 2024-07-02
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/hostsSCPD.pdf</see>
 ''' </summary>
 Public Interface IHostsSCPD
@@ -15,7 +15,7 @@ Public Interface IHostsSCPD
     Function SetAutoWakeOnLANByMACAddress(MACAddress As String, AutoWOLEnabled As Boolean) As Boolean
     Function SetHostNameByMACAddress(MACAddress As String, HostName As String) As Boolean
     Function WakeOnLANByMACAddress(MACAddress As String) As Boolean
-    Function GetSpecificHostEntryByIp(IPAddress As String, ByRef Host As HostEntry) As Boolean
+    Function GetSpecificHostEntryByIP(IPAddress As String, ByRef Host As HostEntry) As Boolean
     Function HostsCheckUpdate() As Boolean
     Function HostDoUpdate(MACAddress As String) As Boolean
 
