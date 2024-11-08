@@ -541,6 +541,48 @@ Public Enum WPSStatusEnum
     err_abort
 End Enum
 
+Public Enum MLOModes
+    ''' <summary>
+    ''' The mode is unspecific
+    ''' </summary>
+    auto
+
+    ''' <summary>
+    ''' Multi Link, Single Radio
+    ''' </summary>
+    mlsr
+
+    ''' <summary>
+    ''' Enhanced Multi Link, Single Radio with simultaneous transmit/receive
+    ''' </summary>
+    emlsr_str
+
+    ''' <summary>
+    ''' Enhanced Multi Link, Single Radio without simultaneous transmit/receive
+    ''' </summary>
+    emlsr_nstr
+
+    ''' <summary>
+    ''' Multi Link, Multi Radio with simultaneous transmit/receive
+    ''' </summary>
+    mlmr_str
+
+    ''' <summary>
+    ''' Multi Link, Multi Radio without simultaneous transmit/receive
+    ''' </summary>
+    mlmr_nstr
+
+    ''' <summary>
+    ''' Enhanced Multi Link, Multi Radio with simultaneous transmit/receive
+    ''' </summary>
+    emlmr_str
+
+    ''' <summary>
+    ''' Enhanced Multi Link, Multi Radio without simultaneous transmit/receive
+    ''' </summary>
+    emlmr_nstr
+End Enum
+
 #End Region
 
 #Region "Hostfilter"

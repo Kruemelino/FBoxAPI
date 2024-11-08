@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – WLANConfiguration
-''' Date: 2022-10-13
+''' Date: 2024-05-02
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wlanconfigSCPD.pdf</see>
 ''' </summary>
 Public Interface IWlanconfigSCPD
@@ -43,8 +43,6 @@ Public Interface IWlanconfigSCPD
     ''' </remarks>
     Function GetWLANDeviceListPath(ByRef WLANDeviceListPath As String) As Boolean
 
-    <Obsolete("This function is obsolete and will be removed in a future version. Use the function GetWLANDeviceList() As Task(Of WLANDeviceList) instead.")>
-    Function GetWLANDeviceList(AssociatedDevices As WLANDeviceList) As Boolean
     Function GetWLANDeviceList() As Task(Of WLANDeviceList)
 
     Function SetStickSurfEnable(StickSurfEnable As Boolean) As Boolean
@@ -99,6 +97,10 @@ Public Interface IWlanconfigSCPD
     ''' <summary>
     ''' Get information about the Wi-Fi connection of the requesting Wi-Fi host device. 
     ''' If the device is not directly connected to any of the access points, the status code 714 (no such entry in array) will be returned.
+    ''' The state variable X_AVM-DE_MLOList contains an XML list of all Multi-Link Operation (MLO) connections and their corresponding information, including the Multi-Link Device (MLD). 
     ''' </summary>
     Function GetWLANConnectionInfo(ByRef Info As WLANConnectionInfo) As Boolean
+
+    ' Inoffizielle Funktion
+    Function GetMLOList() As Task(Of MLOList)
 End Interface

@@ -1,12 +1,12 @@
 ﻿''' <summary>
 ''' TR-064 Support – WLANConfiguration
-''' Date: 2022-10-13
+''' Date: 2024-05-02
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wlanconfigSCPD.pdf</see>
 ''' </summary>
 Friend Class WlanconfigSCPD
     Implements IWlanconfigSCPD
 
-    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 10, 13) Implements IWlanconfigSCPD.DocumentationDate
+    Public ReadOnly Property DocumentationDate As Date = New Date(2024, 5, 2) Implements IWlanconfigSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IWlanconfigSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.wlanconfigSCPD Implements IWlanconfigSCPD.Servicefile
     Private ReadOnly Property ServiceID As Integer Implements IWlanconfigSCPD.ServiceID
@@ -219,11 +219,6 @@ Friend Class WlanconfigSCPD
         Return TR064Start(ServiceFile, "X_AVM-DE_GetWLANDeviceListPath", ServiceID, Nothing).TryGetValueEx("NewX_AVM-DE_WLANDeviceListPath", WLANDeviceListPath)
     End Function
 
-    <Obsolete> Public Function GetWLANDeviceList(AssociatedDevices As WLANDeviceList) As Boolean Implements IWlanconfigSCPD.GetWLANDeviceList
-        Dim LuaPath As String = String.Empty
-        Return GetWLANDeviceListPath(LuaPath) AndAlso XML.Deserialize($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}{LuaPath}", True, AssociatedDevices)
-    End Function
-
     Public Async Function GetWLANDeviceList() As Task(Of WLANDeviceList) Implements IWlanconfigSCPD.GetWLANDeviceList
         ' Ermittle den Pfad zu AssociatedDevices und deserialisiere die Daten
         Dim WLANDeviceListUrl As String = String.Empty
@@ -375,9 +370,25 @@ Friend Class WlanconfigSCPD
                    .TryGetValueEx("NewX_AVM-DE_Speed", Info.Speed) And
                    .TryGetValueEx("NewX_AVM-DE_SpeedRX", Info.SpeedRX) And
                    .TryGetValueEx("NewX_AVM-DE_SpeedMax", Info.SpeedMax) And
-                   .TryGetValueEx("NewX_AVM-DE_SpeedRXMax", Info.SpeedRXMax)
+                   .TryGetValueEx("NewX_AVM-DE_SpeedRXMax", Info.SpeedRXMax) And
+                   .TryGetValueEx("NewX_AVM-DE_MLDMACAddress", Info.MLDMACAddress) And
+                   .TryGetValueEx("NewX_AVM-DE_APMLDMACAddress", Info.APMLDMACAddress) And
+                   .TryGetValueEx("NewX_AVM-DE_MLOModes", Info.MLOModes) And
+                   .TryGetValueEx("NewX_AVM-DE_MLOList", Info.SpeedRXMax)
 
         End With
+    End Function
+
+    Public Async Function GetMLOList() As Task(Of MLOList) Implements IWlanconfigSCPD.GetMLOList
+        Dim Info As New WLANConnectionInfo
+
+        If GetWLANConnectionInfo(Info) Then
+            ' X_AVM-DE_GetWLANDeviceListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
+            Return Await XML.DeserializeAsyncData(Of MLOList)(Info.MLOList)
+        Else
+            Return New MLOList
+        End If
+
     End Function
 
 End Class
