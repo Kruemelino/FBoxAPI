@@ -131,6 +131,8 @@ Public Enum SCPDFiles
 
     <Description("/x_voipSCPD.xml")> x_voipSCPD
 
+    <Description("/x_wanfiberSCPD.xml")> x_wanfiberSCPD
+
     <Description("/x_wanmobileconnSCPD.xml")> x_wanmobileconn
 
     <Description("/x_webdavSCPD.xml")> x_webdavSCPD

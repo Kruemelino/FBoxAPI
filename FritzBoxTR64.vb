@@ -68,6 +68,7 @@ Public Class FritzBoxTR64
     Public Property X_upnp As IX_upnpSCPD
     Public Property X_USPController As IX_USPControllerSCPD
     Public Property X_voip As IX_voipSCPD
+    Public Property X_WANFiber As IX_WANFiberSCPD
     Public Property X_WANMobileConnection As IX_WANMobileConnectionSCPD
     Public Property X_webdav As IX_webdavSCPD
     Public Property UserMode As UserModeSCPD
@@ -220,6 +221,7 @@ Public Class FritzBoxTR64
         X_upnp = New X_upnpSCPD(AddressOf TR064Start)
         X_USPController = New X_USPControllerSCPD(AddressOf TR064Start)
         X_voip = New X_voipSCPD(AddressOf TR064Start, XML)
+        X_WANFiber = New X_WANFiberSCPD(AddressOf TR064Start)
         X_WANMobileConnection = New X_WANMobileConnectionSCPD(AddressOf TR064Start)
         X_webdav = New X_webdavSCPD(AddressOf TR064Start)
 
