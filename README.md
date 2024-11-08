@@ -183,6 +183,7 @@ folgende angehakte TR-064 Services werden derzeit unterstützt. Falls etwas fehl
 * [x] [X_AVM-DE_TAM](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf)
 * [x] [X_AVM-DE_UPnP](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_upnp.pdf)
 * [x] [X_AVM-DE_USPController](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_uspcontrollerSCPD.pdf)
+* [x] [X_AVM-DE_WANFiber](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_wanfiberSCPD.pdf)
 * [x] [X_AVM-DE_WANMobileConnection](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_wanmobileconnSCPD.pdf)
 * [x] [X_AVM-DE_WebDAVClient](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_webdavSCPD.pdf)
 * [x] [X_HomeAuto](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf)
