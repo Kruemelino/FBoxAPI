@@ -2,14 +2,14 @@
 Imports System.Xml
 ''' <summary>
 ''' TR-064 Support – X_AVM-DE_OnTel
-''' Date: 2023-01-19
+''' Date: 2023-09-13
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf</see>
 ''' </summary>
 Friend Class X_contactSCPD
-    Inherits APIConnectorBase ' Wozu?
+    Inherits APIConnectorBase
     Implements IX_contactSCPD
 
-    Public ReadOnly Property DocumentationDate As Date = New Date(2023, 1, 19) Implements IX_contactSCPD.DocumentationDate
+    Public ReadOnly Property DocumentationDate As Date = New Date(2023, 9, 13) Implements IX_contactSCPD.DocumentationDate
 
     Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_contactSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_contactSCPD Implements IX_contactSCPD.Servicefile
@@ -25,30 +25,30 @@ Friend Class X_contactSCPD
         XML = XMLSerializer
     End Sub
 
-    <Obsolete>
-    Public Function GetInfoByIndex(Index As Integer,
-                                   Optional ByRef Enable As Boolean = False,
-                                   Optional ByRef Status As String = "",
-                                   Optional ByRef LastConnect As String = "",
-                                   Optional ByRef Url As String = "",
-                                   Optional ByRef ServiceId As String = "",
-                                   Optional ByRef Username As String = "",
-                                   Optional ByRef Name As String = "") As Boolean Implements IX_contactSCPD.GetInfoByIndex
+    '<Obsolete>
+    'Public Function GetInfoByIndex(Index As Integer,
+    '                               Optional ByRef Enable As Boolean = False,
+    '                               Optional ByRef Status As String = "",
+    '                               Optional ByRef LastConnect As String = "",
+    '                               Optional ByRef Url As String = "",
+    '                               Optional ByRef ServiceId As String = "",
+    '                               Optional ByRef Username As String = "",
+    '                               Optional ByRef Name As String = "") As Boolean Implements IX_contactSCPD.GetInfoByIndex
 
-        With TR064Start(ServiceFile, "GetInfoByIndex", ServID, New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
+    '    With TR064Start(ServiceFile, "GetInfoByIndex", ServID, New Dictionary(Of String, String) From {{"NewIndex", Index.ToString}})
 
 
-            Return .TryGetValueEx("NewEnable", Enable) And
-                   .TryGetValueEx("NewStatus", Status) And
-                   .TryGetValueEx("NewLastConnect", LastConnect) And
-                   .TryGetValueEx("NewUrl", Url) And
-                   .TryGetValueEx("NewServiceId", ServiceId) And
-                   .TryGetValueEx("NewUsername", Username) And
-                   .TryGetValueEx("NewName", Name)
+    '        Return .TryGetValueEx("NewEnable", Enable) And
+    '               .TryGetValueEx("NewStatus", Status) And
+    '               .TryGetValueEx("NewLastConnect", LastConnect) And
+    '               .TryGetValueEx("NewUrl", Url) And
+    '               .TryGetValueEx("NewServiceId", ServiceId) And
+    '               .TryGetValueEx("NewUsername", Username) And
+    '               .TryGetValueEx("NewName", Name)
 
-        End With
+    '    End With
 
-    End Function
+    'End Function
 
     Public Function GetInfoByIndex(Index As Integer, ByRef Info As OnTelInfo) As Boolean Implements IX_contactSCPD.GetInfoByIndex
         If Info Is Nothing Then Info = New OnTelInfo With {.Index = Index}

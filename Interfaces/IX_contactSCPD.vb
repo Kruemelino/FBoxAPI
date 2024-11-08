@@ -1,20 +1,20 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_OnTel
-''' Date: 2023-01-19
+''' Date: 2023-09-13
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf</see>
 ''' </summary>
 Public Interface IX_contactSCPD
     Inherits IServiceBase
 
-    <Obsolete("This function is obsolete and will be removed in a future version. Use the function GetInfoByIndex(Index As Integer, ByRef Info As OnTelInfo) instead.")>
-    Function GetInfoByIndex(Index As Integer,
-                                       Optional ByRef Enable As Boolean = False,
-                                       Optional ByRef Status As String = "",
-                                       Optional ByRef LastConnect As String = "",
-                                       Optional ByRef Url As String = "",
-                                       Optional ByRef ServiceId As String = "",
-                                       Optional ByRef Username As String = "",
-                                       Optional ByRef Name As String = "") As Boolean
+    '<Obsolete("This function is obsolete and will be removed in a future version. Use the function GetInfoByIndex(Index As Integer, ByRef Info As OnTelInfo) instead.")>
+    'Function GetInfoByIndex(Index As Integer,
+    '                                   Optional ByRef Enable As Boolean = False,
+    '                                   Optional ByRef Status As String = "",
+    '                                   Optional ByRef LastConnect As String = "",
+    '                                   Optional ByRef Url As String = "",
+    '                                   Optional ByRef ServiceId As String = "",
+    '                                   Optional ByRef Username As String = "",
+    '                                   Optional ByRef Name As String = "") As Boolean
 
     Function GetInfoByIndex(Index As Integer, ByRef Info As OnTelInfo) As Boolean
     ''' <summary>
