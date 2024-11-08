@@ -1,13 +1,12 @@
-﻿Imports System.Net.NetworkInformation
-''' <summary>
+﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_WANMobileConnection
-''' Date: 2022-11-07
+''' Date: 2023-04-14
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_wanmobileconnSCPD.pdf</see>
 ''' </summary>
 Friend Class X_WANMobileConnectionSCPD
     Implements IX_WANMobileConnectionSCPD
 
-    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 11, 7) Implements IX_WANMobileConnectionSCPD.DocumentationDate
+    Public ReadOnly Property DocumentationDate As Date = New Date(2023, 4, 14) Implements IX_WANMobileConnectionSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IX_WANMobileConnectionSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles = SCPDFiles.x_wanmobileconn Implements IX_WANMobileConnectionSCPD.Servicefile
     Private ReadOnly Property ServiceID As Integer = 1 Implements IX_WANMobileConnectionSCPD.ServiceID
@@ -45,6 +44,8 @@ Friend Class X_WANMobileConnectionSCPD
                        .TryGetValueEx("NewPPPUsername", Info.PPPUsername) And
                        .TryGetValueEx("NewPPPUsernameVoIP", Info.PPPUsernameVoIP) And
                        .TryGetValueEx("NewSoftwareVersion", Info.SoftwareVersion) And
+                       .TryGetValueEx("NewPPPAuthProtocol", Info.PPPAuthProtocol) And
+                       .TryGetValueEx("NewPPPAuthProtocolVoIP", Info.PPPAuthProtocolVoIP) And
                        .TryGetValueEx("NewUptime", Info.Uptime) And
                        .TryGetValueEx("NewPDN1_MTU", Info.PDN1_MTU) And
                        .TryGetValueEx("NewPDN2_MTU", Info.PDN2_MTU) And

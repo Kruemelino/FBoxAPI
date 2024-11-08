@@ -1,6 +1,6 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_WANMobileConnection
-''' Date: 2022-11-07
+''' Date: 2023-04-14
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_wanmobileconnSCPD.pdf</see>
 ''' </summary>
 Public Class WANMobileConnectionInfoEx
@@ -8,6 +8,8 @@ Public Class WANMobileConnectionInfoEx
     Public Property EnableVoIPPDN As Boolean
     Public Property PPPUsername As String
     Public Property PPPUsernameVoIP As String
+    Public Property PPPAuthProtocol As String
+    Public Property PPPAuthProtocolVoIP As String
     Public Property SoftwareVersion As String
     Public Property Uptime As Integer
     Public Property PDN1_MTU As Integer
