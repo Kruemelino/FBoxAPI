@@ -179,7 +179,7 @@ Public Class FritzBoxTR64
         AURA = New AuraSCPD(AddressOf TR064Start)
         DECT = New DECT_SCPD(AddressOf TR064Start)
         Deviceconfig = New DeviceconfigSCPD(AddressOf TR064Start)
-        Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start)
+        Deviceinfo = New DeviceinfoSCPD(AddressOf TR064Start, XML)
         Hosts = New HostsSCPD(AddressOf TR064Start, XML)
         IGD1conn = New IGD1connSCPD(AddressOf TR064Start)
         IGD2conn = New IGD2connSCPD(AddressOf TR064Start)

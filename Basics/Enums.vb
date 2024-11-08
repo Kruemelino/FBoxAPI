@@ -1041,3 +1041,14 @@ Public Enum StationSearchStatusEnum
     inactive
 End Enum
 #End Region
+
+#Region "DeviceInfo"
+Public Enum DeviceLogFilter
+    all
+    sys
+    net
+    fon
+    wlan
+    usb
+End Enum
+#End Region

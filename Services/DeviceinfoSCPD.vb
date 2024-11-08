@@ -1,21 +1,24 @@
 ﻿''' <summary>
 ''' TR-064 Support – DeviceInfo
-''' Date: 2022-02-16
+''' Date: 2024-02-15
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf</see>
 ''' </summary>
 Friend Class DeviceinfoSCPD
     Implements IDeviceinfoSCPD
 
-    Public ReadOnly Property DocumentationDate As Date = New Date(2022, 2, 16) Implements IDeviceinfoSCPD.DocumentationDate
+    Public ReadOnly Property DocumentationDate As Date = New Date(2024, 2, 15) Implements IDeviceinfoSCPD.DocumentationDate
     Private Property TR064Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)) Implements IDeviceinfoSCPD.TR064Start
     Private ReadOnly Property ServiceFile As SCPDFiles Implements IDeviceinfoSCPD.Servicefile
     Private ReadOnly Property ServiceID As Integer = 1 Implements IDeviceinfoSCPD.ServiceID
+    Private Property XML As Serializer
 
-    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)))
+    Public Sub New(Start As Func(Of SCPDFiles, String, Integer, Dictionary(Of String, String), Dictionary(Of String, String)), XMLSerializer As Serializer)
 
         ServiceFile = SCPDFiles.deviceinfoSCPD
 
         TR064Start = Start
+
+        XML = XMLSerializer
 
     End Sub
 
@@ -53,6 +56,22 @@ Friend Class DeviceinfoSCPD
 
     Public Function GetSecurityPort(ByRef SecurityPort As Integer) As Boolean Implements IDeviceinfoSCPD.GetSecurityPort
         Return TR064Start(ServiceFile, "GetSecurityPort", ServiceID, Nothing).TryGetValueEx("NewSecurityPort", SecurityPort)
+    End Function
+
+    Public Function GetDeviceLogPath(ByRef DeviceLogPath As String) As Boolean Implements IDeviceinfoSCPD.GetDeviceLogPath
+        Return TR064Start(ServiceFile, "X_AVM-DE_GetDeviceLogPath", ServiceID, Nothing).TryGetValueEx("NewDeviceLogPath", DeviceLogPath)
+    End Function
+
+    Public Async Function GetDeviceLogXML(Filter As DeviceLogFilter) As Task(Of DeviceLog) Implements IDeviceinfoSCPD.GetDeviceLogXML
+        ' Ermittle den Pfad zu AssociatedDevices und deserialisiere die Daten
+        Dim DeviceLogPath As String = String.Empty
+
+        If GetDeviceLogPath(DeviceLogPath) Then
+            ' X_AVM-DE_GetWLANDeviceListPath liefert nur den lua-Part. Der Rest muss vorangefügt werden.
+            Return Await Xml.DeserializeAsyncFromPath(Of DeviceLog)($"{Uri.UriSchemeHttp}://{FritzBoxTR64.FBoxIPAdresse}:{49000}{DeviceLogPath}&filter={Filter}")
+        Else
+            Return New DeviceLog
+        End If
     End Function
 #End Region
 
