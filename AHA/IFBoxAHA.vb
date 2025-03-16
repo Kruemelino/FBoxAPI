@@ -1,9 +1,25 @@
 ﻿''' <summary>
 ''' AVM Home Automation HTTP Interface<br/>
-''' Date: 2020-09-16<br/>
+''' Date: 2024-10-24<br/>
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf</see>
 ''' </summary>
 Public Interface IFBoxAHA
+
+    ''' <summary>
+    ''' Liefert die grundlegenden Informationen aller SmartHome-Geräte
+    ''' </summary>
+    ''' <returns>XML-Format mit grundlegenden und funktionsspezifischen Informationen</returns>
+    Function GetDeviceListInfos() As Task(Of AHADeviceList)
+
+    ''' <summary>
+    ''' Liefert die grundlegenden Informationen dieses SmartHome-Geräte
+    ''' </summary>
+    ''' <param name="AIN">Abzufragendes Gerät</param>
+    ''' <returns>XML-Format mit grundlegenden und funktionsspezifischen Informationen</returns>
+    Function GetDeviceInfos(AIN As String) As Task(Of AHAGroup)
+
+    Function GetBasicDeviceStats(AIN As String) As Task(Of AHADeviceStats)
+
 #Region "Switch/Schalter"
     ''' <summary>
     ''' Liefert die kommaseparierte AIN/MAC Liste aller bekannten Steckdosen
@@ -67,20 +83,6 @@ Public Interface IFBoxAHA
     ''' <returns>Name der Steckdose</returns>
     Function GetSwitchName(AIN As String) As Task(Of String)
 #End Region
-    ''' <summary>
-    ''' Liefert die grundlegenden Informationen aller SmartHome-Geräte
-    ''' </summary>
-    ''' <returns>XML-Format mit grundlegenden und funktionsspezifischen Informationen</returns>
-    Function GetDeviceListInfos() As Task(Of AHADeviceList)
-
-    ''' <summary>
-    ''' Liefert die grundlegenden Informationen dieses SmartHome-Geräte
-    ''' </summary>
-    ''' <param name="AIN">Abzufragendes Gerät</param>
-    ''' <returns>XML-Format mit grundlegenden und funktionsspezifischen Informationen</returns>
-    Function GetDeviceInfos(AIN As String) As Task(Of AHAGroup)
-
-    Function GetBasicDeviceStats(AIN As String) As Task(Of AHADeviceStats)
 
 #Region "Heizkörperregler"
     ''' <summary>
@@ -137,6 +139,7 @@ Public Interface IFBoxAHA
     ''' <returns>endtimestamp wenn erfolgreich</returns>
     ''' <remarks>Die End-Zeit darf maximal bis zu 24 Stunden in der Zukunft liegen.</remarks>
     Function SetHKRWindowOpen(AIN As String, EndTimeStamp As Integer) As Task(Of Integer)
+
 #End Region
 
 #Region "Vorlagen"
@@ -146,20 +149,26 @@ Public Interface IFBoxAHA
     Function GetTemplateListInfos() As Task(Of AHATemplateList)
 
     ''' <summary>
+    ''' Erzeugt eine Farb-Vorlage für Lampen.
+    ''' Es muss <paramref name="Name"/>, <paramref name="LevelPercentage"/>, <paramref name="AINList"/> und <paramref name="Hue"/>+<paramref name="Saturation"/> oder <paramref name="Temperature"/> übergeben werden.
+    ''' </summary>
+    ''' <param name="Name">Name der Vorlage</param>
+    ''' <param name="LevelPercentage">0(0%) bis 100(100%)</param>
+    ''' <param name="HUE">in Grad, 0 bis 359 (0° bis 359°)</param>
+    ''' <param name="Saturation">0(0%) bis 255(100%)</param>
+    ''' <param name="Temperature">in Kelvin, typisch im Bereich 2700 bis 6500</param>
+    ''' <param name="ColorPresent">wenn true dann werden die Colordefaults benutzt, ansonsten und im Default(False) werden die Colordefaults nicht benutzt </param>
+    ''' <param name="AINList">ain-Geräteliste </param>
+    Sub AddColorLevelTemplate(Name As String, LevelPercentage As Integer, Hue As Integer, Saturation As Integer, Temperature As Integer, AINList As IEnumerable(Of String), Optional ColorPresent As Boolean = False)
+
+    ''' <summary>
     ''' Vorlage anwenden, der ain Parameter wird ausgewertet
     ''' </summary>
     ''' <param name="AIN">Anzuwendende Vorlage</param>
     Sub ApplyTemplate(AIN As String)
 #End Region
 
-#Region "Diverse Aktionen"
-    ''' <summary>
-    ''' Gerät/Aktor/Lampe an-/ausschalten oder toggeln
-    ''' </summary>
-    ''' <param name="AIN">Zu schaltender Aktor</param>
-    ''' <param name="OnOff">0(aus), 1(an) oder 2(toggle)</param>
-    Sub SetSimpleOnOff(AIN As String, OnOff As Boolean)
-
+#Region "Leuchten"
     ''' <summary>
     ''' Dimm-, Höhen-, Helligkeit bzw. Niveau-Level einstellen
     ''' </summary>
@@ -175,6 +184,18 @@ Public Interface IFBoxAHA
     Sub SetLevelPercentage(AIN As String, Level As Integer)
 
     ''' <summary>
+    ''' HueSaturation-Farbe einstellen, beschränkt auf die Colordefaults Farbauswahl
+    ''' Der HSV-Farbraum wird mit dem HueSaturation-Mode unterstützt. 
+    ''' Der Hellwert(Value) kann über <see cref="SetLevel(String, Integer)"/>/<see cref="SetLevelPercentage(String, Integer)"/> konfiguriert werden.
+    ''' Die Hue und Saturation-Werte sind hier konfigurierbar.
+    ''' </summary>
+    ''' <param name="AIN">Zu schaltender Aktor</param>
+    ''' <param name="HUE">in Grad, 0 bis 359 (0° bis 359°)</param>
+    ''' <param name="Saturation">0(0%) bis 255(100%)</param>
+    ''' <param name="Duration">Schnelligkeit der Änderung in 100ms. 0 sofort: Hinweis: duration wird aktuell nicht unterstützt.</param>
+    Sub SetColor(AIN As String, Hue As Integer, Saturation As Integer, Duration As Integer)
+
+    ''' <summary>
     ''' HueSaturation-Farbe einstellen 
     ''' Der HSV-Farbraum wird mit dem HueSaturation-Mode unterstützt. 
     ''' Der Hellwert(Value) kann über <see cref="SetLevel(String, Integer)"/>/<see cref="SetLevelPercentage(String, Integer)"/> konfiguriert werden.
@@ -183,8 +204,8 @@ Public Interface IFBoxAHA
     ''' <param name="AIN">Zu schaltender Aktor</param>
     ''' <param name="HUE">in Grad, 0 bis 359 (0° bis 359°)</param>
     ''' <param name="Saturation">0(0%) bis 255(100%)</param>
-    ''' <param name="Duration">Schnelligkeit der Änderung in 100ms. 0 sofort</param>
-    Sub SetColor(AIN As String, Hue As Integer, Saturation As Integer, Duration As Integer)
+    ''' <param name="Duration">Schnelligkeit der Änderung in 100ms. 0 sofort: Hinweis: duration wird aktuell nicht unterstützt.</param>
+    Sub SetUnmappedColor(AIN As String, Hue As Integer, Saturation As Integer, Duration As Integer)
 
     ''' <summary>
     ''' Farbtemperatur einstellen
@@ -193,6 +214,17 @@ Public Interface IFBoxAHA
     ''' <param name="Temperature">in Kelvin, typisch im Bereich 2700 bis 6500</param>
     ''' <param name="Duration">Schnelligkeit der Änderung in 100ms. 0 sofort</param>
     Sub SetColorTemperature(AIN As String, Temperature As Integer, Duration As Integer)
+
+    Function GetColorDefaults() As Task(Of AHAColorDefaults)
+#End Region
+
+#Region "Diverse Aktionen"
+    ''' <summary>
+    ''' Gerät/Aktor/Lampe an-/ausschalten oder toggeln
+    ''' </summary>
+    ''' <param name="AIN">Zu schaltender Aktor</param>
+    ''' <param name="OnOff">0(aus), 1(an) oder 2(toggle)</param>
+    Sub SetSimpleOnOff(AIN As String, OnOff As Boolean)
 
     ''' <summary>
     ''' Rollo schliessen(close), öffnen(open) oder stoppen(stop)
@@ -211,6 +243,8 @@ Public Interface IFBoxAHA
     ''' Hinweis: benötigt die "Eingeschränkte FRITZ!Box Einstellungen für Apps"-Berechtigung</remarks>
     Sub SetName(AIN As String, Name As String)
 
+
+
     ''' <summary>
     ''' DECT-ULE-Geräteanmeldung starten
     ''' </summary>
@@ -225,6 +259,25 @@ Public Interface IFBoxAHA
 
 #End Region
 
-    Function GetColorDefaults() As Task(Of AHAColorDefaults)
+#Region "Trigger"
+    ''' <summary>
+    ''' Liefert die grundlegenden Informationen aller Routinen/Trigger
+    ''' </summary>
+    ''' <returns>XML-Format mit grundlegenden Informationen</returns>
+    Function GetTriggerListInfos() As Task(Of String)
+
+    ''' <summary>
+    ''' Trigger aktivieren oder deaktivieren
+    ''' </summary>
+    ''' <param name="AIN">Zu änderndes Gerät</param>
+    ''' <param name="Active">aktivieren(active=1) oder deaktivieren(active=0)</param>
+    Sub SetTriggerActive(AIN As String, Active As Boolean)
+
+    'TODO: setmetadata
+
+
+#End Region
+
+
 
 End Interface

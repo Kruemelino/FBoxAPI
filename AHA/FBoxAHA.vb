@@ -138,6 +138,61 @@ Friend Class FBoxAHA
     End Function
 #End Region
 
+#Region "Leuchten"
+    Public Async Sub SetLevel(AIN As String, Level As Integer) Implements IFBoxAHA.SetLevel
+        Await SendAHARequest(New Dictionary(Of String, String) From {{"ain", AIN},
+                                                                     {"level", Level.ToString}})
+    End Sub
+
+    Public Async Sub SetLevelPercentage(AIN As String, Level As Integer) Implements IFBoxAHA.SetLevelPercentage
+        Await SendAHARequest(New Dictionary(Of String, String) From {{"ain", AIN},
+                                                                     {"level", Level.ToString}})
+    End Sub
+
+    Public Async Sub SetColor(AIN As String, Hue As Integer, Saturation As Integer, Duration As Integer) Implements IFBoxAHA.SetColor
+        Await SendAHARequest(New Dictionary(Of String, String) From {{"ain", AIN},
+                                                                     {"hue", Hue.ToString},
+                                                                     {"saturation", Saturation.ToString},
+                                                                     {"duration", Duration.ToString}})
+    End Sub
+    Public Async Sub SetUnmappedColor(AIN As String, Hue As Integer, Saturation As Integer, Duration As Integer) Implements IFBoxAHA.SetUnmappedColor
+        Await SendAHARequest(New Dictionary(Of String, String) From {{"ain", AIN},
+                                                                     {"hue", Hue.ToString},
+                                                                     {"saturation", Saturation.ToString},
+                                                                     {"duration", Duration.ToString}})
+    End Sub
+
+    Public Async Sub SetColorTemperature(AIN As String, Temperature As Integer, Duration As Integer) Implements IFBoxAHA.SetColorTemperature
+        Await SendAHARequest(New Dictionary(Of String, String) From {{"ain", AIN},
+                                                                     {"temperature", Temperature.ToString},
+                                                                     {"duration", Duration.ToString}})
+    End Sub
+
+    Public Async Function GetColorDefaults() As Task(Of AHAColorDefaults) Implements IFBoxAHA.GetColorDefaults
+        Return Await FBoXTR064Base.XML.DeserializeAsyncData(Of AHAColorDefaults)(Await SendAHARequest())
+    End Function
+
+    ' TODO Wie soll das übergeben werden?
+    Public Async Sub AddColorLevelTemplate(Name As String, LevelPercentage As Integer, Hue As Integer, Saturation As Integer, Temperature As Integer, AINList As IEnumerable(Of String), Optional ColorPresent As Boolean = False) Implements IFBoxAHA.AddColorLevelTemplate
+
+        Dim ParamDict As New Dictionary(Of String, String) From {{"name", Name},
+                                                                 {"hue", Hue.ToString},
+                                                                 {"levelPercentage", LevelPercentage.ToString},
+                                                                 {"saturation", Saturation.ToString},
+                                                                 {"temperature", Temperature.ToString},
+                                                                 {"colorpreset", ColorPresent.ToBoolStr}}
+
+        ' ain-Geräteliste in Anzahl n child_<n>-Parametern beginnend mit child_1, child_2..
+        For i = 1 To AINList.Count
+            ParamDict.Add($"child_{i}", AINList(i))
+        Next
+        Await SendAHARequest(ParamDict)
+    End Sub
+
+
+
+#End Region
+
 #Region "Vorlagen"
 
     Public Async Function GetTemplateListInfos() As Task(Of AHATemplateList) Implements IFBoxAHA.GetTemplateListInfos
@@ -155,29 +210,6 @@ Friend Class FBoxAHA
     Public Async Sub SetSimpleOnOff(AIN As String, OnOff As Boolean) Implements IFBoxAHA.SetSimpleOnOff
         Await SendAHARequest(New Dictionary(Of String, String) From {{"ain", AIN},
                                                                      {"onoff", OnOff.ToBoolStr}})
-    End Sub
-
-    Public Async Sub SetLevel(AIN As String, Level As Integer) Implements IFBoxAHA.SetLevel
-        Await SendAHARequest(New Dictionary(Of String, String) From {{"ain", AIN},
-                                                                     {"level", Level.ToString}})
-    End Sub
-
-    Public Async Sub SetLevelPercentage(AIN As String, Level As Integer) Implements IFBoxAHA.SetLevelPercentage
-        Await SendAHARequest(New Dictionary(Of String, String) From {{"ain", AIN},
-                                                                     {"level", Level.ToString}})
-    End Sub
-
-    Public Async Sub SetColor(AIN As String, Hue As Integer, Saturation As Integer, Duration As Integer) Implements IFBoxAHA.SetColor
-        Await SendAHARequest(New Dictionary(Of String, String) From {{"ain", AIN},
-                                                                     {"hue", Hue.ToString},
-                                                                     {"saturation", Saturation.ToString},
-                                                                     {"duration", Duration.ToString}})
-    End Sub
-
-    Public Async Sub SetColorTemperature(AIN As String, Temperature As Integer, Duration As Integer) Implements IFBoxAHA.SetColorTemperature
-        Await SendAHARequest(New Dictionary(Of String, String) From {{"ain", AIN},
-                                                                     {"temperature", Temperature.ToString},
-                                                                     {"duration", Duration.ToString}})
     End Sub
 
     Public Async Sub Setblind(AIN As String, Target As String) Implements IFBoxAHA.Setblind
@@ -199,8 +231,13 @@ Friend Class FBoxAHA
     End Function
 
 #End Region
-
-    Public Async Function GetColorDefaults() As Task(Of AHAColorDefaults) Implements IFBoxAHA.GetColorDefaults
-        Return Await FBoXTR064Base.XML.DeserializeAsyncData(Of AHAColorDefaults)(Await SendAHARequest())
+    ' TODO
+    Public Function GetTriggerListInfos() As Task(Of String) Implements IFBoxAHA.GetTriggerListInfos
+        Throw New NotImplementedException()
     End Function
+
+    ' TODO
+    Public Sub SetTriggerActive(AIN As String, Active As Boolean) Implements IFBoxAHA.SetTriggerActive
+        Throw New NotImplementedException()
+    End Sub
 End Class
