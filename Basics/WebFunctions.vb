@@ -83,10 +83,11 @@ Friend Class WebFunctions
                                 SendLog(LogLevel.Warning, $"SOAPFault: ' {UniformResourceIdentifier.AbsoluteUri} '; Response: {reader.ReadToEnd()} ")
                             End Using
                         End Using
+
+                        .Close()
                     Else
                         SendLog(LogLevel.Error, $"URI: ' {UniformResourceIdentifier.AbsoluteUri} '; StatusCode: {ex.Message} ")
                     End If
-                    .Close()
                 End With
 
             Finally
