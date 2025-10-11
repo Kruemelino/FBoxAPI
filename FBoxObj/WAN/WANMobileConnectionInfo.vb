@@ -4,7 +4,7 @@
 ''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_wanmobileconnSCPD.pdf</see>
 ''' </summary>
 Public Class WANMobileConnectionInfo
-    Public Property Enable As Boolean
+    Public Property Enabled As Boolean
     ''' <summary>
     ''' <list type="table">
     ''' <item><term>factory default</term>FRITZ!Box has factory default configuration</item>

@@ -19,9 +19,9 @@ Friend Class X_WANMobileConnectionSCPD
 
         With TR064Start(ServiceFile, "GetInfo", ServiceID, Nothing)
 
-            If .ContainsKey("NewEnable") Then
+            If .ContainsKey("NewEnabled") Then
 
-                Return .TryGetValueEx("NewEnable", Info.Enable) And
+                Return .TryGetValueEx("NewEnabled", Info.Enabled) And
                        .TryGetValueEx("NewStatus", Info.Status) And
                        .TryGetValueEx("NewPINFailureCount", Info.PINFailureCount) And
                        .TryGetValueEx("NewPUKFailureCount", Info.PUKFailureCount)
