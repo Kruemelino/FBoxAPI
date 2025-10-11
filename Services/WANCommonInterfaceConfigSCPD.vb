@@ -1,7 +1,7 @@
 ﻿''' <summary>
 ''' TR-064 Support – WANCommonInterfaceConfig
 ''' Date: 2023-01-20
-''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wancommonifconfigSCPD.pdf</see>
+''' <see href="link">https://fritz.support/resources/TR-064_WAN_Common_Interface_Config.pdf</see>
 ''' </summary>
 Friend Class WANCommonInterfaceConfigSCPD
     Implements IWANCommonInterfaceConfigSCPD
@@ -32,7 +32,7 @@ Friend Class WANCommonInterfaceConfigSCPD
                    .TryGetValueEx("NewLayer1UpstreamMaxBitRate", Layer1UpstreamMaxBitRate) And
                    .TryGetValueEx("NewLayer1DownstreamMaxBitRate", Layer1DownstreamMaxBitRate) And
                    .TryGetValueEx("NewPhysicalLinkStatus", PhysicalLinkStatus) And
-                   .TryGetValueEx("NewX_AVM-DE_DownstreamCurrentUtilization ", DownStreamCurrentUtilization) And
+                   .TryGetValueEx("NewX_AVM-DE_DownstreamCurrentUtilization", DownStreamCurrentUtilization) And
                    .TryGetValueEx("NewX_AVM-DE_UpstreamCurrentUtilization", UpstreamCurrentUtilization) And
                    .TryGetValueEx("NewX_AVM-DE_DownstreamCurrentMaxSpeed", DownstreamCurrentMaxSpeed) And
                    .TryGetValueEx("NewX_AVM-DE_UpstreamCurrentMaxSpeed", UpstreamCurrentMaxSpeed)
