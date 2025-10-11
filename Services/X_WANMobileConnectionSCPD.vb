@@ -1,7 +1,7 @@
 ﻿''' <summary>
 ''' TR-064 Support – X_AVM-DE_WANMobileConnection
 ''' Date: 2023-04-14
-''' <see href="link">https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_wanmobileconnSCPD.pdf</see>
+''' <see href="link">https://fritz.support/resources/TR-064_WAN_Mobile_Connection.pdf</see>
 ''' </summary>
 Friend Class X_WANMobileConnectionSCPD
     Implements IX_WANMobileConnectionSCPD

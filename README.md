@@ -143,7 +143,7 @@ End Class
 
 ### Umsetzung
 folgende angehakte TR-064 Services werden derzeit unterstützt. Falls etwas fehlen sollte, oder etwas nicht funktioniert, dann gebt bitte Bescheid.
-
+(Die nachfolgenden Liks sind mittlerweile veraltet.)
 * [x] [AURA](https://github.com/blacksenator/fritzsoap/blob/master/docs/auraSCPD.pdf) (Inoffizielle Dokumentation von Black Senator aus dem IPPF)
 * [x] [DeviceConfig](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf)
 * [x] [DeviceInfo](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf)
