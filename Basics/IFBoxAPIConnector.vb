@@ -1,6 +1,6 @@
 ﻿Public Interface IFBoxAPIConnector
     ''' <summary>
-    ''' Rouitine welche die Log-Message in das Log der Zielanwendung schreibt.
+    ''' Routine, welche die Log-Message in das Log der Zielanwendung schreibt.
     ''' </summary>
     ''' <param name="MessageContainer">Containerklasse vom Typ <see cref="FBoxAPI.LogMessage"/>, welche alle Informationen enthält, aus der <see cref="FBoxAPI"/> Schnittstelle enthält.</param>
     Sub LogMessage(MessageContainer As LogMessage)
