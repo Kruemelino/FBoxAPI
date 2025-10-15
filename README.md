@@ -107,7 +107,7 @@ End Class
 
 #### Zwei-Faktor-Authentifizierung
 Die Nutzung der Zwei-Faktor-Authentifizierung kann ab Fritz!OS 7.39 nicht mehr deaktiviert werden. Das Setzen verschiedener Einstellungen bedarf nun einer zusätzlichen Bestätigung durch den Nutzer. 
-Der Ablauf des Authentifizierungsprozesses ist in [X_AVM-DE_Auth](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_auth.pdf) beschrieben. 
+Der Ablauf des Authentifizierungsprozesses ist in [X_AVM-DE_Auth](https://fritz.support/resources/TR-064_Authentication.pdf) beschrieben. 
 Sobald für eine Action eine eine Zwei-Faktor-Authentifizierung erforderlich ist, signalisiert diese API dies über die `FBoxAPIConnector`-Schnittstelle, welche hierfür mit der Routine `Signal2FAuthentication` ergänzt wurde. 
 Der Parameter `Methods` enhält die erlaubten Methoden, z. B. `button,dtmf;*14048`. Sobald der Nutzer die Authentifizierung durchgeführt hat, wird die ursprüngliche Action erneut ausgeführt. 
 Die Ergebnisse des Authentifizierungsprozesses werden über die `LogMessage` ausgegeben. 
